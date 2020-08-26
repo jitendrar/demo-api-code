@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/register', 'Api\AuthController@register');
-Route::post('/login', 'Api\AuthController@login');
+Route::post('login', 'Api\AuthController@login');
+Route::post('register', 'Api\AuthController@register');
 
-Route::apiResource('/category', 'Api\CategoryController')->middleware('auth:api');
+Route::group(['middleware' => ['auth:api']], function () {
+	Route::apiResource('category', 'Api\CategoryController');
+});
+
