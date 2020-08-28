@@ -112,6 +112,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $StatusCode = 401;
         $status = 0;
         $msg = "The credential that you've entered doesn't match any account.";
         $accessToken = "";
@@ -129,6 +130,7 @@ class AuthController extends Controller
             $msg = "";
             foreach ($messages->all() as $message) {
                 $msg = $message;
+                $StatusCode = 409;
                 break;
             }
         } else {
@@ -141,6 +143,7 @@ class AuthController extends Controller
                 $status = 0;
                 $msg = "Phone number does not verified.  Please verify your phone number.";
                 if($user->status == 1) {
+                    $StatusCode = 200;
                     $status = 1;
                     $msg = "Login Successfully.";
                     $data = new UserResource($user);
@@ -148,6 +151,8 @@ class AuthController extends Controller
                 }
             }
         }
-        return ['status' => $status, 'message' => $msg, 'data' => $data,'access_token' => $accessToken];
+        // return ['status' => $status, 'message' => $msg, 'data' => $data,'access_token' => $accessToken];
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        return response($arrReturn, $StatusCode);
     }
 }
