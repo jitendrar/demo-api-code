@@ -16,8 +16,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('login', 'Api\AuthController@login');
 Route::post('register', 'Api\AuthController@register');
+Route::post('userverify', 'Api\AuthController@userverifyotp');
 
 Route::group(['middleware' => ['auth:api']], function () {
 	Route::apiResource('category', 'Api\CategoryController');
+	Route::apiResource('products', 'Api\ProductController');
 });
 

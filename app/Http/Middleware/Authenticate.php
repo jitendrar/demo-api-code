@@ -21,7 +21,9 @@ class Authenticate extends Middleware
         if(Auth::guard($guard)->check()) {
             return $next($request);
         }else{
-            return ['status' => 0,'message' => 'Require login to access this page.'];
+            $StatusCode = 401;
+            $arrReturn = ['status' => 0,'message' => 'Require login to access this page.'];
+            return response($arrReturn, $StatusCode);
         }
     }
 

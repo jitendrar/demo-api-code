@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Category;
+use App\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Resources\CategoryResource;
+use App\Http\Resources\ProductResource;
 
-class CategoryController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,19 +19,20 @@ class CategoryController extends Controller
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the Category.';
+        $msg            = 'The requested can not find the Product.';
         $data           = array();
-        $categories = Category::where('status',1)->paginate(5);
-        if($categories->count()) {
+        $products = Product::where('status',1)->paginate(5);
+        if($products->count()) {
             $status         = 1;
             $StatusCode     = 200;
             $msg   = 'Retrieved successfully';
-            $data      = $categories;
+            $data      = $products;
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
         return response($ArrReturn, $StatusCode);
-        // return response([ 'categories' => CategoryResource::collection($categories), 'message' => 'Retrieved successfully'], 200);
+        // return response([ 'products' => ProductResource::collection($products), 'message' => 'Retrieved successfully'], 200);
     }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -49,22 +50,22 @@ class CategoryController extends Controller
      * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show(Product $product)
     {
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the Category.';
+        $msg            = 'The requested can not find the Product.';
         $data           = array();
-        if($category) {
+        if($product) {
             $status         = 1;
             $StatusCode     = 200;
             $msg   = 'Retrieved successfully';
-            $data      = new CategoryResource($category);
+            $data      = new ProductResource($product);
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
         return response($ArrReturn, $StatusCode);
-
+        // return response([ 'product' => new ProductResource($product), 'message' => 'Retrieved successfully'], 200);
     }
 
     /**
@@ -74,7 +75,7 @@ class CategoryController extends Controller
      * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Product $product)
     {
         //
     }
@@ -85,8 +86,15 @@ class CategoryController extends Controller
      * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy(Product $products)
     {
         //
+    }
+
+    public function productdetails($productsid=0) {
+        if(!empty($productsid)) {
+            $products = Product::where('id',$productsid)->first();
+            return response([ 'productdetails' => ProductResource::collection($products), 'message' => 'Retrieved successfully'], 200);
+        }
     }
 }

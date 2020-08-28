@@ -14,11 +14,12 @@ class CategoryResource extends JsonResource
      */
     public function toArray($request)
     {
+        $API_DATE_FORMAT = env('API_DATE_FORMAT');
         return [
             'id' => $this->id,
-            'title' => $this->title,
-            'created_at' => date("d/m/Y",strtotime($this->created_at)),
-            'updated_at' => date("d/m/Y",strtotime($this->updated_at)),
+            'category_name' => $this->category_name,
+            'created_at' => date($API_DATE_FORMAT,strtotime($this->created_at)),
+            'updated_at' => date($API_DATE_FORMAT,strtotime($this->updated_at)),
         ];
     }
 }
