@@ -14,12 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('login', 'Api\AuthController@login');
-Route::post('register', 'Api\AuthController@register');
-Route::post('userverify', 'Api\AuthController@userverifyotp');
+Route::post('login', 'API\AuthController@login');
+Route::post('register', 'API\AuthController@register');
+Route::post('userverify', 'API\AuthController@userverifyotp');
 
 Route::group(['middleware' => ['auth:api']], function () {
-	Route::apiResource('category', 'Api\CategoryController');
-	Route::apiResource('products', 'Api\ProductController');
+	Route::apiResource('category', 'API\CategoryController');
+	Route::apiResource('products', 'API\ProductController');
 });
 
