@@ -52,6 +52,9 @@ function _CURLGeneralForAll($strRequestURL = null, $Method=null, $HeaderKey = ar
         $ArrReturn = array();
         $ArrReturn['info']    = $info;
         $ArrReturn['result']  = $result;
+        $ArrReturn['error']   = curl_error($conn);
+        // Close handle
+        curl_close($conn);
         return $ArrReturn;
     }
 }

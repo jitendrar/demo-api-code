@@ -17,9 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', 'API\AuthController@login');
 Route::post('register', 'API\AuthController@register');
 Route::post('userverify', 'API\AuthController@userverifyotp');
+Route::post('resendotp', 'API\AuthController@otpresend');
 
 Route::group(['middleware' => ['auth:api']], function () {
 	Route::apiResource('category', 'API\CategoryController');
 	Route::apiResource('products', 'API\ProductController');
+	Route::apiResource('address', 'API\AddressController');
 });
 
