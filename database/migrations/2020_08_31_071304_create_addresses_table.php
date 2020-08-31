@@ -19,8 +19,7 @@ class CreateAddressesTable extends Migration
             $table->string('address', 500)->nullable();
             $table->string('primary_address', 500)->nullable();
             $table->integer('status')->nullable()->default(0);
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamps();
         });
     }
 

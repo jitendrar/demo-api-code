@@ -15,17 +15,16 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->integer('user_id')->nullable();
+            $table->integer('user_id');
             $table->integer('address_id')->nullable();
-            $table->float('delivery_charge', 11, 5)->nullable();
+            $table->double('delivery_charge', 11, 5)->nullable();
             $table->date('delivery_date')->nullable();
             $table->text('special_information')->nullable();
             $table->integer('order_number')->nullable();
             $table->date('actual_delivery_date')->nullable();
             $table->string('order_status', 50)->nullable();
             $table->dateTime('actual_delivery_time')->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamps();
         });
     }
 
