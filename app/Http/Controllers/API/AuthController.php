@@ -19,6 +19,7 @@ class AuthController extends Controller
         $data           = array();
         $accessToken    = "";
 
+        
         $RegisterData = Validator::make($request->all(), [
             'first_name' => 'required|max:55',
             'last_name' => 'required|max:55',
@@ -41,13 +42,16 @@ class AuthController extends Controller
             $user = User::create($requestData);
             if($user) {
                 $userID = $user->id;
-                User::_SendOtp($userID);
-                $accessToken = $user->createToken('authToken')->accessToken;
-                $StatusCode     = 200;
-                $status = 1;
-                $msg = 'User successfully created.';
-                $data = new UserResource($user);
-                // $data = $user;
+                $arrOtp = User::_SendOtp($userID);
+                if($arrOtp['status'] == 1) {
+                    $accessToken = $user->createToken('authToken')->accessToken;
+                    $StatusCode     = 200;
+                    $status = 1;
+                    $msg = 'User successfully created.';
+                    $data = new UserResource($user);
+                } else {
+                    $msg = $arrOtp['msg'];
+                }
             }
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
