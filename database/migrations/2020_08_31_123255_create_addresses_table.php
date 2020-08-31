@@ -17,7 +17,7 @@ class CreateAddressesTable extends Migration
             $table->integer('id', true);
             $table->integer('user_id');
             $table->string('address', 500)->nullable();
-            $table->string('primary_address', 500)->nullable();
+            $table->integer('primary_address')->nullable()->default(0);
             $table->integer('status')->nullable()->default(0);
             $table->timestamps();
         });

@@ -114,6 +114,53 @@ class AuthController extends Controller
         return response($arrReturn, $StatusCode);
     }
 
+    public function otpresend(Request $request) {
+        
+        $StatusCode     = 403;
+        $status         = 0;
+        $msg            = "Please enter valid phone";
+        $data           = array();
+        $accessToken    = "";
+        $arrReturn      = array();
+        
+        $RegisterData   = Validator::make($request->all(), [
+            'phone' => 'required|numeric|regex:/[6-9]\d{9}/|digits:10',
+        ]);
+
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $requestData    = $request->all();
+            $phone          = trim($requestData['phone']);
+            $users          = User::where('phone',$phone)->first();
+            if($users) {
+                $userID = $users->id;
+                $arrOtp = User::_SendOtp($userID);
+                if($arrOtp['status'] == 1) {
+                    $StatusCode     = 200;
+                    $status = 1;
+                    $msg    = 'OTP send successfully.';
+                    $data   = new UserResource($users);
+                } else {
+                    $StatusCode     = 409;
+                    $msg = $arrOtp['msg'];
+                }
+            } else {
+                $StatusCode = 401;
+                $msg = "The credential that you've entered doesn't match any account.";
+            }
+        }
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        return response($arrReturn, $StatusCode);
+    }
+
     public function login(Request $request)
     {
         $StatusCode = 401;
