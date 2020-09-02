@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('phone_verified_at')->nullable();
             $table->integer('status')->nullable()->default(0);
             $table->string('password');
+            $table->float('balance', 11)->nullable();
             $table->string('languague')->nullable();
             $table->rememberToken();
             $table->timestamps();

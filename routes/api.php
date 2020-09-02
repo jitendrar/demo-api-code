@@ -18,10 +18,15 @@ Route::post('login', 'API\AuthController@login');
 Route::post('register', 'API\AuthController@register');
 Route::post('userverify', 'API\AuthController@userverifyotp');
 Route::post('resendotp', 'API\AuthController@otpresend');
-
+Route::apiResource('category', 'API\CategoryController');
+Route::apiResource('products', 'API\ProductController');
 Route::group(['middleware' => ['auth:api']], function () {
-	Route::apiResource('category', 'API\CategoryController');
-	Route::apiResource('products', 'API\ProductController');
 	Route::apiResource('address', 'API\AddressController');
+	Route::post('listcart', 'API\CartDetailController@listcartitem');
+	Route::post('addcart', 'API\CartDetailController@addcartitem');
+	Route::post('updateaddcart', 'API\CartDetailController@updatecartitem');
+	Route::post('createorder', 'API\OrderController@createorder');
+	Route::post('getorder', 'API\OrderController@getorderbyuser');
+	Route::post('transactionhistory', 'API\OrderController@transactionwallethistory');
 });
 
