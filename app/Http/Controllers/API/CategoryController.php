@@ -21,7 +21,7 @@ class CategoryController extends Controller
         $ArrReturn      = array();
         $msg            = 'The requested can not find the Category.';
         $data           = array();
-        $categories = Category::where('status',1)->paginate(5);
+        $categories = Category::where('status',1)->get();
         if($categories->count()) {
             $status         = 1;
             $StatusCode     = 200;
@@ -30,7 +30,6 @@ class CategoryController extends Controller
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
         return response($ArrReturn, $StatusCode);
-        // return response([ 'categories' => CategoryResource::collection($categories), 'message' => 'Retrieved successfully'], 200);
     }
     /**
      * Store a newly created resource in storage.

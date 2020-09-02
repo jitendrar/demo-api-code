@@ -19,7 +19,10 @@ Route::post('register', 'API\AuthController@register');
 Route::post('userverify', 'API\AuthController@userverifyotp');
 Route::post('resendotp', 'API\AuthController@otpresend');
 Route::apiResource('category', 'API\CategoryController');
-Route::apiResource('products', 'API\ProductController');
+
+Route::post('listproducts', 'API\ProductController@listproductsbycategory');
+Route::get('products/{id}', 'API\ProductController@productdetails');
+
 Route::group(['middleware' => ['auth:api']], function () {
 	Route::apiResource('address', 'API\AddressController');
 	Route::post('listcart', 'API\CartDetailController@listcartitem');
@@ -28,5 +31,6 @@ Route::group(['middleware' => ['auth:api']], function () {
 	Route::post('createorder', 'API\OrderController@createorder');
 	Route::post('getorder', 'API\OrderController@getorderbyuser');
 	Route::post('transactionhistory', 'API\OrderController@transactionwallethistory');
+	Route::post('mywalletbalance', 'API\OrderController@mywalletbalance');
 });
 
