@@ -17,7 +17,8 @@ class CreateOrdersTable extends Migration
             $table->integer('id', true);
             $table->integer('user_id');
             $table->integer('address_id')->nullable();
-            $table->double('delivery_charge', 11, 5)->nullable();
+            $table->float('total_price', 11)->nullable();
+            $table->double('delivery_charge', 11, 2)->nullable();
             $table->date('delivery_date')->nullable();
             $table->text('special_information')->nullable();
             $table->integer('order_number')->nullable();

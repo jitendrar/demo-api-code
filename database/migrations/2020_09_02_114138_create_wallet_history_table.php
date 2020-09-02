@@ -16,8 +16,9 @@ class CreateWalletHistoryTable extends Migration
         Schema::create('wallet_history', function (Blueprint $table) {
             $table->integer('id', true);
             $table->integer('user_id');
-            $table->double('transaction_amount', 11, 5)->nullable();
-            $table->string('transaction_type', 50)->nullable();
+            $table->float('user_balance', 11)->nullable();
+            $table->double('transaction_amount', 11, 2)->nullable();
+            $table->string('transaction_type', 10)->nullable();
             $table->text('remark')->nullable();
             $table->timestamps();
         });
