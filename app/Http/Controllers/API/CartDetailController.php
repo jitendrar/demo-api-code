@@ -102,6 +102,7 @@ class CartDetailController extends Controller
             }
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
         return response($ArrReturn, $StatusCode);
     }
 
@@ -145,6 +146,7 @@ class CartDetailController extends Controller
             }
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
         return response($ArrReturn, $StatusCode);
     }
 
@@ -199,6 +201,7 @@ class CartDetailController extends Controller
             }
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
+        $StatusCode = 200;
         return response($arrReturn,$StatusCode);
     }
 

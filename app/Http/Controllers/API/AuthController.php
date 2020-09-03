@@ -62,6 +62,7 @@ class AuthController extends Controller
             }
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        $StatusCode = 200;
         return response($arrReturn,$StatusCode);
     }
 
@@ -118,6 +119,7 @@ class AuthController extends Controller
             }
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        $StatusCode = 200;
         return response($arrReturn, $StatusCode);
     }
 
@@ -165,6 +167,7 @@ class AuthController extends Controller
             }
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        $StatusCode = 200;
         return response($arrReturn, $StatusCode);
     }
 
@@ -218,6 +221,7 @@ class AuthController extends Controller
         }
         // return ['status' => $status, 'message' => $msg, 'data' => $data,'access_token' => $accessToken];
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        $StatusCode = 200;
         return response($arrReturn, $StatusCode);
     }
 }

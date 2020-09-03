@@ -106,6 +106,7 @@ class OrderController extends Controller
             }
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
+        $StatusCode = 200;
         return response($arrReturn,$StatusCode);
     }
 
@@ -196,6 +197,7 @@ class OrderController extends Controller
             }
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
+        $StatusCode = 200;
         return response($arrReturn,$StatusCode);
     }
 
@@ -239,6 +241,7 @@ class OrderController extends Controller
             }
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
+        $StatusCode = 200;
         return response($arrReturn,$StatusCode);
     }
 
@@ -277,6 +280,7 @@ class OrderController extends Controller
             }
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
+        $StatusCode = 200;
         return response($arrReturn,$StatusCode);
     }
 }

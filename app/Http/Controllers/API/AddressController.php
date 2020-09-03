@@ -34,6 +34,7 @@ class AddressController extends Controller
             }
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
         return response($ArrReturn, $StatusCode);
     }
 
@@ -86,6 +87,7 @@ class AddressController extends Controller
             }
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
+        $StatusCode = 200;
         return response($arrReturn,$StatusCode);
     }
 
@@ -113,6 +115,7 @@ class AddressController extends Controller
             }
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
         return response($ArrReturn, $StatusCode);
     }
 
@@ -165,6 +168,7 @@ class AddressController extends Controller
             }
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
+        $StatusCode = 200;
         return response($arrReturn,$StatusCode);
 
     }
@@ -187,6 +191,7 @@ class AddressController extends Controller
             $msg            = 'Address successfully deleted.';
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
+        $StatusCode = 200;
         return response($arrReturn,$StatusCode);
     }
 
