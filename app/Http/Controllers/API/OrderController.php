@@ -226,10 +226,49 @@ class OrderController extends Controller
                     $status         = 1;
                     $msg            = 'Retrieved successfully';
                     $data['my_balance']       = $ArrUser->balance;
-                    $walletdata = WalletHistory::where('user_id',$user_id)->get();
+                    $PAGINATION_VALUE = env('PAGINATION_VALUE');
+                    $walletdata = WalletHistory::where('user_id',$user_id)->paginate($PAGINATION_VALUE);
                     if($walletdata->count()) {
-                        $data['wallet_history']       = $walletdata;
+                        $data       = $walletdata;
                     }
+                } else {
+                    $StatusCode     = 204;
+                    $status         = 0;
+                    $msg            = "No user found";
+                }
+            }
+        }
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
+        return response($arrReturn,$StatusCode);
+    }
+
+    public function mywalletbalance(Request $request)
+    {
+        $StatusCode     = 403;
+        $status         = 0;
+        $msg            = "";
+        $data           = array();
+        $RegisterData = Validator::make($request->all(), [
+            'user_id' => 'required|numeric',
+        ]);
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $user_id                = $request->get('user_id');
+            if(!empty($user_id)) {
+                $ArrUser = User::find($user_id);
+                if($ArrUser) {
+                    $StatusCode     = 200;
+                    $status         = 1;
+                    $msg            = 'Retrieved successfully';
+                    $data['my_balance']       = $ArrUser->balance;
                 } else {
                     $StatusCode     = 204;
                     $status         = 0;

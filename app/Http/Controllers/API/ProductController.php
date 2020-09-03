@@ -6,6 +6,7 @@ use App\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\ProductResource;
+use Validator;
 
 class ProductController extends Controller
 {
@@ -16,21 +17,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $StatusCode     = 204;
-        $status         = 0;
-        $ArrReturn      = array();
-        $msg            = 'The requested can not find the Product.';
-        $data           = array();
-        $products = Product::where('status',1)->paginate(5);
-        if($products->count()) {
-            $status         = 1;
-            $StatusCode     = 200;
-            $msg   = 'Retrieved successfully';
-            $data      = $products;
-        }
-        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
-        return response($ArrReturn, $StatusCode);
-        // return response([ 'products' => ProductResource::collection($products), 'message' => 'Retrieved successfully'], 200);
+        //
     }
 
     /**
@@ -52,20 +39,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $StatusCode     = 204;
-        $status         = 0;
-        $ArrReturn      = array();
-        $msg            = 'The requested can not find the Product.';
-        $data           = array();
-        if($product) {
-            $status         = 1;
-            $StatusCode     = 200;
-            $msg   = 'Retrieved successfully';
-            $data      = new ProductResource($product);
-        }
-        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
-        return response($ArrReturn, $StatusCode);
-        // return response([ 'product' => new ProductResource($product), 'message' => 'Retrieved successfully'], 200);
+        //
     }
 
     /**
@@ -92,9 +66,69 @@ class ProductController extends Controller
     }
 
     public function productdetails($productsid=0) {
+
+        $StatusCode     = 204;
+        $status         = 0;
+        $ArrReturn      = array();
+        $msg            = 'The requested can not find the Product.';
+        $data           = array();
         if(!empty($productsid)) {
             $products = Product::where('id',$productsid)->first();
-            return response([ 'productdetails' => ProductResource::collection($products), 'message' => 'Retrieved successfully'], 200);
+            if($products) {
+                $StatusCode     = 200;
+                $status         = 1;
+                $msg            = 'Retrieved successfully';
+                $data           = new ProductResource($products);
+            }
         }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        return response($ArrReturn, $StatusCode);
+
     }
+
+    public function listproductsbycategory(Request $request)
+    {
+        $StatusCode     = 204;
+        $status         = 0;
+        $ArrReturn      = array();
+        $msg            = 'The requested can not find the Product.';
+        $data           = array();
+
+        $RegisterData = Validator::make($request->all(), [
+            'category_id' => 'required|numeric',
+        ]);
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $PAGINATION_VALUE = env('PAGINATION_VALUE');
+            $requestData = $request->all();
+            if($requestData['category_id'] == 1) {
+                $products = Product::where('status',1)->paginate($PAGINATION_VALUE);
+                if($products->count()) {
+                    $status         = 1;
+                    $StatusCode     = 200;
+                    $msg   = 'Retrieved successfully';
+                    $data      = $products;
+                }
+            } else {
+                $products = Product::where('status',1)->where('category_id',$requestData['category_id'])->paginate($PAGINATION_VALUE);
+                if($products->count()) {
+                    $status         = 1;
+                    $StatusCode     = 200;
+                    $msg   = 'Retrieved successfully';
+                    $data      = $products;
+                }
+            }
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        return response($ArrReturn, $StatusCode);
+    }
+
 }

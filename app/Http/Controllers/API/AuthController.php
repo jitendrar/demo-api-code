@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
+use App\DeviceInfo;
 use Validator;
 use App\Http\Resources\UserResource;
 
@@ -36,13 +37,19 @@ class AuthController extends Controller
                 break;
             }
         } else {
+            $device_type        = $request->get("device_type");
             $requestData = $request->all();
             $requestData['password']    = bcrypt($requestData['password']);
             $requestData['new_phone']   = $requestData['phone'];
             $user = User::create($requestData);
             if($user) {
                 $userID = $user->id;
-                $arrOtp = User::_SendOtp($userID);
+                $ArrDeviceInfo = array();
+                $ArrDeviceInfo['user_id'] = $user->id;
+                $ArrDeviceInfo['device_type'] = $device_type;
+                DeviceInfo::updateOrCreate($ArrDeviceInfo);
+                $arrOtp['status'] = 1;
+                // $arrOtp = User::_SendOtp($userID);
                 if($arrOtp['status'] == 1) {
                     $accessToken = $user->createToken('authToken')->accessToken;
                     $StatusCode     = 200;
@@ -189,15 +196,22 @@ class AuthController extends Controller
                 'phone' => $request->get("phone"),
                 'password' => $request->get("password"),
             ];
+            $device_type        = $request->get("device_type");
+            $notification_token = $request->get("notification_token");
             if (auth()->attempt($loginData)) {
                 $user = auth()->user();
                 $status = 0;
                 $msg = "Phone number does not verified.  Please verify your phone number.";
                 if($user->status == 1) {
-                    $StatusCode = 200;
-                    $status = 1;
-                    $msg = "Login Successfully.";
-                    $data = new UserResource($user);
+                    User::where('id',$user->id)->update(['notification_token' => $notification_token]);
+                    $ArrDeviceInfo = array();
+                    $ArrDeviceInfo['user_id'] = $user->id;
+                    $ArrDeviceInfo['device_type'] = $device_type;
+                    DeviceInfo::updateOrCreate($ArrDeviceInfo);
+                    $StatusCode     = 200;
+                    $status         = 1;
+                    $msg            = "Login Successfully.";
+                    $data           = new UserResource($user);
                     $accessToken = auth()->user()->createToken('authToken')->accessToken;
                 }
             }

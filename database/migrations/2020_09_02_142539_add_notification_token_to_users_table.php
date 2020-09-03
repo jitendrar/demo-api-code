@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDeviceInfoTable extends Migration
+class AddNotificationTokenToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreateDeviceInfoTable extends Migration
      */
     public function up()
     {
-        Schema::create('device_info', function (Blueprint $table) {
-            $table->integer('user_id')->primary();
-            $table->string('device_type', 500);
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('notification_token', 200)->nullable()->after('remember_token');
         });
     }
 
@@ -27,6 +25,8 @@ class CreateDeviceInfoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('device_info');
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
     }
 }
