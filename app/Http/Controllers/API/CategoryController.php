@@ -29,6 +29,7 @@ class CategoryController extends Controller
             $data      = $categories;
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
         return response($ArrReturn, $StatusCode);
     }
     /**
@@ -62,6 +63,7 @@ class CategoryController extends Controller
             $data      = new CategoryResource($category);
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
         return response($ArrReturn, $StatusCode);
 
     }
