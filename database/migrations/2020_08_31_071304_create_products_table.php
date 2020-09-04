@@ -21,7 +21,7 @@ class CreateProductsTable extends Migration
             $table->integer('units_in_stock')->nullable();
             $table->text('picture')->nullable();
             $table->integer('status')->nullable();
-            $table->double('unity_price', 11, 5)->nullable();
+            $table->double('unity_price', 11, 2)->nullable();
             $table->timestamps();
         });
     }
