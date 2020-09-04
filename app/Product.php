@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+	protected $table = 'products';
+
+	protected $guarded = [];
+
+	public static $STATUS_ACTIVE = 1;
+
+	public static $STATUS_INACTIVE = 0;
 
 
     public static function _GetProductByID($product_id=0) {

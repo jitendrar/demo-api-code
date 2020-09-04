@@ -224,4 +224,99 @@ class AuthController extends Controller
         $StatusCode = 200;
         return response($arrReturn, $StatusCode);
     }
+
+    public function passwordreset(Request $request) {
+
+        $StatusCode     = 403;
+        $status         = 0;
+        $msg            = "Please enter valid phone";
+        $data           = array();
+        $accessToken    = "";
+        $arrReturn      = array();
+
+        $RegisterData = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+            // 'phone' => 'required|numeric|regex:/[6-9]\d{9}/|digits:10',
+            'password' => 'required|confirmed'
+        ]);
+
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $requestData    = $request->all();
+            $user_id        = $requestData['id'];
+            $users = User::where('id',$user_id)->first();
+            if($users) {
+                $arrUpdate = array();
+                $arrUpdate['password']    = bcrypt($requestData['password']);
+                $users->update($arrUpdate);
+                $StatusCode     = 200;
+                $status = 1;
+                $msg    = 'Password successfully changed.';
+                $data   = new UserResource($users);
+            } else {
+                $StatusCode = 401;
+                $status = 0;
+                $msg = "The credential that you've entered doesn't match any account.";
+            }
+        }
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        $StatusCode = 200;
+        return response($arrReturn, $StatusCode);
+    }
+
+    public function verifyotp(Request $request) {
+        
+        $StatusCode = 403;
+        $status = 0;
+        $msg = "Please enter valid user id";
+        $data           = array();
+        $accessToken = "";
+        $arrReturn = array();
+        $RegisterData = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+            'phone_otp' => 'required|numeric'
+        ]);
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $requestData = $request->all();
+            $user_id = trim($requestData['id']);
+            $userotp = trim($requestData['phone_otp']);
+            $users = User::where('id',$user_id)->first();
+            if($users) {
+                if($userotp == $users->phone_otp) {
+                    $status     = 1;
+                    $StatusCode = 200;
+                    $data       = new UserResource($users);
+                    $accessToken = $users->createToken('authToken')->accessToken;
+                    $msg = "OTP successfully verified.";
+                } else {
+                    $StatusCode = 401;
+                    $msg ="Invalid OTP. Please try again.";
+                }
+            } else {
+                $StatusCode = 401;
+                $msg = "The credential that you've entered doesn't match any account.";
+            }
+        }
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        $StatusCode = 200;
+        return response($arrReturn, $StatusCode);
+    }
+
 }

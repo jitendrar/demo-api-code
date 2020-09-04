@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Product;
+use App\ProductMapping;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\ProductResource;
@@ -110,23 +111,37 @@ class ProductController extends Controller
         } else {
             $PAGINATION_VALUE = env('PAGINATION_VALUE');
             $requestData = $request->all();
-            if($requestData['category_id'] == 1) {
-                $products = Product::where('status',1)->paginate($PAGINATION_VALUE);
+            $category_id = $requestData['category_id'];
+            $ArrProductID  = ProductMapping::_GetProductByCategoryID($category_id);
+            if(!empty($ArrProductID)) {
+                $STATUS_ACTIVE = Product::$STATUS_ACTIVE;
+                $products = Product::where('status',$STATUS_ACTIVE)
+                                        ->whereIn('id',$ArrProductID)
+                                        ->paginate($PAGINATION_VALUE);
                 if($products->count()) {
                     $status         = 1;
                     $StatusCode     = 200;
-                    $msg   = 'Retrieved successfully';
-                    $data      = $products;
-                }
-            } else {
-                $products = Product::where('status',1)->where('category_id',$requestData['category_id'])->paginate($PAGINATION_VALUE);
-                if($products->count()) {
-                    $status         = 1;
-                    $StatusCode     = 200;
-                    $msg   = 'Retrieved successfully';
-                    $data      = $products;
+                    $msg            = 'Retrieved successfully';
+                    $data           = $products;
                 }
             }
+            // if($requestData['category_id'] == 1) {
+            //     $products = Product::where('status',1)->paginate($PAGINATION_VALUE);
+            //     if($products->count()) {
+            //         $status         = 1;
+            //         $StatusCode     = 200;
+            //         $msg   = 'Retrieved successfully';
+            //         $data      = $products;
+            //     }
+            // } else {
+            //     $products = Product::where('status',1)->where('category_id',$requestData['category_id'])->paginate($PAGINATION_VALUE);
+            //     if($products->count()) {
+            //         $status         = 1;
+            //         $StatusCode     = 200;
+            //         $msg   = 'Retrieved successfully';
+            //         $data      = $products;
+            //     }
+            // }
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
         $StatusCode = 200;
