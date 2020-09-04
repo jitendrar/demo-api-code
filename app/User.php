@@ -43,11 +43,9 @@ class User extends Authenticatable
                 $first_name     = $users->first_name;
                 $users_phone    = $users->phone;
                 $phone_otp      = 906712;
-                
                 $length = 6;
                 $x = time();
                 $phone_otp      = substr(str_shuffle(str_repeat($x, ceil($length/strlen($x)) )),1,$length);
-
                 $PRODUCT_NAME        = env('PRODUCT_NAME');
                 // $OtpMsg = "Hi ".$first_name.",\r\nYour OTP is ".$phone_otp.".\r\n\r\nSee you soon,\r\nTeam Phpdots";
                 $OtpMsg = $phone_otp." is your OTP for account verification with ".$PRODUCT_NAME." App";

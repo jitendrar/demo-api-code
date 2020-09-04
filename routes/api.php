@@ -18,6 +18,8 @@ Route::post('login', 'API\AuthController@login');
 Route::post('register', 'API\AuthController@register');
 Route::post('userverify', 'API\AuthController@userverifyotp');
 Route::post('resendotp', 'API\AuthController@otpresend');
+Route::post('otpverify', 'API\AuthController@verifyotp');
+Route::post('resetpassword', 'API\AuthController@passwordreset');
 Route::apiResource('category', 'API\CategoryController');
 
 Route::post('listproducts', 'API\ProductController@listproductsbycategory');
