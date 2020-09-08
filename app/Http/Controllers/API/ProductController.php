@@ -122,7 +122,10 @@ class ProductController extends Controller
                     $status         = 1;
                     $StatusCode     = 200;
                     $msg            = 'Retrieved successfully';
-                    $data           = $products;
+                    foreach ($products as $K => $V) {
+                        $products[$K]   = new ProductResource($V);
+                    }
+                    $data   = $products;
                 }
             }
             // if($requestData['category_id'] == 1) {
