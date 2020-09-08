@@ -21,9 +21,14 @@ Route::post('resendotp', 'API\AuthController@otpresend');
 Route::post('otpverify', 'API\AuthController@verifyotp');
 Route::post('resetpassword', 'API\AuthController@passwordreset');
 Route::apiResource('category', 'API\CategoryController');
-Route::post('listproducts', 'API\ProductController@listproductsbycategory');
 Route::get('products/{id}', 'API\ProductController@productdetails');
 Route::get('listtimeslot', 'API\OrderController@listoftimeslot');
+
+Route::group(['middleware' => ['api_language_switcher']], function(){
+
+	Route::post('listproducts', 'API\ProductController@listproductsbycategory');
+
+});
 
 Route::group(['middleware' => ['auth:api']], function () {
 	Route::apiResource('address', 'API\AddressController');

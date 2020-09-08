@@ -11,6 +11,10 @@ use Validator;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->language  = \Request::header('language');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -121,7 +125,7 @@ class ProductController extends Controller
                 if($products->count()) {
                     $status         = 1;
                     $StatusCode     = 200;
-                    $msg            = 'Retrieved successfully';
+                    $msg            = __('words.retrieved_successfully');
                     foreach ($products as $K => $V) {
                         $products[$K]   = new ProductResource($V);
                     }
