@@ -49,7 +49,7 @@ class AuthController extends Controller
                 $ArrDeviceInfo['device_type'] = $device_type;
                 DeviceInfo::updateOrCreate($ArrDeviceInfo);
                 $arrOtp['status'] = 1;
-                // $arrOtp = User::_SendOtp($userID);
+                $arrOtp = User::_SendOtp($userID);
                 if($arrOtp['status'] == 1) {
                     $accessToken = $user->createToken('authToken')->accessToken;
                     $StatusCode     = 200;
