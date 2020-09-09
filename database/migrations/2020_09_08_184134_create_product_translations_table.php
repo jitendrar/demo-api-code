@@ -22,7 +22,7 @@ class CreateProductTranslationsTable extends Migration
             $table->integer('units_in_stock')->nullable();
             $table->string('units_stock_type', 20)->nullable();
             $table->double('unity_price', 11, 2)->nullable();
-            $table->unique(['product_id', 'locale']);
+            $table->unique(['product_id', 'locale'], 'product_id_locale_unique');
         });
     }
 
