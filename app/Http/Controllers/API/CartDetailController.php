@@ -6,6 +6,7 @@ use App\CartDetail;
 use App\Product;
 use App\OrderDetail;
 use App\Order;
+use App\Config;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\CartResource;
@@ -90,14 +91,17 @@ class CartDetailController extends Controller
         } else {
             $user_id = $request->get('user_id');
             if(!empty($user_id)) {
-                $cartdata       = CartDetail::where('user_id',$user_id)->get();
+                $gst_charge = (int)Config::GetConfigurationList(Config::$GST_CHARGE);
+                $cartdata   = CartDetail::with('product')->where('user_id',$user_id)->get();
                 if($cartdata->count()) {
                     $status         = 1;
                     $StatusCode     = 200;
-                    $msg            = 'Retrieved successfully';
-                    foreach ($cartdata as $key => $value) {
-                        $data[] = new CartResource($value);
-                    }
+                    $msg            = __('words.retrieved_successfully');
+                    $data['gst_charge'] = $gst_charge;
+                    $data['cart_data'] = CartResource::collection($cartdata);
+                    // foreach ($cartdata as $key => $value) {
+                    //     $data[] = new CartResource($value);
+                    // }
                 }
             }
         }
@@ -137,7 +141,7 @@ class CartDetailController extends Controller
             if($CartDetail) {
                 $StatusCode     = 200;
                 $status         = 1;
-                $msg            = 'Cart successfully added.';
+                $msg            = __('words.cart_added');
                 $data           = new CartResource($CartDetail);
             } else {
                 $StatusCode     = 403;
@@ -185,13 +189,13 @@ class CartDetailController extends Controller
                     $CartDetail->update($requestData);
                     $StatusCode     = 200;
                     $status         = 1;
-                    $msg            = 'Cart successfully updated.';
+                    $msg            = __('words.cart_update');
                     $data           = new CartResource($CartDetail);
                 } else {
                     if($CartDetail->delete()) {
                         $StatusCode     = 200;
                         $status         = 1;
-                        $msg            = 'Cart successfully deleted.';
+                        $msg            = __('words.cart_delete');
                     }
                 }
             } else {

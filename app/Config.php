@@ -12,6 +12,8 @@ class Config extends Model
 
 	public static $DELIVERY_CHARGE = 1;
 
+    public static $GST_CHARGE = 2;
+
     public static function GetConfigurationList($id)
     {
         $arr_Config = array();

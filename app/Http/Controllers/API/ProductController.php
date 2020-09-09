@@ -11,6 +11,10 @@ use Validator;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->language  = \Request::header('language');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -71,14 +75,14 @@ class ProductController extends Controller
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the Product.';
+        $msg            = __('words.no_data_available');
         $data           = array();
         if(!empty($productsid)) {
             $products = Product::where('id',$productsid)->first();
             if($products) {
                 $StatusCode     = 200;
                 $status         = 1;
-                $msg            = 'Retrieved successfully';
+                $msg            = __('words.retrieved_successfully');
                 $data           = new ProductResource($products);
             }
         }
@@ -93,7 +97,7 @@ class ProductController extends Controller
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the Product.';
+        $msg            = __('words.no_data_available');
         $data           = array();
 
         $RegisterData = Validator::make($request->all(), [
@@ -121,7 +125,7 @@ class ProductController extends Controller
                 if($products->count()) {
                     $status         = 1;
                     $StatusCode     = 200;
-                    $msg            = 'Retrieved successfully';
+                    $msg            = __('words.retrieved_successfully');
                     foreach ($products as $K => $V) {
                         $products[$K]   = new ProductResource($V);
                     }

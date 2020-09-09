@@ -64,14 +64,14 @@ class User extends Authenticatable
                     $reArr = array('status' => 1);
                     return $reArr;
                 } else {
-                    $reArr = array('status' => 0, 'msg' => 'OTP was not send. Please try again.');
+                    $reArr = array('status' => 0, 'msg' => __('words.otp_not_sent'));
                     return $reArr;
                 }
             } else {
-                $reArr = array('status' => 0, 'msg' => 'User not found.');
+                $reArr = array('status' => 0, 'msg' => __('words.user_not_found'));
             }
         }
-        $reArr = array('status' => 0, 'msg' => 'User not found.');
+        $reArr = array('status' => 0, 'msg' => __('words.user_not_found'));
         return $reArr;
     }
 }

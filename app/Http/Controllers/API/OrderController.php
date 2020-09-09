@@ -11,7 +11,8 @@ use App\WalletHistory;
 use App\Config;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Resources\CartResource;
+use App\Http\Resources\OrderResource;
+use App\Http\Resources\OrderDetailResource;
 use Validator;
 
 
@@ -91,14 +92,16 @@ class OrderController extends Controller
                 break;
             }
         } else {
+            $PAGINATION_VALUE = env('PAGINATION_VALUE');
             $user_id    = $request->get('user_id');
             if(!empty($user_id)) {
-                $Orderdata = Order::with('orderDetail')->where('user_id',$user_id)->paginate(2);
+                $Orderdata = Order::with('orderDetail.product')
+                                    ->where('user_id',$user_id)->paginate($PAGINATION_VALUE);
                 if($Orderdata->count()) {
                     $status         = 1;
                     $StatusCode     = 200;
-                    $msg            = 'Retrive successfully';
-                    $data            = $Orderdata;
+                    $msg            = __('words.retrieved_successfully');
+                    $data           = OrderResource::collection($Orderdata);
                 } else {
                     $StatusCode     = 204;
                     $status         = 0;
@@ -169,7 +172,7 @@ class OrderController extends Controller
                             Order::where('id',$order_id)->update(['order_number' => $order_number]);
                             $status         = 1;
                             $StatusCode     = 200;
-                            $msg            = 'Order created successfully';
+                            $msg            = __('words.order_placed');
                             foreach ($cartdata as $key => $value) {
                                 $arrOrderDetails = array();
                                 $arrOrderDetails['order_id']    = $order_id;
@@ -185,7 +188,7 @@ class OrderController extends Controller
                             $ArrWallete['user_balance']         = $AvailableBalance;
                             $ArrWallete['transaction_amount']   = $totalOrderPrice;
                             $ArrWallete['transaction_type']= WalletHistory::$TRANSACTION_TYPE_DEBIT;
-                            $ArrWallete['remark']               = "Deduct money for your order";
+                            $ArrWallete['remark'] = "Deduct money for your order";
                             WalletHistory::create($ArrWallete);
                             User::where('id',$ArrUser->id)->update(['balance' => $AvailableBalance]);
                             $ArrWallete = array();
@@ -201,7 +204,7 @@ class OrderController extends Controller
                     } else {
                         $StatusCode     = 204;
                         $status         = 0;
-                        $msg            = "No cart item found for the create order";
+                        $msg            = __('words.no_cart_in_order_placed');
                     }
                 }
             }
@@ -215,7 +218,7 @@ class OrderController extends Controller
     {
         $StatusCode     = 403;
         $status         = 0;
-        $msg            = "";
+        $msg            = __('words.no_data_available');
         $data           = array();
         $RegisterData = Validator::make($request->all(), [
             'user_id' => 'required|numeric',
@@ -234,19 +237,18 @@ class OrderController extends Controller
             if(!empty($user_id)) {
                 $ArrUser = User::find($user_id);
                 if($ArrUser) {
-                    $StatusCode     = 200;
-                    $status         = 1;
-                    $msg            = 'Retrieved successfully';
-                    $data['my_balance']       = $ArrUser->balance;
                     $PAGINATION_VALUE = env('PAGINATION_VALUE');
                     $walletdata = WalletHistory::where('user_id',$user_id)->paginate($PAGINATION_VALUE);
                     if($walletdata->count()) {
+                        $StatusCode     = 200;
+                        $status         = 1;
+                        $msg            = __('words.retrieved_successfully');
                         $data       = $walletdata;
                     }
                 } else {
                     $StatusCode     = 204;
                     $status         = 0;
-                    $msg            = "No user found";
+                    $msg            = __('words.user_not_found');
                 }
             }
         }
@@ -280,12 +282,12 @@ class OrderController extends Controller
                 if($ArrUser) {
                     $StatusCode     = 200;
                     $status         = 1;
-                    $msg            = 'Retrieved successfully';
+                    $msg            = __('words.retrieved_successfully');
                     $data['my_balance']       = $ArrUser->balance;
                 } else {
                     $StatusCode     = 204;
                     $status         = 0;
-                    $msg            = "No user found";
+                    $msg            = __('words.user_not_found');
                 }
             }
         }
@@ -300,7 +302,7 @@ class OrderController extends Controller
     {
         $StatusCode     = 200;
         $status         = 1;
-        $msg            = "Retrieved successfully";
+        $msg            = __('words.retrieved_successfully');
 
         $ORDER_TIME_SLOT_FILE   = env('ORDER_TIME_SLOT_FILE');
         $JsonFile               = storage_path($ORDER_TIME_SLOT_FILE);
