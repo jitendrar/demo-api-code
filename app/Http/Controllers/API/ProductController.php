@@ -75,14 +75,14 @@ class ProductController extends Controller
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the Product.';
+        $msg            = __('words.no_data_available');
         $data           = array();
         if(!empty($productsid)) {
             $products = Product::where('id',$productsid)->first();
             if($products) {
                 $StatusCode     = 200;
                 $status         = 1;
-                $msg            = 'Retrieved successfully';
+                $msg            = __('words.retrieved_successfully');
                 $data           = new ProductResource($products);
             }
         }
@@ -97,7 +97,7 @@ class ProductController extends Controller
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the Product.';
+        $msg            = __('words.no_data_available');
         $data           = array();
 
         $RegisterData = Validator::make($request->all(), [

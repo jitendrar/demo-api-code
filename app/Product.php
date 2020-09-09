@@ -12,7 +12,7 @@ class Product extends Model implements TranslatableContract
 
 	use Translatable;
 
-    public $translatedAttributes = ['product_name', 'description'];
+    public $translatedAttributes = ['product_name', 'description', 'units_in_stock','units_stock_type', 'unity_price'];
 
 	protected $table = 'products';
 

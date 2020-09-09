@@ -19,14 +19,14 @@ class CategoryController extends Controller
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the Category.';
+        $msg            = __('words.no_data_available');
         $data           = array();
         $categories = Category::where('status',1)->get();
         if($categories->count()) {
             $status         = 1;
             $StatusCode     = 200;
-            $msg   = 'Retrieved successfully';
-            $data      = $categories;
+            $msg            = __('words.retrieved_successfully');
+            $data           = CategoryResource::collection($categories);
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
         $StatusCode = 200;
@@ -54,12 +54,12 @@ class CategoryController extends Controller
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the Category.';
+        $msg            = __('words.no_data_available');
         $data           = array();
         if($category) {
             $status         = 1;
             $StatusCode     = 200;
-            $msg   = 'Retrieved successfully';
+            $msg            = __('words.retrieved_successfully');
             $data      = new CategoryResource($category);
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);

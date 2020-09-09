@@ -21,15 +21,16 @@ class AddressController extends Controller
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the Address.';
+        $msg            = __('words.no_data_available');
         $data           = array();
         $user_id = $request->get('user_id');
         if(!empty($user_id)) {
-            $addressdata       = Address::where('user_id',$user_id)->paginate(3);
+            $PAGINATION_VALUE = env('PAGINATION_VALUE');
+            $addressdata      = Address::where('user_id',$user_id)->paginate($PAGINATION_VALUE);
             if($addressdata->count()) {
                 $status         = 1;
                 $StatusCode     = 200;
-                $msg            = 'Retrieved successfully';
+                $msg            = __('words.retrieved_successfully');
                 $data           = $addressdata;
             }
         }
@@ -53,7 +54,9 @@ class AddressController extends Controller
         $data           = array();
         $RegisterData = Validator::make($request->all(), [
             'user_id' => 'required|numeric',
-            'address' => 'required',
+            'address_line_1' => 'required',
+            'city' => 'required',
+            'zipcode' => 'required',
             'primary_address' => 'required',
         ]);
         if ($RegisterData->fails()) {
@@ -78,7 +81,7 @@ class AddressController extends Controller
                 }
                 $StatusCode     = 200;
                 $status         = 1;
-                $msg            = 'Address successfully created.';
+                $msg            = __('words.address_added');
                 $data           = new AddressResource($Address);
             } else {
                 $StatusCode     = 403;
@@ -103,14 +106,14 @@ class AddressController extends Controller
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the Address.';
+        $msg            = __('words.no_data_available');
         $data           = array();
         if(!empty($address_id)) {
             $addressdata       = Address::where('id',$address_id)->first();
             if($addressdata) {
                 $status         = 1;
                 $StatusCode     = 200;
-                $msg            = 'Retrieved successfully';
+                $msg            = __('words.retrieved_successfully');
                 $data           = new AddressResource($addressdata);
             }
         }
@@ -134,7 +137,9 @@ class AddressController extends Controller
         $data           = array();
         $RegisterData = Validator::make($request->all(), [
             'user_id' => 'required|numeric',
-            'address' => 'required',
+            'address_line_1' => 'required',
+            'city' => 'required',
+            'zipcode' => 'required',
             'primary_address' => 'required',
         ]);
         if ($RegisterData->fails()) {
@@ -159,7 +164,7 @@ class AddressController extends Controller
                 }
                 $StatusCode     = 200;
                 $status         = 1;
-                $msg            = 'Address successfully updated.';
+                $msg            = __('words.address_updated');
                 $data           = new AddressResource($address);
             } else {
                 $StatusCode     = 403;
@@ -188,11 +193,50 @@ class AddressController extends Controller
         if($address->delete()) {
             $StatusCode     = 200;
             $status         = 1;
-            $msg            = 'Address successfully deleted.';
+            $msg            = __('words.address_deleted');
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
         $StatusCode = 200;
         return response($arrReturn,$StatusCode);
+    }
+
+
+    public function listaddressbyuser(Request $request)
+    {
+
+        $StatusCode     = 204;
+        $status         = 0;
+        $ArrReturn      = array();
+        $msg            = __('words.no_data_available');
+        $data           = array();
+        $RegisterData = Validator::make($request->all(), [
+            'user_id' => 'required|numeric',
+        ]);
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $user_id = $request->get('user_id');
+            if(!empty($user_id)) {
+                $PAGINATION_VALUE = env('PAGINATION_VALUE');
+                $addressdata      = Address::where('user_id',$user_id)->paginate($PAGINATION_VALUE);
+                if($addressdata->count()) {
+                    $status         = 1;
+                    $StatusCode     = 200;
+                    $msg            = __('words.retrieved_successfully');
+                    $data           = $addressdata;
+                }
+            }
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
+        return response($ArrReturn, $StatusCode);
     }
 
 }
