@@ -159,7 +159,8 @@ class AuthController extends Controller
                     $StatusCode     = 200;
                     $status = 1;
                     $msg = __('words.otp_sent');
-                    $data   = new UserResource($users);
+                    $user = User::where('id',$userID)->first();
+                    $data = new UserResource($user);
                 } else {
                     $StatusCode     = 409;
                     $msg = $arrOtp['msg'];
