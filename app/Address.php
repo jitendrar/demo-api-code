@@ -15,7 +15,11 @@ class Address extends Model
         if(!empty($user_id)) {
             $Address = Address::where('user_id',$user_id)
             					->where('primary_address',1)->first();
-            return new AddressResource($Address);
+            if($Address) {
+            	return new AddressResource($Address);
+            } else {
+            	return array();
+            }
         }
     }
 }

@@ -75,7 +75,7 @@ class CartDetailController extends Controller
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the cart.';
+        $msg            = __('words.no_data_available');
         $data           = array();
         $RegisterData = Validator::make($request->all(), [
             'user_id' => 'required|numeric',
@@ -119,7 +119,7 @@ class CartDetailController extends Controller
     {
         $StatusCode     = 403;
         $status         = 0;
-        $msg            = "";
+        $msg            = __('words.no_data_available');
         $data           = array();
         $RegisterData = Validator::make($request->all(), [
             'user_id' => 'required|numeric',
@@ -163,7 +163,7 @@ class CartDetailController extends Controller
     {
         $StatusCode     = 403;
         $status         = 0;
-        $msg            = "";
+        $msg            = __('words.no_data_available');
         $data           = array();
         $RegisterData = Validator::make($request->all(), [
             'id' => 'required|numeric',
