@@ -91,13 +91,18 @@ class CartDetailController extends Controller
         } else {
             $user_id = $request->get('user_id');
             if(!empty($user_id)) {
-                $gst_charge = (int)Config::GetConfigurationList(Config::$GST_CHARGE);
+                $gst_charge         = 0;
+                $delivery_charge    = 0;
+                $gst_charge         = (int)Config::GetConfigurationList(Config::$GST_CHARGE);
+                $delivery_charge    = (int)Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
+
                 $cartdata   = CartDetail::with('product')->where('user_id',$user_id)->get();
                 if($cartdata->count()) {
                     $status         = 1;
                     $StatusCode     = 200;
                     $msg            = __('words.retrieved_successfully');
                     $data['gst_charge'] = $gst_charge;
+                    $data['delivery_charge'] = $delivery_charge;
                     $data['cart_data'] = CartResource::collection($cartdata);
                     // foreach ($cartdata as $key => $value) {
                     //     $data[] = new CartResource($value);
