@@ -7,6 +7,7 @@ use App\Product;
 use App\OrderDetail;
 use App\Order;
 use App\Config;
+use App\Address;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\CartResource;
@@ -74,7 +75,7 @@ class CartDetailController extends Controller
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the Address.';
+        $msg            = 'The requested can not find the cart.';
         $data           = array();
         $RegisterData = Validator::make($request->all(), [
             'user_id' => 'required|numeric',
@@ -95,18 +96,17 @@ class CartDetailController extends Controller
                 $delivery_charge    = 0;
                 $gst_charge         = (int)Config::GetConfigurationList(Config::$GST_CHARGE);
                 $delivery_charge    = (int)Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
-
-                $cartdata   = CartDetail::with('product')->where('user_id',$user_id)->get();
+                $cartdata   = CartDetail::with('product')
+                                        ->where('user_id',$user_id)->get();
+                $Address    = Address::_GetPrimaryAddressByUserID($user_id);
                 if($cartdata->count()) {
                     $status         = 1;
                     $StatusCode     = 200;
                     $msg            = __('words.retrieved_successfully');
                     $data['gst_charge'] = $gst_charge;
                     $data['delivery_charge'] = $delivery_charge;
+                    $data['address'] = $Address;
                     $data['cart_data'] = CartResource::collection($cartdata);
-                    // foreach ($cartdata as $key => $value) {
-                    //     $data[] = new CartResource($value);
-                    // }
                 }
             }
         }
