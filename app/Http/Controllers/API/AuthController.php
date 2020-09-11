@@ -380,4 +380,42 @@ class AuthController extends Controller
         return response($arrReturn,$StatusCode);
     }
 
+
+        public function logout(Request $request)
+    {
+        $StatusCode = 401;
+        $status = 0;
+        $msg = __('words.user_not_found');
+        $accessToken = "";
+        $data = [];
+        $data = array();
+        $loginData = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+        ]);
+        // check validations
+        if ($loginData->fails()) {
+            $messages = $loginData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode = 409;
+                break;
+            }
+        } else {
+            $id     = $request->get("id");
+            $user   = User::where('id',$id)->first();
+            if ($user) {
+                \DB::table('oauth_access_tokens')->where('user_id', $user->id)->update(['revoked' => true]);
+                $StatusCode     = 200;
+                $status         = 1;
+                $msg            = "Logout Successfully";
+                // $data           = new UserResource($user);
+            }
+        }
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        $StatusCode = 200;
+        return response($arrReturn, $StatusCode);
+    }
+
 }
