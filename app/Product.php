@@ -21,4 +21,27 @@ class Product extends Model
             return $Product;
         }
     }
+    public static function getAttachment($product_id = 0)
+    {
+        $img = '';
+        $formObj = Product::find($product_id);
+        if($formObj)
+        {
+            $img = asset('uploads/products/'.$formObj->id.'/'.$formObj->picture);    
+            if(file_exists(public_path().'/uploads/products/'.$formObj->id.'/'.$formObj->picture))
+            {
+                $img = $img;
+            }
+            else
+            {
+                $img = asset('images/coming_soon.png');
+            }
+        }
+        return $img;
+    }
+    
+    public function images()
+    {
+        return $this->hasMany(ProductsImages::class, 'product_id');
+    }
 }
