@@ -31,6 +31,7 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 
 	Route::group(['middleware' => ['auth:api']], function () {
 		
+		Route::post('sendnewphoneotp', 'API\AuthController@sendnewphoneotp');
 		Route::apiResource('address', 'API\AddressController');
 		Route::post('addressbyuser', 'API\AddressController@listaddressbyuser');
 		Route::post('addcart', 'API\CartDetailController@addcartitem');

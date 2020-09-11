@@ -50,7 +50,7 @@ class AuthController extends Controller
                 $ArrDeviceInfo = array();
                 $ArrDeviceInfo['user_id'] = $user->id;
                 $ArrDeviceInfo['device_type'] = $device_type;
-                DeviceInfo::updateOrCreate($ArrDeviceInfo);
+                DeviceInfo::_CreateOrUpdate($ArrDeviceInfo);
                 $arrOtp['status'] = 1;
                 $arrOtp = User::_SendOtp($userID);
                 if($arrOtp['status'] == 1) {
@@ -212,12 +212,10 @@ class AuthController extends Controller
                 $msg = __('words.mobile_not_verified');
                 if($user->status == 1) {
                     User::where('id',$user->id)->update(['notification_token' => $notification_token]);
-                    // $ArrDeviceInfo = array();
-                    // $ArrDeviceInfo['user_id'] = $user->id;
-                    // $ArrDeviceInfoUpdate = array();
-                    // $ArrDeviceInfoUpdate['device_type'] = $device_type;
-                    // $ArrDeviceInfoUpdate['user_id'] = $user->id;
-                    // DeviceInfo::updateOrCreate($ArrDeviceInfo, $ArrDeviceInfoUpdate);
+                    $ArrDeviceInfo = array();
+                    $ArrDeviceInfo['user_id'] = $user->id;
+                    $ArrDeviceInfo['device_type'] = $device_type;
+                    DeviceInfo::_CreateOrUpdate($ArrDeviceInfo);
                     $StatusCode     = 200;
                     $status         = 1;
                     $msg = __('words.login');
@@ -304,14 +302,21 @@ class AuthController extends Controller
             $requestData = $request->all();
             $user_id = trim($requestData['id']);
             $userotp = trim($requestData['phone_otp']);
-            $users = User::where('id',$user_id)->first();
+            $users  = User::where('id',$user_id)->first();
             if($users) {
+                $userID = $users->id;
                 if($userotp == $users->phone_otp) {
                     $status     = 1;
                     $StatusCode = 200;
+                    $msg = __('words.verified_otp');
+                    if(isset($requestData['changephone']) && trim($requestData['changephone']) == 1) {
+                        $new_phone  = $users->new_phone;
+                        User::where('id', $userID)->update(['phone' => $new_phone]);
+                        $msg = __('words.phone_change_sucsses');
+                    }
+                    $users  = User::where('id',$userID)->first();
                     $data       = new UserResource($users);
                     $accessToken = $users->createToken('authToken')->accessToken;
-                    $msg = __('words.verified_otp');
                 } else {
                     $StatusCode = 401;
                     $msg = __('words.invalid_otp');
@@ -324,6 +329,55 @@ class AuthController extends Controller
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
         $StatusCode = 200;
         return response($arrReturn, $StatusCode);
+    }
+
+    public function sendnewphoneotp(Request $request)
+    {
+        $StatusCode     = 403;
+        $status         = 0;
+        $msg            = "";
+        $data           = array();
+        $accessToken    = "";
+
+        $RegisterData = Validator::make($request->all(), [
+            'id' => 'required',
+            'phone' => 'required|numeric|regex:/[6-9]\d{9}/|digits:10|unique:users',
+        ]);
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $requestData    = $request->all();
+            $user_id        = trim($requestData['id']);
+            $new_phone      = trim($requestData['phone']);
+            $user           = User::where('id',$user_id)->first();
+            if($user) {
+                $userID = $user->id;
+                User::where('id', $userID)->update(['new_phone' => $new_phone]);
+                $arrOtp['status'] = 1;
+                $ChangePhone = 1;
+                $arrOtp = User::_SendOtp($userID, $ChangePhone);
+                if($arrOtp['status'] == 1) {
+                    $StatusCode     = 200;
+                    $status         = 1;
+                    $msg            = __('words.user_created_successfully');
+                    $user           = User::where('id',$userID)->first();
+                    $accessToken    = $user->createToken('authToken')->accessToken;
+                    $data           = new UserResource($user);
+                } else {
+                    $msg = $arrOtp['msg'];
+                }
+            }
+        }
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        $StatusCode = 200;
+        return response($arrReturn,$StatusCode);
     }
 
 }

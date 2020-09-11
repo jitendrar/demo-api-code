@@ -21,7 +21,6 @@ return [
 	'cart_delete' => 'The item is successfully deleted from the card.',
 	'order_placed' => 'Order placed successfully.',
 	'no_cart_in_order_placed' => 'There is no item in the cart to make the order.',
-
-
+	'phone_change_sucsses' => 'Your mobile number successfully changed ',
 ];
 ?>

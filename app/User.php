@@ -35,13 +35,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public static function _SendOtp($user_id =0) {
+    public static function _SendOtp($user_id =0, $ChangePhone=0) {
         if(!empty($user_id)) {
             $users = User::where('id',$user_id)->first();
             if($users) {
                 $users_id       = $users->id;
                 $first_name     = $users->first_name;
                 $users_phone    = $users->phone;
+                if($ChangePhone == 1) {
+                    $users_phone    = $users->new_phone;
+                }
                 $phone_otp      = 906712;
                 $length = 6;
                 $x = time();

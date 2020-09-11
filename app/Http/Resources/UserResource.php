@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'phone' => $this->phone,
+            'new_phone' => $this->new_phone,
             'phone_otp' => $this->phone_otp,
             'status' => _GetStatusName($this->status),
             'created_at' => date($API_DATE_FORMAT,strtotime($this->created_at)),
