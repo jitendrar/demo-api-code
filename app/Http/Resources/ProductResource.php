@@ -25,6 +25,7 @@ class ProductResource extends JsonResource
             'picture' => self::GetImage(),
             'status' => $this->status,
             'unity_price' => $this->unity_price,
+            'isAvailableInCart' => is_null($this->isAvailableInCart)?0:$this->isAvailableInCart,
             'created_at' => date($API_DATE_FORMAT,strtotime($this->created_at)),
             'updated_at' => date($API_DATE_FORMAT,strtotime($this->updated_at)),
         ];

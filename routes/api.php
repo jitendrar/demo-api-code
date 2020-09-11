@@ -26,11 +26,13 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 	Route::post('listproducts', 'API\ProductController@listproductsbycategory');
 	Route::get('products/{id}', 'API\ProductController@productdetails');
 	Route::get('listtimeslot', 'API\OrderController@listoftimeslot');
-
 	Route::apiResource('category', 'API\CategoryController');
 
+	Route::get('aboutus', 'API\CommonController@getaboutus');
+	Route::get('contactus', 'API\CommonController@getcontactus');
+
 	Route::group(['middleware' => ['auth:api']], function () {
-		
+
 		Route::post('sendnewphoneotp', 'API\AuthController@sendnewphoneotp');
 		Route::apiResource('address', 'API\AddressController');
 		Route::post('addressbyuser', 'API\AddressController@listaddressbyuser');
@@ -41,7 +43,8 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 		Route::post('getorder', 'API\OrderController@getorderbyuser');
 		Route::post('transactionhistory', 'API\OrderController@transactionwallethistory');
 		Route::post('mywalletbalance', 'API\OrderController@mywalletbalance');
-
+		
+		Route::post('repeatorder', 'API\OrderController@repeatorder');
 	});
 });
 

@@ -11,6 +11,11 @@ function prd($arr){
   exit();
 }
 
+function _IsJsonOrNot($string) {
+  json_decode($string);
+  return (json_last_error() == JSON_ERROR_NONE);
+}
+
 function _GetStatusName($statusid='') {
   if($statusid == 1) {
     return "Active";
@@ -19,7 +24,13 @@ function _GetStatusName($statusid='') {
   }
 }
 
-
+function _GetOrderStatus($statusid='') {
+  if($statusid == "P") {
+    return "Pending";
+  } else if($statusid == "D") {
+    return "Delivered";
+  }
+}
 
 function _CURLGeneralForAll($strRequestURL = null, $Method=null, $HeaderKey = array(), $arrpost=array())
 {

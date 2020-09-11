@@ -9,9 +9,11 @@ use App\Order;
 use App\User;
 use App\WalletHistory;
 use App\Config;
+use App\Address;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\OrderResource;
+use App\Http\Resources\CartResource;
 use App\Http\Resources\OrderDetailResource;
 use Validator;
 
@@ -97,11 +99,14 @@ class OrderController extends Controller
             if(!empty($user_id)) {
                 $Orderdata = Order::with('orderDetail.product')
                                     ->where('user_id',$user_id)->paginate($PAGINATION_VALUE);
+                $Address    = Address::_GetPrimaryAddressByUserID($user_id);
                 if($Orderdata->count()) {
                     $status         = 1;
                     $StatusCode     = 200;
                     $msg            = __('words.retrieved_successfully');
-                    $data           = OrderResource::collection($Orderdata);
+                    $data['address'] = $Address;
+                    $data['payment_method']     = "Wallete";
+                    $data['order']              = OrderResource::collection($Orderdata);
                 } else {
                     $StatusCode     = 204;
                     $status         = 0;
@@ -296,8 +301,6 @@ class OrderController extends Controller
         return response($arrReturn,$StatusCode);
     }
 
-
-
     public function listoftimeslot(Request $request)
     {
         $StatusCode     = 200;
@@ -314,4 +317,68 @@ class OrderController extends Controller
         return response($arrReturn,$StatusCode);
     }
 
+
+    public function repeatorder(Request $request)
+    {
+        $StatusCode     = 403;
+        $status         = 0;
+        $msg            = "";
+        $data           = array();
+        $RegisterData = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+        ]);
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $PAGINATION_VALUE = env('PAGINATION_VALUE');
+            $order_id    = $request->get('id');
+            if(!empty($order_id)) {
+                $Orderdata = Order::with('orderDetail')->where('id',$order_id)->first();
+                if($Orderdata) {
+                    $OrderdataArr = $Orderdata->toArray();
+                    $user_id = $Orderdata['user_id'];
+                    foreach ($OrderdataArr['order_detail'] as $K => $V) {
+                        $arrOrderDetails = array();
+                        $arrOrderDetails['user_id']     = $Orderdata['user_id'];
+                        $arrOrderDetails['product_id']  = $V['product_id'];
+                        $arrOrderDetails['quantity']    = $V['quantity'];
+                        $arrOrderDetails['price']       = $V['price'];
+                        CartDetail::create($arrOrderDetails);
+                    }
+                    $status         = 1;
+                    $StatusCode     = 200;
+                    $msg            = __('words.repeat_order');
+                    $data           = array();
+                    // if(!empty($user_id)) {
+                    //     $gst_charge         = 0;
+                    //     $delivery_charge    = 0;
+                    //     $gst_charge         = (int)Config::GetConfigurationList(Config::$GST_CHARGE);
+                    //     $delivery_charge    = (int)Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
+                    //     $cartdata   = CartDetail::with('product')->where('user_id',$user_id)->get();
+                    //     $Address    = Address::_GetPrimaryAddressByUserID($user_id);
+                    //     if($cartdata->count()) {
+                    //         $data['gst_charge'] = $gst_charge;
+                    //         $data['delivery_charge'] = $delivery_charge;
+                    //         $data['address'] = $Address;
+                    //         $data['cart_data'] = CartResource::collection($cartdata);
+                    //     }
+                    // }
+                } else {
+                    $StatusCode     = 204;
+                    $status         = 0;
+                    $msg            = __('words.no_data_available');
+                }
+            }
+        }
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
+        $StatusCode = 200;
+        return response($arrReturn,$StatusCode);
+    }
 }

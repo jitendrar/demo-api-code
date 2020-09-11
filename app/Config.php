@@ -13,6 +13,11 @@ class Config extends Model
 	public static $DELIVERY_CHARGE = 1;
 
     public static $GST_CHARGE = 2;
+    
+    public static $ABOUT_US = 3;
+
+    public static $CONTACT_US = 4;
+
 
     public static function GetConfigurationList($id)
     {
@@ -20,7 +25,11 @@ class Config extends Model
         if(!empty($id)) {
             $arr_Config = Config::where("id",$id)->first();
             if($arr_Config){
-                return $arr_Config->value;
+                if(_IsJsonOrNot($arr_Config->value)) {
+                    return json_decode($arr_Config->value);
+                } else {
+                    return $arr_Config->value;
+                }
             }
         }
         return $arr_Config;
