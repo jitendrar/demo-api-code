@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\OrderDetailResource;
+use App\Http\Resources\AddressResource;
 class OrderResource extends JsonResource
 {
     /**
@@ -28,8 +29,10 @@ class OrderResource extends JsonResource
                 'actual_delivery_date' => $this->actual_delivery_date,
                 'actual_delivery_time' => $this->actual_delivery_time,
                 'order_status' => _GetOrderStatus($this->order_status),
+                'payment_method' => $this->payment_method,
                 'created_at' => strtotime($this->created_at),
                 'updated_at' => strtotime($this->updated_at),
+                'address' => new AddressResource($this->address),
                 'order_detail' => OrderDetailResource::collection($this->orderDetail),
         ];
 

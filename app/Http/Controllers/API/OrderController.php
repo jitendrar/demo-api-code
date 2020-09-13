@@ -97,16 +97,21 @@ class OrderController extends Controller
             $PAGINATION_VALUE = env('PAGINATION_VALUE');
             $user_id    = $request->get('user_id');
             if(!empty($user_id)) {
-                $Orderdata = Order::with('orderDetail.product')
+                $Orderdata = Order::with('address', 'orderDetail.product')
                                     ->where('user_id',$user_id)->paginate($PAGINATION_VALUE);
-                $Address    = Address::_GetPrimaryAddressByUserID($user_id);
+                // $Address    = Address::_GetPrimaryAddressByUserID($user_id);
                 if($Orderdata->count()) {
                     $status         = 1;
                     $StatusCode     = 200;
                     $msg            = __('words.retrieved_successfully');
-                    $data['address'] = $Address;
-                    $data['payment_method']     = "Wallete";
-                    $data['order']              = OrderResource::collection($Orderdata);
+                    // $data['address'] = $Address;
+                    // $data['payment_method']     = "Wallete";
+                    // $data              = OrderResource::collection($Orderdata);
+                    foreach ($Orderdata as $K => $V) {
+                        $Orderdata[$K]->delivery_date = date("Y-m-d", strtotime($V->delivery_date));
+                        $Orderdata[$K]->order_status = _GetOrderStatus($V->order_status);
+                    }
+                    $data              = $Orderdata;
                 } else {
                     $StatusCode     = 204;
                     $status         = 0;
@@ -148,6 +153,7 @@ class OrderController extends Controller
             $special_information    = $request->get('special_information');
             $delivery_date          = $request->get('delivery_date');
             $delivery_time          = $request->get('delivery_time');
+            $payment_method         = $request->get('payment_method');
             $delivery_charge        = 0;
             $delivery_charge        = Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
 
@@ -170,6 +176,7 @@ class OrderController extends Controller
                         $ArrOrder['special_information']    = $special_information;
                         $ArrOrder['order_status']           = Order::$ORDER_STATUS_PENDING;
                         $ArrOrder['total_price']            = $totalOrderPrice;
+                        $ArrOrder['payment_method']         = $payment_method;
                         $OrderCreate = Order::create($ArrOrder);
                         if($OrderCreate) {
                             $order_id       = $OrderCreate->id;
