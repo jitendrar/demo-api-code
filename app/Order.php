@@ -20,4 +20,9 @@ class Order extends Model
 	{
 		return $this->hasMany('App\OrderDetail');
 	}
+
+	public function address() {
+		return $this->belongsTo('App\Address');
+	}
+	
 }

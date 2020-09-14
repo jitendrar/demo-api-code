@@ -35,13 +35,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public static function _SendOtp($user_id =0) {
+    public static function _SendOtp($user_id =0, $ChangePhone=0) {
         if(!empty($user_id)) {
             $users = User::where('id',$user_id)->first();
             if($users) {
                 $users_id       = $users->id;
                 $first_name     = $users->first_name;
                 $users_phone    = $users->phone;
+                if($ChangePhone == 1) {
+                    $users_phone    = $users->new_phone;
+                }
                 $phone_otp      = 906712;
                 $length = 6;
                 $x = time();
@@ -64,14 +67,14 @@ class User extends Authenticatable
                     $reArr = array('status' => 1);
                     return $reArr;
                 } else {
-                    $reArr = array('status' => 0, 'msg' => 'OTP was not send. Please try again.');
+                    $reArr = array('status' => 0, 'msg' => __('words.otp_not_sent'));
                     return $reArr;
                 }
             } else {
-                $reArr = array('status' => 0, 'msg' => 'User not found.');
+                $reArr = array('status' => 0, 'msg' => __('words.user_not_found'));
             }
         }
-        $reArr = array('status' => 0, 'msg' => 'User not found.');
+        $reArr = array('status' => 0, 'msg' => __('words.user_not_found'));
         return $reArr;
     }
 }

@@ -11,6 +11,10 @@ use Validator;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->language  = \Request::header('language');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -71,14 +75,14 @@ class ProductController extends Controller
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the Product.';
+        $msg            = __('words.no_data_available');
         $data           = array();
         if(!empty($productsid)) {
             $products = Product::where('id',$productsid)->first();
             if($products) {
                 $StatusCode     = 200;
                 $status         = 1;
-                $msg            = 'Retrieved successfully';
+                $msg            = __('words.retrieved_successfully');
                 $data           = new ProductResource($products);
             }
         }
@@ -93,11 +97,12 @@ class ProductController extends Controller
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
-        $msg            = 'The requested can not find the Product.';
+        $msg            = __('words.no_data_available');
         $data           = array();
 
         $RegisterData = Validator::make($request->all(), [
             'category_id' => 'required|numeric',
+            'user_id' => 'required|numeric',
         ]);
         if ($RegisterData->fails()) {
             $messages = $RegisterData->messages();
@@ -110,19 +115,37 @@ class ProductController extends Controller
             }
         } else {
             $PAGINATION_VALUE = env('PAGINATION_VALUE');
+            $PAGINATION_VALUE = 10;
             $requestData = $request->all();
             $category_id = $requestData['category_id'];
+            $user_id     = $requestData['user_id'];
             $ArrProductID  = ProductMapping::_GetProductByCategoryID($category_id);
             if(!empty($ArrProductID)) {
+                // \DB::enableQueryLog();
                 $STATUS_ACTIVE = Product::$STATUS_ACTIVE;
-                $products = Product::where('status',$STATUS_ACTIVE)
-                                        ->whereIn('id',$ArrProductID)
-                                        ->paginate($PAGINATION_VALUE);
+                $products = Product::leftJoin('cart_details', function($join) use ($user_id)
+                {
+                    $join->on('cart_details.product_id', '=', 'products.id');
+                    $join->where('cart_details.user_id', '=', $user_id);
+                })
+                ->where('products.status',$STATUS_ACTIVE)
+                ->whereIn('products.id',$ArrProductID)
+                ->selectRaw('products.*, IF(cart_details.id, 1, 0) AS isAvailableInCart')
+                ->paginate($PAGINATION_VALUE);
+                // prd(\DB::getQueryLog());
+                // prd($products->toArray());
+                // $products = Product::where('status',$STATUS_ACTIVE)
+                //                         ->whereIn('id',$ArrProductID)
+                //                         ->paginate($PAGINATION_VALUE);
                 if($products->count()) {
                     $status         = 1;
                     $StatusCode     = 200;
-                    $msg            = 'Retrieved successfully';
-                    $data           = $products;
+                    $msg            = __('words.retrieved_successfully');
+                    foreach ($products as $K => $V) {
+                        $products[$K]   = new ProductResource($V);
+                    }
+                    $data   = $products;
+                    // $data   = ProductResource::collection($products);
                 }
             }
             // if($requestData['category_id'] == 1) {

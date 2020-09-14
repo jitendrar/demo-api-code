@@ -18,7 +18,10 @@ class AddressResource extends JsonResource
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
-            'address' => $this->address,
+            'address_line_1' => $this->address_line_1,
+            'address_line_2' => $this->address_line_2,
+            'city' => $this->city,
+            'zipcode' => $this->zipcode,
             'primary_address' => $this->primary_address,
             'status' => _GetStatusName($this->status),
             'created_at' => date($API_DATE_FORMAT,strtotime($this->created_at)),

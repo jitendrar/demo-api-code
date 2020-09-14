@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\Formatter\LineFormatter;
 
 class LogRequest
 {
@@ -20,8 +21,14 @@ class LogRequest
     public function handle($request, \Closure $next)
     {
         
+        $output = "[%datetime%] : %message% \n";
+        $formatter = new LineFormatter($output);
+        $streamHandler = new StreamHandler(storage_path('logs/RQ_LOG-'.date('Y-m-d').'.log'));
+        $streamHandler->setFormatter($formatter);
         $this->Log = new Logger('RQ_LOG');
-        $this->Log->pushHandler(new StreamHandler(storage_path('logs/RQ_LOG-'.date('Y-m-d').'.log')));
+        $this->Log->pushHandler($streamHandler);
+        // $this->Log = new Logger('RQ_LOG');
+        // $this->Log->pushHandler(new StreamHandler(storage_path('logs/RQ_LOG-'.date('Y-m-d').'.log')));
         $ip=$request->ip();
         $url=$request->fullUrl();
         $method = $request->method();

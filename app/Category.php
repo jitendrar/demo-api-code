@@ -3,15 +3,28 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use Astrotomic\Translatable\Translatable;
 
-class Category extends Model
+
+class Category extends Model implements TranslatableContract
 {
+
+	use Translatable;
+	
+	public $translatedAttributes = ['category_name', 'description'];
+
+	protected $table = 'categories';
+
+	protected $guarded = [];
+
     public static function getCategory($id)
     {
         $category = Category::find($id);
 
         return ($category)?$category->category_name :'';
     }
+    
     public static function getAttachment($cat_id = 0)
     {
         $img = '';
@@ -31,3 +44,4 @@ class Category extends Model
         return $img;
     }
 }
+
