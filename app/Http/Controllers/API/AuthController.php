@@ -427,8 +427,7 @@ class AuthController extends Controller
         $msg        = __('words.retrieved_successfully');
         $accessToken = "";
         $data = array();
-        $GET_VERSION = Config::GetConfigurationList(Config::$GET_VERSION);
-        $data['version'] = $GET_VERSION;
+        $data = Config::GetConfigurationList(Config::$GET_VERSION);
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
         $StatusCode = 200;
         return response($arrReturn, $StatusCode);
