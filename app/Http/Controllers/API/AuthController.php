@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
 use App\DeviceInfo;
+use App\Config;
 use Validator;
 use App\Http\Resources\UserResource;
 
@@ -381,7 +382,7 @@ class AuthController extends Controller
     }
 
 
-        public function logout(Request $request)
+    public function logout(Request $request)
     {
         $StatusCode = 401;
         $status = 0;
@@ -414,6 +415,21 @@ class AuthController extends Controller
             }
         }
         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        $StatusCode = 200;
+        return response($arrReturn, $StatusCode);
+    }
+
+    public function getversion(Request $request)
+    {
+        
+        $StatusCode = 200;
+        $status     = 1;
+        $msg        = __('words.retrieved_successfully');
+        $accessToken = "";
+        $data = array();
+        $GET_VERSION = Config::GetConfigurationList(Config::$GET_VERSION);
+        $data['version'] = $GET_VERSION;
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
         $StatusCode = 200;
         return response($arrReturn, $StatusCode);
     }

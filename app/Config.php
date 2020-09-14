@@ -10,13 +10,15 @@ class Config extends Model
 
 	protected $guarded = [];
 
-	public static $DELIVERY_CHARGE = 1;
+    public static $GET_VERSION = 1;
 
-    public static $GST_CHARGE = 2;
-    
-    public static $ABOUT_US = 3;
+	public static $DELIVERY_CHARGE = 2;
 
-    public static $CONTACT_US = 4;
+    public static $GST_CHARGE = 3;
+
+    public static $ABOUT_US = 4;
+
+    public static $CONTACT_US = 5;
 
 
     public static function GetConfigurationList($id)

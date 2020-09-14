@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['api_language_switcher']], function(){
 
+	Route::get('version', 'API\AuthController@getversion');
+
 	Route::post('register', 'API\AuthController@register');
 	Route::post('login', 'API\AuthController@login');
 	Route::post('userverify', 'API\AuthController@userverifyotp');

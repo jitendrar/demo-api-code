@@ -13,6 +13,7 @@ use App\Address;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\OrderResource;
+use App\Http\Resources\OrderCollection;
 use App\Http\Resources\CartResource;
 use App\Http\Resources\OrderDetailResource;
 use Validator;
@@ -120,11 +121,12 @@ class OrderController extends Controller
                     // $data['address'] = $Address;
                     // $data['payment_method']     = "Wallete";
                     // $data              = OrderResource::collection($Orderdata);
-                    foreach ($Orderdata as $K => $V) {
-                        $Orderdata[$K]->delivery_date = date("Y-m-d", strtotime($V->delivery_date));
-                        $Orderdata[$K]->order_status = _GetOrderStatus($V->order_status);
-                    }
-                    $data              = $Orderdata;
+                    // foreach ($Orderdata as $K => $V) {
+                    //     $Orderdata[$K]->delivery_date = date("Y-m-d", strtotime($V->delivery_date));
+                    //     $Orderdata[$K]->order_status = _GetOrderStatus($V->order_status);
+                    // }
+                    // $data              = $Orderdata;
+                    $data              = new OrderCollection($Orderdata);
                 } else {
                     $StatusCode     = 204;
                     $status         = 0;
