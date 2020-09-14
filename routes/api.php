@@ -42,6 +42,7 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 		Route::post('listcart', 'API\CartDetailController@listcartitem');
 		Route::post('createorder', 'API\OrderController@createorder');
 		Route::post('getorder', 'API\OrderController@getorderbyuser');
+		Route::apiResource('order', 'API\OrderController');
 		Route::post('transactionhistory', 'API\OrderController@transactionwallethistory');
 		Route::post('mywalletbalance', 'API\OrderController@mywalletbalance');
 		Route::post('repeatorder', 'API\OrderController@repeatorder');

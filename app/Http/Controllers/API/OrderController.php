@@ -47,9 +47,22 @@ class OrderController extends Controller
      * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function show($address_id=0)
+    public function show(Order $order)
     {
-        //
+        $StatusCode     = 204;
+        $status         = 0;
+        $ArrReturn      = array();
+        $msg            = __('words.no_data_available');
+        $data           = array();
+        if($order) {
+            $status         = 1;
+            $StatusCode     = 200;
+            $msg            = __('words.retrieved_successfully');
+            $data      = new OrderResource($order);
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
+        return response($ArrReturn, $StatusCode);
     }
 
     /**
@@ -59,7 +72,7 @@ class OrderController extends Controller
      * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Address $address)
+    public function update(Request $request)
     {
         //
     }
@@ -70,7 +83,7 @@ class OrderController extends Controller
      * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Address $address)
+    public function destroy()
     {
         //
     }
