@@ -69,7 +69,7 @@
             columns: [
                 {data: 'id', name: 'id'},
                 {data: 'picture', name: 'picture'},
-                { data: 'category_name', name: 'category_name'},
+                { data: 'category_name', name: 'id'},
                 { data: 'status', name: 'status' },
                 { data: 'action', orderable: false, searchable: false},
             ]

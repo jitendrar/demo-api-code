@@ -81,18 +81,30 @@ class OrdersController extends Controller
 
     public function destroy($id)
     {
-        //
+        $modelObj = $this->modelObj->find($id);
+        if($modelObj) 
+        {
+            $modelObj->order_status = 'delete';
+            $modelObj->save();
+            session()->flash('success_message', $this->deleteMsg);
+            return redirect($this->list_url);
+        }else 
+        {
+            session()->flash('error_message','Record Does Not Exists');
+            return redirect($this->list_url);
+        }
+
     }
     public function Data(Request $request)
     {
         $authUser = \Auth::User();
-        $modal = Order::select('orders.*','users.first_name','addresses.address','order_details.quantity','products.product_name')
+        $modal = Order::select('orders.*','users.first_name','addresses.address_line_1','order_details.quantity','product_translations.product_name')
             ->leftJoin('order_details','orders.id','=','order_details.order_id')
             ->leftJoin('products','order_details.product_id','=','products.id')
+            ->leftJoin('product_translations','products.id','=','product_translations.product_id')
             ->leftJoin('users','orders.user_id','=','users.id')
-            ->leftJoin('addresses','users.id','=','addresses.user_id');
-            //->where('orders.order_status','!=','Delivered');
-            //->where(\DB::raw("DATE_FORMAT(orders.created_at, '%Y-%m-%d')"),'>=',date('Y-m-d'));
+            ->leftJoin('addresses','users.id','=','addresses.user_id')
+            ->where('product_translations.locale','en');
         $modal = $modal->orderBy('orders.created_at');
         return \DataTables::eloquent($modal)
         ->editColumn('delivery_date', function($row) {
@@ -113,6 +125,8 @@ class OrdersController extends Controller
                     return '<span class="label label-sm label-success">Delivered</sapn>';
                 else if($crrSts == 'Pending') 
                     return '<span class="label label-sm label-primary">Pending</sapn>';
+                else if($crrSts == 'delete') 
+                    return '<span class="label label-sm label-danger">Delete</sapn>';
                 else
                     return '';
         })
@@ -154,7 +168,7 @@ class OrdersController extends Controller
                 }    
                 if(!empty($search_pnm))
                 {
-                    $query = $query->where("products.product_name", 'LIKE', '%'.$search_pnm.'%');
+                    $query = $query->where("product_translations.product_name", 'LIKE', '%'.$search_pnm.'%');
                     $searchData['search_pnm'] = $search_pnm;
                 } 
                 if(!empty($search_oid))

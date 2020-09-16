@@ -17,7 +17,13 @@
  <div class="container">
     <div class="page-content-inner">
         <div class="profile-sidebar">
-            <div class="portlet light profile-sidebar-portlet ">
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption">
+                        Profile Image
+                    </div>
+                </div>
+            <div class="portlet-body profile-sidebar-portlet">
                 <div class="profile-userpic">
                     <img src="{{ asset('images/default-medium.png') }}" class="img-responsive" alt="image">
                 </div>
@@ -32,6 +38,7 @@
                 <div class="profile-usermenu">
                 </div>
             </div>
+            </div>
         </div>
         <div class="profile-content">
             <div class="row">
@@ -40,7 +47,7 @@
                         <div class="portlet-title tabbable-line">
                             <div class="caption caption-md">
                                 <i class="icon-globe theme-font hide"></i>
-                                <span class="caption-subject font-blue-madison bold uppercase">Account</span>
+                                <span class="caption bold uppercase">Account</span>
                             </div>
                             <ul class="nav nav-tabs">
                                 <li class="active">
@@ -74,7 +81,7 @@
                                         
                                         <div class="margiv-top-10" align="center">
                                             <button type="submit" name="" class="btn green" id="formSubmit"><i class="icon-ok icon-white"></i> {{ $buttonText }}</button>
-                                            <a href="{{ route('admin-dashboard') }}" class="btn red"><i class="icon-remove icon-white"></i> cancel </a>
+                                            <a href="{{ route('admin-dashboard') }}" class="btn default"><i class="icon-remove icon-white"></i> cancel </a>
                                         </div>
                                     {!! Form::close() !!}
                                 </div>
@@ -92,7 +99,7 @@
                                         <div>&nbsp;</div><hr/>
                                         <div class="margin-top-10" align="center">
                                             <button type="submit" name="" class="btn green" id="formSubmit2"><i class="icon-ok icon-white"></i> {{ $buttonText }}</button>
-                                            <a href="{{ route('admin-dashboard') }}" class="btn red"><i class="icon-remove icon-white"></i>cancel</a>
+                                            <a href="{{ route('admin-dashboard') }}" class="btn default"><i class="icon-remove icon-white"></i>cancel</a>
                                         </div>
                                     {!! Form::close() !!}
                                 </div>
@@ -114,7 +121,7 @@
                                         <hr/>
                                         <div class="form-actions" align="center">
                                             <button type="submit" name="" class="btn green" id="formSubmit3"><i class="icon-ok icon-white"></i> {{ $buttonText }}</button>
-                                            <a href="{{ route('admin-dashboard') }}" class="btn red"><i class="icon-remove icon-white"></i>cancel </a>
+                                            <a href="{{ route('admin-dashboard') }}" class="btn default"><i class="icon-remove icon-white"></i>cancel </a>
                                         </div>
                                     {!! Form::close() !!}
                                 </div>

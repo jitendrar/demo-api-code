@@ -25,7 +25,6 @@
                             <th align="left">Address</th>
                             <th align="left" width="5%">Total Price</th>
                             <th align="left" width="5%">Delivery Charge</th>
-                            <!-- <th width="3%">Delivery Date</th> -->
                             <th width="3%">Quantity</th>
                             <th width="3%">status</th>
                             <th align="left" width="20%">Action</th>
@@ -41,8 +40,6 @@
 @endsection
 
 @section('scripts')
-
-
 <script type="text/javascript">
      $(document).ready(function(){
             
@@ -78,11 +75,10 @@
                 {data: 'id', name: 'id'},
                 {data: 'order_number', name: 'order_number'},
                 { data: 'first_name', name: 'users.first_name'},
-                { data: 'product_name', name: 'products.product_name'},
-                { data: 'address' , name: 'addresses.address'},
+                { data: 'product_name', name: 'product_translations.product_name'},
+                { data: 'address_line_1' , name: 'addresses.address_line_1'},
                 { data: 'total_price' , name: 'total_price'},
                 { data: 'delivery_charge' , name: 'delivery_charge'},
-                /*{ data: 'delivery_date' , name: 'delivery_date'},*/
                 { data: 'quantity', name: 'order_details.quantity'},
                 { data: 'order_status', name: 'order_status'},
                 { data: 'action', orderable: false, searchable: false},

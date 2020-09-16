@@ -76,7 +76,7 @@
                 {data: 'id', name: 'id'},
                 {data: 'picture', name: 'picture'},
                 { data: 'product_name', name: 'product_name'},
-                { data: 'catName' , name: 'categories.name'},
+                { data: 'catName' , name: 'id'},
                 { data: 'units_in_stock' , name: 'units_in_stock'},
                 { data: 'units_stock_type' , name: 'units_stock_type'},
                 { data: 'unity_price' , name: 'unity_price'},

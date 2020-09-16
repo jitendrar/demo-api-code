@@ -31,7 +31,6 @@ Route::group(['middleware' => 'admin_auth'], function(){
 	//products list
 	Route::any('products/data','Admin\ProductsController@data')->name('products.data');
 	Route::resource('products','Admin\ProductsController');
-	Route::any('products/store','Admin\ProductsController@storeMedia')->name('products.storeMedia');
 	Route::any('products/deleteImage/{id}','Admin\ProductsController@deleteImage')->name('products.deleteImage');
 	//category  list
 	Route::any('categories/data','Admin\CategoryController@data')->name('categories.data');

@@ -29,7 +29,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Address:</label>
                         <div class="col-sm-9">
-                            <p> {{ $address->address }}</p>
+                            <p> {{ $address->address_line_1 }}</p>
                         </div>
                     </div>
                     @endif

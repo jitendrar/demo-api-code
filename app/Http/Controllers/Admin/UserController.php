@@ -43,8 +43,6 @@ class UserController extends Controller
         $data['add_url'] = route($this->moduleRouteText.'.create');
         $data['addBtnName'] = $this->module;
         $data['btnAdd'] = 1;
-
-
         return view($this->moduleViewName.'.index', $data);
     }
 
@@ -101,7 +99,12 @@ class UserController extends Controller
         {
             $first_name = $request->get('first_name');
             $last_name = $request->get('last_name');
-            $address = trim($request->get('address'));
+            $address_line_1 = trim($request->get('address_line_1'));
+            $address_line_2 = trim($request->get('address_line_2'));
+            $city = trim($request->get('city'));
+            $zipcode = trim($request->get('zipcode'));
+            $address_status = trim($request->get('address_status'));
+            $prim_address = trim($request->get('prim_address'));
             $phone = $request->get('phone');
             $balance = $request->get('balance');
             $password = $request->get('password');
@@ -117,9 +120,13 @@ class UserController extends Controller
             $model->save();
             $obj = new Address();
             $obj->primary_address = 1;
-            $obj->address = $address;
+            $obj->address_line_1 = $address_line_1;
+            $obj->address_line_2 = $address_line_2;
+            $obj->city = $city;
+            $obj->zipcode = $zipcode;
+            $obj->primary_address = $prim_address;
+            $obj->status = $address_status;
             $obj->user_id =$model->id;
-            $obj->status =1;
             $obj->save();
         }
         return ['status' => $status, 'msg' => $msg, 'data' => $data];
@@ -136,7 +143,6 @@ class UserController extends Controller
         }
         $data['user'] = $userObj;
         $data["address"] = Address::where('user_id',$userObj->id)->first();
-
         return view($this->moduleViewName.'.show', $data);
     }
 
@@ -158,7 +164,7 @@ class UserController extends Controller
         $data['action_params'] = $formObj->id;
         $data['method'] = "PUT";
         $data["authUser"] = \Auth::user();
-        $data['address'] = Address::getAddress($formObj->id);
+        $data['address'] = Address::where('user_id',$formObj->id)->first();
         $data["isEdit"] = 1;
         return view($this->moduleViewName.'.add', $data);
     }
@@ -202,7 +208,12 @@ class UserController extends Controller
         {
             $first_name = $request->get('first_name');
             $last_name = $request->get('last_name');
-            $address = trim($request->get('address'));
+            $address_line_1 = trim($request->get('address_line_1'));
+            $address_line_2 = trim($request->get('address_line_2'));
+            $city = trim($request->get('city'));
+            $zipcode = trim($request->get('zipcode'));
+            $address_status = trim($request->get('address_status'));
+            $prim_address = trim($request->get('prim_address'));
             $phone = $request->get('phone');
             $balance = $request->get('balance');
             $addBalance = $request->get('add_balance');
@@ -223,7 +234,22 @@ class UserController extends Controller
             $model->save();
             $obj = Address::where('user_id',$model->id)->first();
             if($obj){
-                $obj->address = $address;
+                $obj->address_line_1 = $address_line_1;
+                $obj->address_line_2 = $address_line_2;
+                $obj->city = $city;
+                $obj->zipcode = $zipcode;
+                $obj->status = $address_status;
+                $obj->primary_address = $prim_address;
+                $obj->save();
+            }else{
+                $obj = new Address();
+                $obj->address_line_1 = $address_line_1;
+                $obj->address_line_2 = $address_line_2;
+                $obj->city = $city;
+                $obj->zipcode = $zipcode;
+                $obj->status = $address_status;
+                $obj->primary_address = $prim_address;
+                $obj->user_id = $model->id;
                 $obj->save();
             }
         }
@@ -283,9 +309,7 @@ class UserController extends Controller
                 $search_fnm = request()->get("search_fnm");                                         
                 $search_lnm = request()->get("search_lnm");                                         
                 $search_status = request()->get("search_status");
-
                 $searchData = array();
-
 
                 if(!empty($search_id))
                 {

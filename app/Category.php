@@ -22,9 +22,11 @@ class Category extends Model implements TranslatableContract
     {
         $category = Category::find($id);
 
-        return ($category)?$category->category_name :'';
+        return ($category)?$category->category_name :'-';
     }
-    
+    public function categories(){
+        return $this->hasMany(categoryTranslation::class, 'category_id');
+    } 
     public static function getAttachment($cat_id = 0)
     {
         $img = '';
@@ -42,6 +44,12 @@ class Category extends Model implements TranslatableContract
             }
         }
         return $img;
+    }
+    public static function categoryList(){
+        return Category::where('status', 1)->leftJoin('category_translations','categories.id','=','category_translations.category_id')
+            ->orderBy('category_translations.category_name', 'desc')
+            ->pluck('category_translations.category_name', 'category_translations.category_id')
+            ->all();
     }
 }
 

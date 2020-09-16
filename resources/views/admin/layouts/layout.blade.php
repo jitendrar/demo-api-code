@@ -28,7 +28,6 @@
         <link href="{{ asset('themes/admin/assets/layouts/layout3/css/themes/default.min.css') }}" rel="stylesheet" type="text/css" id="style_color" />
         <link href="{{ asset('themes/admin/assets/layouts/layout3/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="favicon.ico" />
         @yield('styles')
 
     </head>
@@ -71,7 +70,7 @@
         {!! Form::hidden('id', 0,['id' => 'delete_id']) !!}
         {!! Form::close() !!}
         <script type="text/javascript">
-            var deleteConfirmMSG = "Are You sure Delete!";
+                        var deleteConfirmMSG = "Are You sure Delete!";
                         var http_host_js = '{{ url("/") }}'; 
                         var http_toggleChange_js = '{{ route("change-toggle") }}';
                         var internalServerERR = 'Internal server error!';

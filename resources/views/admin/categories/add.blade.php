@@ -35,6 +35,48 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                </div>
+                @foreach($languages as $lng => $val)
+                <?php 
+                    $title = null;
+                    $description = null;
+                    if(isset($formObj->id) && !empty($formObj->id)){
+                         $title = $formObj->translate($val)->category_name;
+                         $description = $formObj->translate($val)->description;
+                     }
+                ?>
+                <div class="clearfix">&nbsp;</div>
+                <div class="note note-info">
+                    <div class="row">
+                        <div class="col-md-10" style="padding-left: 30px; height: 14px;">
+                            <h4>For {{ $val }}</h4>
+                        </div>   
+                    </div>
+                </div>
+                <div class="clearfix">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="" class=" col-md-3 control-label">Category Name [{{ $val }}]:
+                             </label>
+                            <div class="col-md-9">
+                            {!! Form::text('category_name['.$lng.'][]',$title,['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                        <label for="" class="col-md-3 control-label"> Description [{{ $val }}]
+                        </label>
+                        <div class="col-md-6">
+                            {!! Form::textarea('description['.$lng.'][]',$description,['class' => 'form-control ckeditor']) !!}
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+                <!-- <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="col-md-3 control-label">Category Name:<span class="required">*</span></label>
@@ -52,7 +94,8 @@
                                  {!! Form::textarea('description',null,['class'=>'form-control cleditor','placeholder'=>'description','required'=>'required','cols' =>20,'rows' =>4,'id'=>'cleditor']) !!}
                             </div>
                         </div>
-                    </div>
+                    </div> -->
+                <div class="row"sss>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="col-md-3 control-label">Status:<span class="required">*</span></label>

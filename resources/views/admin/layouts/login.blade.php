@@ -26,9 +26,6 @@
         <!-- END THEME GLOBAL STYLES -->
         <!-- BEGIN PAGE LEVEL STYLES -->
         <link href="{{ asset("themes/admin/")}}/assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
-
-<!--         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('/') }}/css/target-admin2.css" />
- -->        <!-- END PAGE LEVEL STYLES -->
         <!-- BEGIN THEME LAYOUT STYLES -->
         <!-- END THEME LAYOUT STYLES -->
         </head>
@@ -49,7 +46,7 @@
             </div>
         </div>        
         <!-- BEGIN CORE PLUGINS -->
-        <script type="text/javascript"><
+        <script type="text/javascript">
                     var http_host_js = '{{ url("/") }}'; </script>
         <script src="{{ asset("themes/admin/")}}/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
         <script src="{{ asset("themes/admin/")}}/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
@@ -63,19 +60,11 @@
         <script src="{{ asset("themes/admin/")}}/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
         <script src="{{ asset("themes/admin/")}}/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
         <script src="{{ asset("themes/admin/")}}/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
-
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
         <script src="{{ asset("themes/admin/")}}/assets/global/scripts/app.min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
-
         <script src="{{ asset('js/jquery.bootstrap-growl.min.js') }}" type="text/javascript"></script>
-
-
-        <!-- <script type="text/javascript" src="{{ asset('/') }}/js/parsley.js"></script>
-
-        <script type="text/javascript" src="{{ asset('/') }}/js/comman.js"></script> -->
-
         @yield('scripts')
 
     </body>

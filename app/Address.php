@@ -13,7 +13,7 @@ class Address extends Model
 	public static function getAddress($id)
     {
         $address = Address::where('user_id',$id)->first();
-        return ($address)?$address->address :'';
+        return ($address)?$address->address_line_1 :'';
     }
 
 	public static function _GetPrimaryAddressByUserID($user_id=0) {

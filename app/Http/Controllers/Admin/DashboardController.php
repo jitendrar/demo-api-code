@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use Validator;
 use App\User;
+use App\Product;
+use App\Category;
 use App\Order;
 
 class DashboardController extends Controller
@@ -25,9 +26,12 @@ class DashboardController extends Controller
             ->where(\DB::raw("DATE_FORMAT(orders.created_at, '%Y-%m-%d')"),'=',date('Y-m-d'))->count();
         $data['total_today_orders'] = $order;
         $data['total_orders'] = Order::count();
+        $data['totalProducts'] = Product::where('status',1)->count();
+        $data['totalCategories'] = Category::where('status',1)->count();
+        $data['total_inactive_products'] = Product::where('status',0)->count();
         return view('admin.dashboard',$data);
     }
-      public function myProfile()
+    public function myProfile()
     {
         $authUser = \Auth::user();
         $formObj = User::find($authUser->id);
@@ -50,7 +54,7 @@ class DashboardController extends Controller
         $data["authUser"] = $authUser;
         return view('admin.profile', $data);
     }
-      public function updateProfile(Request $request)
+    public function updateProfile(Request $request)
     {
         $authUser = \Auth::user();
         $model = User::find($authUser->id);
@@ -163,7 +167,7 @@ class DashboardController extends Controller
     public function orderData(Request $request)
     {
         $authUser = \Auth::User();
-        $modal = Order::select('orders.user_id','orders.id','orders.total_price','users.first_name as userName','orders.created_at','addresses.address')
+        $modal = Order::select('orders.user_id','orders.id','orders.total_price','users.first_name as userName','orders.created_at','addresses.address_line_1')
             ->leftJoin('users','orders.user_id','=','users.id')
             ->leftJoin('addresses','users.id','=','addresses.user_id')
             ->where('orders.order_status','!=','Delivered')

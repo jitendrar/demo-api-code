@@ -51,4 +51,7 @@ class ProductsImages extends Model
         }
 	return url('/public/uploads/products/'.$this->src);
     }
+    public static function getProductImages($id){
+        return self::where('product_id',$id)->where('is_primary',0)->orderBy('id','desc')->get();
+    }
 }

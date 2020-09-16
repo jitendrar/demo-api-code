@@ -14,16 +14,19 @@
             <div class="portlet-body form form-bordered">
                 <form class="form-horizontal form-bordered">
                     <div class="form-group">
-                        <label class="col-md-2 control-label">Profile Picture:</label>
+                        <label class="col-md-2 control-label">Images:</label>
                         <div class="col-md-9">
                             <p><?php 
-                                if(!empty($productImg)){ ?>
-                                    <img src="{{ $productImg }}" width="200px" height="200px">
+                                if(!empty($primaryImg)){ ?>
+                                    <img src="{{ $primaryImg }}" width="200px" height="200px">
                                     <?php
                                 }else{ ?>
                                     <img src="{{ asset('images/coming_soon.png')}}">
                                 <?php }
-                                ?>
+                                ?> 
+                            @foreach($productImg as $img)
+                                <img src="{{ asset('uploads/products/'.$product->id.'/'.$img->src) }}" width="80px" height="80px">
+                            @endforeach
                             </p>
                         </div>
                     </div>

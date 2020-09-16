@@ -85,13 +85,6 @@ if($authUser)
                             <a href="{{ route('products.index')}}"> Products
                                 <span class="arrow"></span>
                             </a>
-                                <!-- <ul class="dropdown-menu pull-left">
-                                    <li aria-haspopup="true" class=" ">
-                                        <a href="{{ route('categories.index')}}" class="nav-link  ">
-                                            <i class="icon-bar-list"></i> Category
-                                        </a>
-                                    </li>
-                                </ul> -->
                             </li>
                         </ul>
                     </div>

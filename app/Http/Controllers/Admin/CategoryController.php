@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Category;
+use App\Custom;
 use DataTables;
 use Validator;
 
@@ -50,11 +51,12 @@ class CategoryController extends Controller
         $data['action_params'] = 0;
         $data['buttonText'] = "<i class='fa fa-check'></i>Add";
         $data["method"] = "POST";
+        $data['languages']= Custom::__masterLocals();
         $data["isEdit"] = 0;
 
         return view($this->moduleViewName.'.add', $data);
     }
-
+    
     public function store(Request $request)
     {
         $status = 1;
@@ -95,14 +97,28 @@ class CategoryController extends Controller
         else
         {
             $category_name = $request->get('category_name');
-            $description = trim($request->get('description'));
+            $description = $request->get('description');
             $avatar_id = $request->file('avatar_id');
             $status_val = $request->get('status');
             $model = $this->modelObj;
-            $model->category_name = $category_name;
-            $model->description = $description;
             $model->status = $status_val;
             $model->save();
+            $languages= Custom::__masterLocals();
+            foreach ($languages as $locale => $val)
+            { 
+                $obj = new \App\CategoryTranslation();
+                if(is_array($category_name) && !empty($category_name))
+                {
+                    $obj->category_name = $category_name[$locale][0];
+                }
+                if(is_array($description) && !empty($description))
+                {
+                    $obj->description = $description[$locale][0];
+                } 
+                $obj->locale = $val;
+                $obj->category_id = $model->id;
+                $obj->save();
+            }
             if(!empty($avatar_id))
             {
                 $destinationPath = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.$model->id;
@@ -150,6 +166,7 @@ class CategoryController extends Controller
         $data['action_params'] = $formObj->id;
         $data['method'] = "PUT";
         $data["isEdit"] = 1;
+        $data['languages']= Custom::__masterLocals();
         $data["catImg"] = Category::getAttachment($formObj->id);
 
         return view($this->moduleViewName.'.add', $data);
@@ -200,13 +217,26 @@ class CategoryController extends Controller
         else
         {
             $category_name = $request->get('category_name');
-            $description = trim($request->get('description'));
+            $description = $request->get('description');
             $avatar_id = $request->file('avatar_id');
             $status_val = $request->get('status');
-            $model->category_name = $category_name;
-            $model->description = $description;
             $model->status = $status_val;
             $model->save();
+            $languages= Custom::__masterLocals();
+            foreach ($languages as $locale => $val)
+            { 
+                $obj = \App\CategoryTranslation::where('locale',$val)->where('category_id',$model->id)->first();
+                if(is_array($category_name) && !empty($category_name))
+                {
+                    $obj->category_name = $category_name[$locale][0];
+                }
+                if(is_array($description) && !empty($description))
+                {
+                    $obj->description = $description[$locale][0];
+                } 
+                $obj->locale = $val;
+                $obj->save();
+            }
             if(!empty($avatar_id))
             {
                 $destinationPath = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.$model->id;
@@ -252,7 +282,7 @@ class CategoryController extends Controller
     }
     public function data(Request $request)
     {
-        $model = Category::query();
+        $model = Category::select('categories.*')->Join('category_translations','categories.id','=','category_translations.category_id')->where('locale','en');
         return DataTables::eloquent($model)
          ->editColumn('picture', function ($row) {
             $catImg = Category::getAttachment($row->id); 
@@ -268,6 +298,9 @@ class CategoryController extends Controller
                     return '<a class="btn btn-xs btn-success">Active</a>';                
                 else
                     return '<a class="btn btn-xs btn-danger">Inactive</a>';
+            })
+        ->editColumn('category_name', function($row) {
+              return Category::getCategory($row->id);
             })
         ->editColumn('action', function($row) {
             return view("admin.categories.action",
@@ -301,7 +334,7 @@ class CategoryController extends Controller
                 } 
                 if(!empty($search_cnm))
                 {
-                    $query = $query->where("categories.category_name", 'LIKE', '%'.$search_cnm.'%');
+                    $query = $query->where("category_translations.category_name", 'LIKE', '%'.$search_cnm.'%');
                     $searchData['search_cnm'] = $search_cnm;
                 }
                 if($search_status == "1" || $search_status == "0" )

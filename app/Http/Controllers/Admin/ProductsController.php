@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Order;
 use App\Product;
 use App\Category;
+use App\CategoryTranslation;
+use App\Custom;
 use App\ProductsImages;
 use DataTables;
 use Validator;
@@ -42,8 +44,7 @@ class ProductsController extends Controller
         $data['add_url'] = route($this->moduleRouteText.'.create');
         $data['addBtnName'] = $this->module;
         $data['btnAdd'] = 1;
-        $data['categories'] = Category::pluck('category_name','id')->all();
-
+        $data['categories'] = category::categoryList();
 
         return view($this->moduleViewName.'.index', $data);
     }
@@ -52,10 +53,6 @@ class ProductsController extends Controller
     {
         $authUser = \Auth::user();
         $data = array();
-        $categories = Category::where('status', 1)
-            ->orderBy('category_name', 'asc')
-            ->pluck('category_name', 'id')
-            ->all();
         $data['formObj'] = $this->modelObj;
         $data['module_title'] = $this->module;
         $data['action_url'] = $this->moduleRouteText.".store";
@@ -63,7 +60,8 @@ class ProductsController extends Controller
         $data['buttonText'] = "<i class='fa fa-check'></i>Add";
         $data["method"] = "POST";
         $data["authUser"] = $authUser;
-        $data["categories"] = $categories;
+        $data["categories"] = category::categoryList();
+        $data['languages'] = Custom::__masterLocals();
         $data['images'] = '';
         $data["isEdit"] = 0;
 
@@ -76,26 +74,13 @@ class ProductsController extends Controller
         $msg = $this->addMsg;
         $data = array();
         $authUser = \Auth::User();
-        
         $requestData = $request->all();
-         
-        $avatar_id = $request->file('avatar_id');
-        if($avatar_id){
-            $imgSize = $avatar_id->getSize();
-            if($imgSize > 4000000 || $imgSize == 0){
-                $msg = 'The image may not be greater than 4 MB';
-                return ['status' => 0, 'msg' => $msg, 'data' => $data];
-            }
-        }
-
         $validationArr =    [
                                 'product_name' => 'required',
-                                'description' => 'required',
                                 'units_stock_type' => 'required',
                                 'units_in_stock' => 'required',
                                 'unity_price' => 'required',
                                 'category_id' => 'required|exists:categories,id',
-                                'avatar_id' => 'image|max:4000',
                                 'status' => 'required',
                             ];
         $validator = Validator::make($requestData,$validationArr);
@@ -115,61 +100,80 @@ class ProductsController extends Controller
         else
         {
             $product_name = $request->get('product_name');
+            $description = $request->get('description');
             $units_stock_type = $request->get('units_stock_type');
-            $description = trim($request->get('description'));
             $units_in_stock = $request->get('units_in_stock');
-            $category_id = $request->get('category_id');
             $unity_price = $request->get('unity_price');
-            $avatar_id = $request->file('avatar_id');
+            $category_id = $request->get('category_id');
             $status_val = $request->get('status');
             $model = $this->modelObj;
-            $model->product_name = $product_name;
-            $model->units_stock_type   = $units_stock_type;
-            $model->description = $description;
-            $model->units_in_stock = $units_in_stock;
-            $model->category_id = $category_id;
-            $model->unity_price = $unity_price;
             $model->status = $status_val;
+            $model->category_id =$category_id;
             $model->save();
-            if(!empty($avatar_id))
-            {
-                $destinationPath = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.$model->id;
-                $image_name =$avatar_id->getClientOriginalName();
-                $extension =$avatar_id->getClientOriginalExtension();
-                $image_name=md5($image_name);
-                $product_image= $image_name.'.'.$extension;
-                $file =$avatar_id->move($destinationPath,$product_image);
-                $model->picture = $product_image;
-                $model->save();
+            $languages= Custom::__masterLocals();
+
+            foreach ($languages as $locale => $val)
+            { 
+                $obj = new \App\ProductTranslation();
+                if(is_array($product_name) && !empty($product_name))
+                {
+                    $obj->product_name = $product_name[$locale][0];
+                }
+                if(is_array($description) && !empty($description))
+                {
+                    $obj->description = $description[$locale][0];
+                } 
+                if(is_array($units_stock_type) && !empty($units_stock_type))
+                {
+                    $obj->units_stock_type = $units_stock_type[$locale][0];
+                } 
+                if(is_array($units_in_stock) && !empty($units_in_stock))
+                {
+                    $obj->units_in_stock = $units_in_stock[$locale][0];
+                }  
+                if(is_array($unity_price) && !empty($unity_price))
+                {
+                    $obj->unity_price = $unity_price[$locale][0];
+                }
+                $obj->locale = $val;
+                $obj->product_id = $model->id;
+                $obj->save();
             }
             $primary = $request->input('is_primary');
             if($request->file('multi_img')){
-                foreach($request->file('multi_img',[]) as $tempId => $val){
-                    $destinationPath = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.$model->id;
-                    $image_name =$val->getClientOriginalName();
-                    $extension =$val->getClientOriginalExtension();
-                    $image_name=md5($image_name);
-                    $product_image= $image_name.'.'.$extension;
-                    $file =$val->move($destinationPath,$product_image);
-                    $obj = new ProductsImages();
-                    if($tempId == $primary){
-                        $model->picture = $product_image;
-                        $obj->product_id = $model->id;
-                        $obj->src = $product_image;
-                        $obj->is_primary = 1;
-                        $obj->save();
+                if(!empty($primary)){
+                    foreach($request->file('multi_img',[]) as $tempId => $val){
+                        $imgSize = $val->getSize();
+                        if($imgSize > 4000000 || $imgSize == 0){
+                            $msg = 'The image may not be greater than 4 MB';
+                            return ['status' => 0, 'msg' => $msg, 'data' => $data];
+                        }
+                        $destinationPath = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.$model->id;
+                        $image_name =$val->getClientOriginalName();
+                        $extension =$val->getClientOriginalExtension();
+                        $image_name=md5($image_name);
+                        $product_image= $image_name.'.'.$extension;
+                        $file =$val->move($destinationPath,$product_image);
+                        $obj = new ProductsImages();
+                        if($tempId == $primary){
+                            $model->picture = $product_image;
+                            $obj->product_id = $model->id;
+                            $obj->src = $product_image;
+                            $obj->is_primary = 1;
+                            $obj->save();
+                        }
+                        else{
+                            $obj->product_id = $model->id;
+                            $obj->src = $product_image;
+                            $obj->is_primary = 0;
+                            $obj->save();
+                        }
+                        $model->save();
                     }
-                    else{
-                        $obj->product_id = $model->id;
-                        $obj->src = $product_image;
-                        $obj->is_primary = 0;
-                        $obj->save();
-                    }
-                    $model->save();
-                    echo($tempId);
+                }else{
+                    return ['status' => 0, 'msg' => 'Please select one as a primary image!', 'data' => $data];
                 }
             }
-            dd($request->input('is_primary'));
         }
           return ['status' => $status, 'msg' => $msg, 'data' => $data];
     }
@@ -178,14 +182,15 @@ class ProductsController extends Controller
     {
         $authUser= \Auth::user();
         $data = array();
-        $Productmodel = $this->modelObj->find($id);
-        if(!$Productmodel)
+        $productmodel = $this->modelObj->find($id);
+        if(!$productmodel)
         {
             return abort(404);
         }
-        $data["productImg"] = Product::getAttachment($Productmodel->id);
-        $data['category'] = Category::getCategory($Productmodel->category_id);
-        $data['product'] = $Productmodel;
+        $data["primaryImg"] = Product::getAttachment($productmodel->id);
+        $data["productImg"] = ProductsImages::getProductImages($productmodel->id);
+        $data['category'] = Category::getCategory($productmodel->category_id);
+        $data['product'] = $productmodel;
         return view($this->moduleViewName.'.show', $data);
     }
 
@@ -198,8 +203,6 @@ class ProductsController extends Controller
         {
             return abort(404);
         }
-
-        $category = Category::getCategory($formObj->category_id);
         $data = array();
         $data['formObj'] = $formObj;
         $data['module_title'] ='edit'.$this->module;
@@ -209,9 +212,9 @@ class ProductsController extends Controller
         $data['method'] = "PUT";
         $data["authUser"] = \Auth::user();
         $data["isEdit"] = 1;
-        $data['categories'] = Category::pluck('category_name','id')->all();
+        $data['languages']= Custom::__masterLocals();
+        $data['categories'] = category::categoryList();
         $data["productImg"] = ProductsImages::select('*')->where('product_id',$formObj->id)->get();
-        //dd($data);
         return view($this->moduleViewName.'.add', $data);
     }
 
@@ -228,23 +231,12 @@ class ProductsController extends Controller
         }
         $rulesArr = array();
         $requestData = $request->all();
-        $avatar_id = $request->file('avatar_id');
-        if($avatar_id){
-            $imgSize = $avatar_id->getSize();
-            if($imgSize > 4000000 || $imgSize == 0){
-                $msg = 'The image may not be greater than 4 MB';
-                return ['status' => 0, 'msg' => $msg, 'data' => $data];
-            }
-        }
-
         $validationArr =    [
                                 'product_name' => 'required',
-                                'description' => 'required',
                                 'units_stock_type' => 'required',
                                 'units_in_stock' => 'required',
                                 'unity_price' => 'required',
                                 'category_id' => 'required|exists:categories,id',
-                                'avatar_id' => 'image|max:4000',
                                 'status' => 'required',
                             ];
         $validator = Validator::make($requestData,$validationArr);
@@ -265,30 +257,80 @@ class ProductsController extends Controller
         {
             $product_name = $request->get('product_name');
             $units_stock_type = $request->get('units_stock_type');
-            $description = trim($request->get('description'));
+            $description = $request->get('description');
             $units_in_stock = $request->get('units_in_stock');
             $category_id = $request->get('category_id');
             $unity_price = $request->get('unity_price');
             $avatar_id = $request->file('avatar_id');
             $status_val = $request->get('status');
-            $model->product_name = $product_name;
-            $model->units_stock_type   = $units_stock_type;
-            $model->description = $description;
-            $model->units_in_stock = $units_in_stock;
+            $primary = $request->input('is_primary');
             $model->category_id = $category_id;
-            $model->unity_price = $unity_price;
             $model->status = $status_val;
             $model->save();
-            if(!empty($avatar_id))
-            {
-                $destinationPath = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.$model->id;
-                $image_name =$avatar_id->getClientOriginalName();
-                $extension =$avatar_id->getClientOriginalExtension();
-                $image_name=md5($image_name);
-                $product_image= $image_name.'.'.$extension;
-                $file =$avatar_id->move($destinationPath,$product_image);
-                $model->picture = $product_image;
-                $model->save();
+            $primaryRm=productsImages::where('product_id',$model->id)->get();
+                foreach($primaryRm as $primaryRmVal){
+                    $primaryRmVal->is_primary = 0;
+                    $primaryRmVal->save();
+                }
+            $image = productsImages::where('id',$primary)->first();
+                if($image){
+                    $image->is_primary = 1;
+                    $image->save();
+                    $model->picture = $image->src;
+                    $model->save();
+                } 
+
+            $languages= Custom::__masterLocals();
+            foreach ($languages as $locale => $val)
+            { 
+                $obj = \App\ProductTranslation::where('locale',$val)->where('product_id',$model->id)->first();
+                if(is_array($product_name) && !empty($product_name))
+                {
+                    $obj->product_name = $product_name[$locale][0];
+                }
+                if(is_array($description) && !empty($description))
+                {
+                    $obj->description = $description[$locale][0];
+                } 
+                if(is_array($units_stock_type) && !empty($units_stock_type))
+                {
+                    $obj->units_stock_type = $units_stock_type[$locale][0];
+                } 
+                if(is_array($units_in_stock) && !empty($units_in_stock))
+                {
+                    $obj->units_in_stock = $units_in_stock[$locale][0];
+                }  
+                if(is_array($unity_price) && !empty($unity_price))
+                {
+                    $obj->unity_price = $unity_price[$locale][0];
+                }
+                $obj->save();
+            }
+            if($request->file('multi_img')){
+                foreach($request->file('multi_img',[]) as $tempId => $val){
+                    $destinationPath = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.$model->id;
+                    $image_name =$val->getClientOriginalName();
+                    $extension =$val->getClientOriginalExtension();
+                    $image_name=md5($image_name);
+                    $product_image= $image_name.'.'.$extension;
+                    $file =$val->move($destinationPath,$product_image);
+                    $obj = new ProductsImages();
+                    if($tempId == $primary){
+
+                        $model->picture = $product_image;
+                        $obj->product_id = $model->id;
+                        $obj->src = $product_image;
+                        $obj->is_primary = 1;
+                        $obj->save();
+                    }
+                    else{
+                        $obj->product_id = $model->id;
+                        $obj->src = $product_image;
+                        $obj->is_primary = 0;
+                        $obj->save();
+                    }
+                    $model->save();
+                }
             }
         }
           return ['status' => $status, 'msg' => $msg, 'data' => $data];
@@ -353,11 +395,13 @@ class ProductsController extends Controller
     }
     public function data(Request $request)
     {
-        $model = Product::select('products.*','categories.category_name as catName')
-        ->leftJoin('categories','products.category_id','=','categories.id');
+        //$model = Product::select('products.*','category_translations.category_name as catName')
+        //->leftJoin('categories','products.category_id','=','categories.id')
+        //->leftJoin('category_translations','categories.id','=','category_translations.category_id');
+        $model = Product::select('products.*')->leftJoin('product_translations','products.id','=','product_translations.product_id')->where('locale','en');
         return DataTables::eloquent($model)
          ->editColumn('picture', function ($row) {
-            $profileImg = Product::getAttachment($row->id); 
+            $profileImg = Product::getAttachment($row->id);
             if(isset($row->id) && $row->id != 0)
             {
                return '<img src="'.$profileImg.'" border="2" width="50" height="50" class="img-rounded" align="center" />';
@@ -370,6 +414,9 @@ class ProductsController extends Controller
                     return '<a class="btn btn-xs btn-success">Active</a>';                
                 else
                     return '<a class="btn btn-xs btn-danger">Inactive</a>';
+            })
+        ->editColumn('catName', function($row) {
+                return Category::getCategory($row->category_id);
             })
         ->editColumn('action', function($row) {
             return view("admin.products.action",
@@ -405,12 +452,12 @@ class ProductsController extends Controller
                 } 
                 if(!empty($search_pnm))
                 {
-                    $query = $query->where("products.product_name", 'LIKE', '%'.$search_pnm.'%');
+                    $query = $query->where("product_translations.product_name", 'LIKE', '%'.$search_pnm.'%');
                     $searchData['search_pnm'] = $search_pnm;
                 } 
                 if(!empty($search_ut))
                 {
-                    $query = $query->where("products.units_stock_type", 'LIKE', '%'.$search_ut.'%');
+                    $query = $query->where("product_translations.units_stock_type", 'LIKE', '%'.$search_ut.'%');
                     $searchData['search_ut'] = $search_ut;
                 } 
                 if(!empty($category))
@@ -428,50 +475,9 @@ class ProductsController extends Controller
             })
         ->make(true);
     }
-    public function storeMedia(Request $request)
-    {
-        $status = 1;
-        $msg = "File uploaded successfully!";
-        $returnID = 0;
-        $path = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'products';
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-        $file = $request->file('file');     
-        if($file)
-        {
-            $name = $file->getClientOriginalName();
-            
-            $tempName = md5(uniqid() . '_' . trim($file->getClientOriginalName()));
-            $extension =$file->getClientOriginalExtension();
-            $full_name= $tempName.'.'.$extension;
-            $file->move($path, $full_name);
-          
-            $returnID = \DB::table("products_images")
-            ->insertGetId([
-                "id" => $returnID,
-                "product_id" => $returnID,
-                "src" => $full_name,
-                "created_at" => date("Y-m-d H:i:s")
-            ]);
-        }
-        else
-        {
-            $status = 0;
-            $msg = "Please upload valid file.";
-        }
-        
-        return 
-        [
-            "status" => $status,
-            "msg" => $msg,
-            "id" => $returnID
-        ];
-    }
 
     public function deleteMedia(Request $request)
     {
-        dd(123);
         $status = 1;
         $msg = "File Deleted!";
 

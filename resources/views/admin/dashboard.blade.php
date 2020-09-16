@@ -5,8 +5,8 @@
     <div class="page-content-inner">
 
 <div class="row">
-    <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
-        <a class="dashboard-stat dashboard-stat-v2 blue" href="#">
+    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+        <a class="dashboard-stat dashboard-stat-v2 green" href="#">
             <div class="visual">
                 <i class="fa fa-comments"></i>
             </div>
@@ -18,9 +18,34 @@
             </div>
         </a>
     </div>
-   
-    <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
+    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
         <a class="dashboard-stat dashboard-stat-v2 yellow" href="#">
+            <div class="visual">
+                <i class="fa fa-comments"></i>
+            </div>
+            <div class="details">
+                <div class="number">
+                    <span data-counter="counterup" data-value="{{ $totalProducts }}">0</span>
+                </div>
+                <div class="desc">Total Available Products</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+        <a class="dashboard-stat dashboard-stat-v2 red" href="#">
+            <div class="visual">
+                <i class="fa fa-comments"></i>
+            </div>
+            <div class="details">
+                <div class="number">
+                    <span data-counter="counterup" data-value="{{ $totalCategories }}">0</span>
+                </div>
+                <div class="desc">Total Categories</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+        <a class="dashboard-stat dashboard-stat-v2 green" href="#">
             <div class="visual">
                 <i class="fa fa-shopping-cart"></i>
             </div>
@@ -32,8 +57,8 @@
             </div>
         </a>
     </div>
-    <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
-        <a class="dashboard-stat dashboard-stat-v2 red" href="#">
+    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+        <a class="dashboard-stat dashboard-stat-v2 yellow" href="#">
             <div class="visual">
                 <i class="fa fa-bar-chart-o"></i>
             </div>
@@ -42,6 +67,19 @@
                     <span data-counter="counterup" data-value="{{ $total_orders }}">0</span> 
                 </div>
                 <div class="desc">Total Orders</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+        <a class="dashboard-stat dashboard-stat-v2 red" href="#">
+            <div class="visual">
+                <i class="fa fa-bar-chart-o"></i>
+            </div>
+            <div class="details">
+                <div class="number">
+                    <span data-counter="counterup" data-value="{{ $total_inactive_products }}">0</span> 
+                </div>
+                <div class="desc">Comming Soon Products</div>
             </div>
         </a>
     </div>
@@ -62,7 +100,6 @@
                             <th align="left">Price</th>
                             <th align="left">Address</th>
                             <th align="left">Date</th>
-                           <!--  <th align="left" width="10%">Action</th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -95,9 +132,8 @@
                 {data: 'id', name: 'id'},
                 { data: 'userName', name: 'userName' },
                 { data: 'total_price', name: 'total_price' },
-                { data: 'address', name: 'addresses.address' },
+                { data: 'address_line_1', name: 'addresses.address_line_1' },
                 { data: 'created_at', name: 'created_at' },
-               /* { data: 'action', orderable: false, searchable: false},*/
             ]
         });
     });
