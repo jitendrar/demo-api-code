@@ -130,7 +130,7 @@ class ProductController extends Controller
                 })
                 ->where('products.status',$STATUS_ACTIVE)
                 ->whereIn('products.id',$ArrProductID)
-                ->selectRaw('products.*, IF(cart_details.id, 1, 0) AS isAvailableInCart')
+                ->selectRaw('products.*, cart_details.quantity, IF(cart_details.id, 1, 0) AS isAvailableInCart')
                 ->paginate($PAGINATION_VALUE);
                 // prd(\DB::getQueryLog());
                 // prd($products->toArray());
