@@ -16,10 +16,22 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
-        return response([ 'categories' => CategoryResource::collection($categories), 'message' => 'Retrieved successfully'], 200);
+        $StatusCode     = 204;
+        $status         = 0;
+        $ArrReturn      = array();
+        $msg            = __('words.no_data_available');
+        $data           = array();
+        $categories = Category::where('status',1)->get();
+        if($categories->count()) {
+            $status         = 1;
+            $StatusCode     = 200;
+            $msg            = __('words.retrieved_successfully');
+            $data           = CategoryResource::collection($categories);
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
+        return response($ArrReturn, $StatusCode);
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -39,7 +51,21 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        $StatusCode     = 204;
+        $status         = 0;
+        $ArrReturn      = array();
+        $msg            = __('words.no_data_available');
+        $data           = array();
+        if($category) {
+            $status         = 1;
+            $StatusCode     = 200;
+            $msg            = __('words.retrieved_successfully');
+            $data      = new CategoryResource($category);
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
+        return response($ArrReturn, $StatusCode);
+
     }
 
     /**

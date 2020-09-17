@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryResource extends JsonResource
+class AddressResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,23 +17,16 @@ class CategoryResource extends JsonResource
         $API_DATE_FORMAT = env('API_DATE_FORMAT');
         return [
             'id' => $this->id,
-            'category_name' => $this->category_name,
-            'description' => $this->description,
-            'picture' => self::GetImage(),
+            'user_id' => $this->user_id,
+            'address_line_1' => $this->address_line_1,
+            'address_line_2' => $this->address_line_2,
+            'city' => $this->city,
+            'zipcode' => $this->zipcode,
+            'primary_address' => $this->primary_address,
+            'status' => _GetStatusName($this->status),
             'created_at' => date($API_DATE_FORMAT,strtotime($this->created_at)),
             'updated_at' => date($API_DATE_FORMAT,strtotime($this->updated_at)),
         ];
-    }
 
-    public function GetImage() {
-        $picture = url("/images/no_image.jpeg");
-        if(!empty($this->picture)) {
-            $filename = public_path()."/".$this->picture;
-            if (file_exists($filename)) {
-                $picture = url("/".$this->picture);
-            }
-        }
-        return $picture;
     }
-
 }
