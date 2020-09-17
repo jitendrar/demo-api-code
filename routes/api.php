@@ -37,7 +37,6 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 	Route::post('updateaddcart', 'API\CartDetailController@updatecartitem');
 	Route::post('listcart', 'API\CartDetailController@listcartitem');
 
-
 	Route::group(['middleware' => ['auth:api']], function () {
 
 		Route::post('sendnewphoneotp', 'API\AuthController@sendnewphoneotp');
