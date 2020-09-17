@@ -31,17 +31,19 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 	Route::apiResource('category', 'API\CategoryController');
 	Route::get('aboutus', 'API\CommonController@getaboutus');
 	Route::get('contactus', 'API\CommonController@getcontactus');
-
 	Route::post('logout', 'API\AuthController@logout');
+
+	Route::post('addcart', 'API\CartDetailController@addcartitem');
+	Route::post('updateaddcart', 'API\CartDetailController@updatecartitem');
+	Route::post('listcart', 'API\CartDetailController@listcartitem');
+
 
 	Route::group(['middleware' => ['auth:api']], function () {
 
 		Route::post('sendnewphoneotp', 'API\AuthController@sendnewphoneotp');
 		Route::apiResource('address', 'API\AddressController');
 		Route::post('addressbyuser', 'API\AddressController@listaddressbyuser');
-		Route::post('addcart', 'API\CartDetailController@addcartitem');
-		Route::post('updateaddcart', 'API\CartDetailController@updatecartitem');
-		Route::post('listcart', 'API\CartDetailController@listcartitem');
+		
 		Route::post('createorder', 'API\OrderController@createorder');
 		Route::post('getorder', 'API\OrderController@getorderbyuser');
 		Route::apiResource('order', 'API\OrderController');

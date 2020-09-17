@@ -147,7 +147,7 @@ class OrderController extends Controller
         $data           = array();
         $RegisterData = Validator::make($request->all(), [
             'user_id' => 'required|numeric',
-            'address_id' => 'required|numeric',
+            'address_id' => 'required|numeric|not_in:0',
             'special_information' => 'required',
             'delivery_date' => 'required|date',
             'delivery_time' => 'required',

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\DeviceInfo;
 use App\Config;
+use App\CartDetail;
 use Validator;
 use App\Http\Resources\UserResource;
 
@@ -48,6 +49,7 @@ class AuthController extends Controller
             $user = User::create($requestData);
             if($user) {
                 $userID = $user->id;
+                CartDetail::_UpdateUserIDByLoginToke($userID,$user->non_login_token);
                 $ArrDeviceInfo = array();
                 $ArrDeviceInfo['user_id'] = $user->id;
                 $ArrDeviceInfo['device_type'] = $device_type;
@@ -211,6 +213,7 @@ class AuthController extends Controller
                 $user = auth()->user();
                 $status = 0;
                 $msg = __('words.mobile_not_verified');
+                CartDetail::_UpdateUserIDByLoginToke($user->id,$user->non_login_token);
                 if($user->status == 1) {
                     User::where('id',$user->id)->update(['notification_token' => $notification_token]);
                     $ArrDeviceInfo = array();

@@ -17,6 +17,7 @@ class CartResource extends JsonResource
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
+            'non_login_token' => $this->non_login_token,
             'product_id' => $this->product_id,
             'quantity' => $this->quantity,
             'price' => round($this->price,2),

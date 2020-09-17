@@ -24,6 +24,7 @@ class ProductResource extends JsonResource
             'units_stock_type' => $this->units_stock_type,
             'picture' => self::GetImage(),
             'status' => $this->status,
+            'gst_charge' => $this->gst_charge,
             'unity_price' => $this->unity_price,
             'isAvailableInCart' => is_null($this->isAvailableInCart)?0:$this->isAvailableInCart,
             'created_at' => date($API_DATE_FORMAT,strtotime($this->created_at)),
