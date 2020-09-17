@@ -166,10 +166,13 @@ class CartDetailController extends Controller
                     }
                     $requestData['status'] = 1;
                     $CartDetail->update($requestData);
+                    $cartdata   = CartDetail::with('product')->where('id',$CartDetail->id)->first();
+                    $cartdata->product->isAvailableInCart = 1;
+                    $cartdata->product->quantity = $cartdata->quantity;
                     $StatusCode     = 200;
                     $status         = 1;
                     $msg            = __('words.cart_update');
-                    $data           = new CartResource($CartDetail);
+                    $data           = new CartResource($cartdata);
                 } else {
                     $StatusCode     = 403;
                     $status         = 0;
@@ -183,10 +186,14 @@ class CartDetailController extends Controller
                 }
                 $CartDetail = CartDetail::create($requestData);
                 if($CartDetail) {
+                    
+                    $cartdata   = CartDetail::with('product')->where('id',$CartDetail->id)->first();
+                    $cartdata->product->isAvailableInCart = 1;
+                    $cartdata->product->quantity = $cartdata->quantity;
                     $StatusCode     = 200;
                     $status         = 1;
                     $msg            = __('words.cart_added');
-                    $data           = new CartResource($CartDetail);
+                    $data           = new CartResource($cartdata);
                 } else {
                     $StatusCode     = 403;
                     $status         = 0;
@@ -235,10 +242,13 @@ class CartDetailController extends Controller
                     }
                     $requestData['status'] = 1;
                     $CartDetail->update($requestData);
+                    $cartdata   = CartDetail::with('product')->where('id',$CartDetail->id)->first();
+                    $cartdata->product->isAvailableInCart = 1;
+                    $cartdata->product->quantity = $cartdata->quantity;
                     $StatusCode     = 200;
                     $status         = 1;
                     $msg            = __('words.cart_update');
-                    $data           = new CartResource($CartDetail);
+                    $data           = new CartResource($cartdata);
                 } else {
                     if($CartDetail->delete()) {
                         $StatusCode     = 200;
