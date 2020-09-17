@@ -102,7 +102,7 @@ class ProductController extends Controller
 
         $RegisterData = Validator::make($request->all(), [
             'category_id' => 'required|numeric',
-            'user_id' => 'required|numeric',
+            'non_login_token' => 'required',
         ]);
         if ($RegisterData->fails()) {
             $messages = $RegisterData->messages();
@@ -118,15 +118,15 @@ class ProductController extends Controller
             $PAGINATION_VALUE = 10;
             $requestData = $request->all();
             $category_id = $requestData['category_id'];
-            $user_id     = $requestData['user_id'];
+            $non_login_token     = $requestData['non_login_token'];
             $ArrProductID  = ProductMapping::_GetProductByCategoryID($category_id);
             if(!empty($ArrProductID)) {
                 // \DB::enableQueryLog();
                 $STATUS_ACTIVE = Product::$STATUS_ACTIVE;
-                $products = Product::leftJoin('cart_details', function($join) use ($user_id)
+                $products = Product::leftJoin('cart_details', function($join) use ($non_login_token)
                 {
                     $join->on('cart_details.product_id', '=', 'products.id');
-                    $join->where('cart_details.user_id', '=', $user_id);
+                    $join->where('cart_details.non_login_token', '=', $non_login_token);
                 })
                 ->where('products.status',$STATUS_ACTIVE)
                 ->whereIn('products.id',$ArrProductID)
