@@ -31,6 +31,10 @@
 			</div>
 			<div class="clearfix">&nbsp;</div>
             <div class="row">
+                 <div class="col-md-4">
+                    <label class="control-label">Phone No:</label>
+                    <input type="text" value="{{ \Request::get("search_pno") }}" class="form-control" name="search_pno" />
+                </div>
                 <div class="col-md-4">
                     <label class="control-label">Status</label>
                     <select name="search_status" class="form-control">

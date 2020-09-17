@@ -51,7 +51,6 @@ class ProductsController extends Controller
 
     public function create()
     {
-        $authUser = \Auth::user();
         $data = array();
         $data['formObj'] = $this->modelObj;
         $data['module_title'] = $this->module;
@@ -59,7 +58,6 @@ class ProductsController extends Controller
         $data['action_params'] = 0;
         $data['buttonText'] = "<i class='fa fa-check'></i>Add";
         $data["method"] = "POST";
-        $data["authUser"] = $authUser;
         $data["categories"] = category::categoryList();
         $data['languages'] = Custom::__masterLocals();
         $data['images'] = '';
@@ -73,7 +71,6 @@ class ProductsController extends Controller
         $status = 1;
         $msg = $this->addMsg;
         $data = array();
-        $authUser = \Auth::User();
         $requestData = $request->all();
         $validationArr =    [
                                 'product_name' => 'required',
@@ -180,7 +177,6 @@ class ProductsController extends Controller
 
     public function show($id)
     {
-        $authUser= \Auth::user();
         $data = array();
         $productmodel = $this->modelObj->find($id);
         if(!$productmodel)
@@ -196,7 +192,6 @@ class ProductsController extends Controller
 
     public function edit($id)
     {
-        $authUser = \Auth::user();
         $formObj  = $this->modelObj->find($id);
 
         if(!$formObj)
@@ -206,11 +201,10 @@ class ProductsController extends Controller
         $data = array();
         $data['formObj'] = $formObj;
         $data['module_title'] ='edit'.$this->module;
-        $data['buttonText'] = " <i class='fa fa-check'></i> update";
+        $data['buttonText'] = " <i class='fa fa-check'></i> Update";
         $data['action_url'] = $this->moduleRouteText.".update";
         $data['action_params'] = $formObj->id;
         $data['method'] = "PUT";
-        $data["authUser"] = \Auth::user();
         $data["isEdit"] = 1;
         $data['languages']= Custom::__masterLocals();
         $data['categories'] = category::categoryList();
@@ -367,24 +361,30 @@ class ProductsController extends Controller
     } 
     public function deleteImage(Request $request,$id)
     {
-        $modelObj = productsImages::where('product_id',$id)->first();
+        $msg = 'Product Image deleted sucessfully';
+        $modelObj = productsImages::where('id',$id)->first();
         if($modelObj) 
         {
-            try 
-            {
-                $backUrl = $request->server('HTTP_REFERER');
-                $url = public_path().'/uploads/products/'.$modelObj->product_id.'/'.$modelObj->src;
-                if (file_exists($url)) {
-                    @unlink($url);
+            if($modelObj->is_primary == 1){
+                session()->flash('error_message','Plz select another image as a primary than you can delete!');
+                return redirect()->back()->withInput();
+            }else{
+                try 
+                {
+                    $backUrl = $request->server('HTTP_REFERER');
+                    $url = public_path().'/uploads/products/'.$modelObj->product_id.'/'.$modelObj->src;
+                    if (file_exists($url)) {
+                        @unlink($url);
+                    }
+                    $modelObj->delete();
+                    session()->flash('success_message', $msg);
+                    return redirect()->back()->withInput();
                 }
-                $modelObj->delete();
-                session()->flash('success_message', $this->deleteMsg);
-                return redirect($this->list_url);
-            }
-            catch (Exception $e) 
-            {
-                session()->flash('error_message', $this->deleteErrorMsg);
-                return redirect($this->list_url);
+                catch (\Exception $e) 
+                {
+                    session()->flash('error_message', $this->deleteErrorMsg);
+                    return redirect()->back()->withInput();
+                }
             }
         } 
         else 
@@ -393,6 +393,26 @@ class ProductsController extends Controller
             return redirect($this->list_url);
         }
     }
+
+    public function changeStatus($id,$status){
+        $product = Product::find($id);
+        if(!$product){
+            return abort(404);
+        }
+        if($status == 1){
+            $product->status = 0;
+            $product->save();
+            Product::find($id)->update(['status'=>0]);
+            session()->flash('success_message','status has been changed Inactive sucessfully');
+        }else{
+            $product->status = 1;
+            $product->save();
+            Product::find($id)->update(['status'=>1]);
+            session()->flash('success_message','status has been changed active sucessfully');
+        }
+        return redirect()->route('products.index');
+    }
+
     public function data(Request $request)
     {
         //$model = Product::select('products.*','category_translations.category_name as catName')
@@ -426,6 +446,7 @@ class ProductsController extends Controller
                     'isEdit' =>1,
                     'isDelete' =>1,
                     'isView' =>1,
+                    'isStatus' => 1,
                 ]
             )->render();
         })->rawcolumns(['picture','action','status'])
@@ -475,27 +496,4 @@ class ProductsController extends Controller
             })
         ->make(true);
     }
-
-    public function deleteMedia(Request $request)
-    {
-        $status = 1;
-        $msg = "File Deleted!";
-
-        $tempId = $request->get('tempId'); 
-
-        $tempData = DB::table('products_images')->where('id', $tempId)->get(); 
-        $oldpath = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'products';         
-        foreach ($tempData as $tempValue) {
-            $tempFilename =  $tempValue->temp_name;            
-            if(file_exists($oldpath.DIRECTORY_SEPARATOR.$tempFilename)) {
-                unlink($oldpath.DIRECTORY_SEPARATOR.$tempFilename);              
-            } 
-
-        }
-        
-        DB::table('temp_attachment')->where('id', $tempId)->delete();
-
-        return ['status' => $status, 'msg' => $msg];
-    }
-
 }

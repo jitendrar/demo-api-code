@@ -161,7 +161,7 @@ class CategoryController extends Controller
         $data = array();
         $data['formObj'] = $formObj;
         $data['module_title'] ='edit'.$this->module;
-        $data['buttonText'] = " <i class='fa fa-check'></i> update";
+        $data['buttonText'] = " <i class='fa fa-check'></i> Update";
         $data['action_url'] = $this->moduleRouteText.".update";
         $data['action_params'] = $formObj->id;
         $data['method'] = "PUT";

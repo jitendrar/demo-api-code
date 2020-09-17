@@ -15,4 +15,12 @@
     <i class="fa fa-trash-o"></i>
 </a>
 @endif
+
+
+@if(isset($isStatus) && $isStatus)
+<a data-id="{{ $row->id }}" href="{{ route('changeStatus',['id' => $row->id,'status'=>$row->status]) }}" class="btn btn-xs  btn-default active" title="status">
+    <i class="fa fa-check-circle"></i>
+</a>
+@endif
+
 </div>

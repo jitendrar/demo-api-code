@@ -205,7 +205,7 @@
                                         <input type="radio" name="is_primary" <?php  echo ($img->is_primary == 1)?'checked':'' ?> class="check-box1" value = "{{$img->id}}"> Is primary ?
                                     </div> 
                                     <div class="col-md-3">
-                                        <a class="btn btn-danger remove-img-button" data-id="{{ $formObj->id }}" href="{{ route('products.deleteImage',['id' => $formObj->id]) }}">Remove</a>
+                                        <a class="btn btn-danger remove-img-button" data-id="{{ $img->id }}" href="{{ route('products.deleteImage',['id' => $img->id]) }}">Remove</a>
                                     </div>
                                 </div>
                                 @endforeach
@@ -271,20 +271,17 @@
             }
         });
         $(document).on('click', '.remove-img-button', function () {
-            alert(12);
-
-        $text = deleteConfirmMSG;
-
-        if (confirm($text))
-        {
-            $url = $(this).attr('href');
-            $('#global_delete_form').attr('action', $url);
-            $('#global_delete_form #delete_id').val($(this).data('id'));
-            $('#global_delete_form').submit();
-        }
-
-        return false;
+            $text = deleteConfirmMSG;
+            if (confirm($text))
+            {
+                $url = $(this).attr('href');
+                $('#global_delete_form').attr('action', $url);
+                $('#global_delete_form #delete_id').val($(this).data('id'));
+                $('#global_delete_form').submit();
+            }
+            return false;
         });
+        
        $("#cleditor").cleditor({
             width: '100%'
         });

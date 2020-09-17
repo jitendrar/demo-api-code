@@ -65,7 +65,7 @@
                     <div class="form-group">
                         <label>Description<span class="required">*</span></label>
                         <div class="input-group">
-                             {!! Form::textarea('description',null,['class'=>'form-control','cols' =>100,'rows' =>1,'maxlength' => "400",'placeholder' =>'Description']) !!}
+                             {!! Form::textarea('description',null,['class'=>'form-control','cols' =>100,'rows' =>5,'maxlength' => "400",'placeholder' =>'Description']) !!}
                         </div>
                     </div>
                 </div>
@@ -147,6 +147,7 @@
                         data.search_id = $("#search-frm input[name='search_id']").val();
                         data.search_fnm = $("#search-frm input[name='search_fnm']").val();
                         data.search_lnm = $("#search-frm input[name='search_lnm']").val();
+                        data.search_pno = $("#search-frm input[name='search_pno']").val();
                         data.search_status = $("#search-frm select[name='search_status']").val();       
                     }
                 },

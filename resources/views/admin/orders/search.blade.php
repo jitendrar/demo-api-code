@@ -19,24 +19,21 @@
                 <div class="col-md-4">
                     <label class="control-label">UserName</label>
                     <input type="text" value="{{ \Request::get("search_fnm") }}" class="form-control" name="search_fnm" />
-                </div>
-                <div class="col-md-4">
-                    <label class="control-label">Product Name</label>
-                    <input type="text" value="{{ \Request::get("search_pnm") }}" class="form-control" name="search_pnm" />
-                </div>                                    
-            </div>
-			<div class="clearfix">&nbsp;</div>
-            <div class="row">
+                </div>                                 
                 <div class="col-md-4">
                     <label class="control-label">Order No</label>
                     <input type="text" value="{{ \Request::get("search_oid") }}" class="form-control" name="search_oid" />
                 </div>
+            </div>
+			<div class="clearfix">&nbsp;</div>
+            <div class="row">
                 <div class="col-md-4">
                     <label class="control-label">Status</label>
                     <select name="search_status" class="form-control">
                         <option value="all" {!! \Request::get("search_status") == "all" ? 'selected="selected"':'' !!}>All</option>
                         <option value="Pending" {!! \Request::get("search_status") == "Pending" ? 'selected="selected"':'' !!}>Pending</option> 
-                        <option value="Delivered" {!! \Request::get("search_status") == "Delivered" ? 'selected="selected"':'' !!}>Delivered</option>         
+                        <option value="Delivered" {!! \Request::get("search_status") == "Delivered" ? 'selected="selected"':'' !!}>Delivered</option> 
+                        <option value="Delete" {!! \Request::get("search_status") == "delete" ? 'selected="selected"':'' !!}>Delete</option>         
                     </select>
                 </div>
             </div> 

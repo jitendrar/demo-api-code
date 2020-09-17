@@ -44,7 +44,7 @@ class DashboardController extends Controller
         $data['module_title'] = 'My Profile';
         $data['formObj'] = $formObj;
         $data['title'] ='edit profile';
-        $data['buttonText'] = 'update';
+        $data['buttonText'] = 'Update';
         $data['action_url'] = route('admin-updateProfile');
         $data['action_params'] = $formObj->id;
         $data['method'] = "POST";

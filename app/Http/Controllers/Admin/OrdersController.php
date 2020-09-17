@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Order;
 use App\User;
 use App\Address;
+use App\OrderDetail;
 
 class OrdersController extends Controller
 {
@@ -93,18 +94,29 @@ class OrdersController extends Controller
             session()->flash('error_message','Record Does Not Exists');
             return redirect($this->list_url);
         }
-
     }
+
+    public function orderDetail($id){
+        $data = array();
+        $msg = '';
+        $html = '';
+        $status = 1;
+        $orderDetail = orderDetail::where('order_id',$id)->get();
+        if(!$orderDetail)
+        {
+            return ['status' => 0, 'msg'=>$msg, 'html'=>$html];
+        }
+        $data['orderDetail'] = $orderDetail;
+        $html =  view($this->moduleViewName.'.order_detail', $data)->render();
+        return ['status' => $status, 'msg'=>$msg, 'html'=>$html];
+    }
+
     public function Data(Request $request)
     {
         $authUser = \Auth::User();
-        $modal = Order::select('orders.*','users.first_name','addresses.address_line_1','order_details.quantity','product_translations.product_name')
-            ->leftJoin('order_details','orders.id','=','order_details.order_id')
-            ->leftJoin('products','order_details.product_id','=','products.id')
-            ->leftJoin('product_translations','products.id','=','product_translations.product_id')
+        $modal = Order::select('orders.*','users.first_name','addresses.address_line_1')
             ->leftJoin('users','orders.user_id','=','users.id')
-            ->leftJoin('addresses','users.id','=','addresses.user_id')
-            ->where('product_translations.locale','en');
+            ->leftJoin('addresses','users.id','=','addresses.user_id');
         $modal = $modal->orderBy('orders.created_at');
         return \DataTables::eloquent($modal)
         ->editColumn('delivery_date', function($row) {
@@ -137,6 +149,7 @@ class OrdersController extends Controller
                     'row' => $row, 
                     'isDelete' =>1,
                     'isView' =>1,
+                    'isProductDetail' => 1,
                 ]
             )->render();
         })->rawcolumns(['created_at','delivery_date','order_status','action'])
@@ -166,17 +179,12 @@ class OrdersController extends Controller
                     $query = $query->where("users.first_name", 'LIKE', '%'.$search_fnm.'%');
                     $searchData['search_fnm'] = $search_fnm;
                 }    
-                if(!empty($search_pnm))
-                {
-                    $query = $query->where("product_translations.product_name", 'LIKE', '%'.$search_pnm.'%');
-                    $searchData['search_pnm'] = $search_pnm;
-                } 
                 if(!empty($search_oid))
                 {
                     $query = $query->where("orders.order_number", 'LIKE', '%'.$search_oid.'%');
                     $searchData['search_oid'] = $search_oid;
                 } 
-                if($search_status == "Pending" || $search_status == "Delivered" )
+                if($search_status == "Pending" || $search_status == "Delivered" || $search_status == "Delete" )
                 {
                     $query = $query->where("orders.order_status", $search_status);
                     $searchData['search_status'] = $search_status;
@@ -185,5 +193,5 @@ class OrdersController extends Controller
                     \session()->put($this->moduleRouteText.'_goto',$goto);
             })
         ->make(true);
-    }
+    } 
 }

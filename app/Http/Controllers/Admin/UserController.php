@@ -159,7 +159,7 @@ class UserController extends Controller
         $data = array();
         $data['formObj'] = $formObj;
         $data['module_title'] ='edit'.$this->module;
-        $data['buttonText'] = "<i class='fa fa-check'></i> update";
+        $data['buttonText'] = "<i class='fa fa-check'></i> Update";
         $data['action_url'] = $this->moduleRouteText.".update";
         $data['action_params'] = $formObj->id;
         $data['method'] = "PUT";
@@ -308,6 +308,7 @@ class UserController extends Controller
                 $search_id = request()->get("search_id");                                         
                 $search_fnm = request()->get("search_fnm");                                         
                 $search_lnm = request()->get("search_lnm");                                         
+                $search_pno = request()->get("search_pno");                                         
                 $search_status = request()->get("search_status");
                 $searchData = array();
 
@@ -330,6 +331,11 @@ class UserController extends Controller
                 {
                     $query = $query->where("users.last_name", 'LIKE', '%'.$search_lnm.'%');
                     $searchData['search_lnm'] = $search_lnm;
+                }  
+                if(!empty($search_pno))
+                {
+                    $query = $query->where("users.phone", 'LIKE', '%'.$search_pno.'%');
+                    $searchData['search_pno'] = $search_pno;
                 }
                 if($search_status == "1" || $search_status == "0" )
                 {

@@ -11,4 +11,10 @@
     <i class="fa fa-trash-o"></i>
 </a>@endif
 @endif
+
+@if(isset($isProductDetail) && $isProductDetail)
+<a data-id="{{ $row->id }}" class="btn btn-xs btn-primary show-order-detail" title="Order Detail">
+    <i class="fa fa-eye"></i>
+</a>
+@endif
 </div>
