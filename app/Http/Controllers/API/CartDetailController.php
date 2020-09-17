@@ -113,6 +113,10 @@ class CartDetailController extends Controller
                     $data['delivery_charge'] = $delivery_charge;
                     $data['address'] = $Address;
                     $data['cart_data'] = CartResource::collection($cartdata);
+                    $ORDER_TIME_SLOT_FILE   = env('ORDER_TIME_SLOT_FILE');
+                    $JsonFile               = storage_path($ORDER_TIME_SLOT_FILE);
+                    $fileContent            = file_get_contents($JsonFile);
+                    $data['time_slot']      = json_decode($fileContent,true);
                 }
             }
         }
