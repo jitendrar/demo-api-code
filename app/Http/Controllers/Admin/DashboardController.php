@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use Validator;
 use App\User;
+use App\AdminUser;
 use App\Product;
 use App\Category;
 use App\Order;
@@ -33,8 +34,8 @@ class DashboardController extends Controller
     }
     public function myProfile()
     {
-        $authUser = \Auth::user();
-        $formObj = User::find($authUser->id);
+        $authUser = \Auth::guard('admins')->user();
+        $formObj = AdminUser::find($authUser->id);
         if(!$formObj)
         {
             return abort(404);
@@ -56,8 +57,8 @@ class DashboardController extends Controller
     }
     public function updateProfile(Request $request)
     {
-        $authUser = \Auth::user();
-        $model = User::find($authUser->id);
+        $authUser =\Auth::guard('admins')->user();
+        $model = AdminUser::find($authUser->id);
 
         if(!$model)
         {
@@ -103,6 +104,7 @@ class DashboardController extends Controller
             $validateArr = $validateArr + [
                 'first_name' => 'required|min:2',
                 'last_name' => 'required|min:2',
+                'email' =>'required',
                 'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/',
             ];
         }
@@ -157,6 +159,7 @@ class DashboardController extends Controller
             {
                 $model->first_name = $request->get('first_name');
                 $model->last_name =  $request->get('last_name');
+                $model->email =  $request->get('email');
                 $model->phone =  $request->get('phone');
                 $model->save();
             }
@@ -166,7 +169,7 @@ class DashboardController extends Controller
     }
     public function orderData(Request $request)
     {
-        $authUser = \Auth::User();
+        $authUser = \Auth::guard('admins')->user();
         $modal = Order::select('orders.user_id','orders.id','orders.total_price','users.first_name as userName','orders.created_at','addresses.address_line_1')
             ->leftJoin('users','orders.user_id','=','users.id')
             ->leftJoin('addresses','users.id','=','addresses.user_id')

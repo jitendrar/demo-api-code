@@ -138,7 +138,6 @@ class ProductsController extends Controller
             }
             $primary = $request->input('is_primary');
             if($request->file('multi_img')){
-                if(!empty($primary)){
                     foreach($request->file('multi_img',[]) as $tempId => $val){
                         $imgSize = $val->getSize();
                         if($imgSize > 4000000 || $imgSize == 0){
@@ -153,23 +152,22 @@ class ProductsController extends Controller
                         $file =$val->move($destinationPath,$product_image);
                         $obj = new ProductsImages();
                         if($tempId == $primary){
-                            $model->picture = $product_image;
+                            $model->picture = asset('uploads/products/'.$model->id.'/'.$product_image);
                             $obj->product_id = $model->id;
-                            $obj->src = $product_image;
+                            $obj->src = asset('uploads/products/'.$model->id.'/'.$product_image);
+                            $obj->file_name = $product_image;
                             $obj->is_primary = 1;
                             $obj->save();
                         }
                         else{
                             $obj->product_id = $model->id;
-                            $obj->src = $product_image;
+                            $obj->src = asset('uploads/products/'.$model->id.'/'.$product_image);
+                            $obj->file_name = $product_image;
                             $obj->is_primary = 0;
                             $obj->save();
                         }
                         $model->save();
                     }
-                }else{
-                    return ['status' => 0, 'msg' => 'Please select one as a primary image!', 'data' => $data];
-                }
             }
         }
           return ['status' => $status, 'msg' => $msg, 'data' => $data];
@@ -311,15 +309,17 @@ class ProductsController extends Controller
                     $obj = new ProductsImages();
                     if($tempId == $primary){
 
-                        $model->picture = $product_image;
+                        $model->picture = asset('uploads/products/'.$model->id.'/'.$product_image);
                         $obj->product_id = $model->id;
-                        $obj->src = $product_image;
+                        $obj->src = asset('uploads/products/'.$model->id.'/'.$product_image);
+                        $obj->file_name = $product_image;
                         $obj->is_primary = 1;
                         $obj->save();
                     }
                     else{
                         $obj->product_id = $model->id;
-                        $obj->src = $product_image;
+                        $obj->src = asset('uploads/products/'.$model->id.'/'.$product_image);
+                        $obj->file_name = $product_image;
                         $obj->is_primary = 0;
                         $obj->save();
                     }
@@ -334,14 +334,18 @@ class ProductsController extends Controller
     public function destroy(Request $request,$id)
     {
         $modelObj = $this->modelObj->find($id);
+        $productImages = ProductsImages::where('product_id',$modelObj->id)->get();
         if($modelObj) 
         {
             try 
             {
                 $backUrl = $request->server('HTTP_REFERER');
-                $url = public_path().'/uploads/products/$modelObj->id'.$modelObj->picture;
-                if (file_exists($url)) {
-                    @unlink($url);
+                foreach($productImages as $image){
+                    $url = public_path().'/uploads/products/'.$modelObj->id.'/'.$image->file_name;
+                    if(file_exists($url)){
+                        @unlink($url);
+                    }
+                    $image->delete();
                 }
                 $modelObj->delete();
                 session()->flash('success_message', $this->deleteMsg);

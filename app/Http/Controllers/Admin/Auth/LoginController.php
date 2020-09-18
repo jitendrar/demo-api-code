@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use Validator;
-use App\User;
+use App\AdminUser;
 
 class LoginController extends Controller
 {
@@ -27,7 +27,7 @@ class LoginController extends Controller
         $msg = "The credential that you've entered doesn't match any account.";
         
         $validator = Validator::make($request->all(), [
-            'phone_no' => 'required|max:10|min:10', 
+            'email' => 'required', 
             'password' => 'required',            
         ]);        
         
@@ -45,19 +45,19 @@ class LoginController extends Controller
             }
         }
         else{
-            if (Auth::attempt(['phone' => $request->get('phone_no'), 'password' => $request->get('password')])) 
+            if (Auth::guard('admins')->attempt(['email' => $request->get('email'), 'password' => $request->get('password')])) 
             {
-                $authuser = User::where('phone',$request->get('phone_no'))->first();
+                $authuser = AdminUser::where('email',$request->get('email'))->first();
                 if(!$authuser){
                     $msg = 'Your user cannot do this';
                     return ['status' => 0, 'msg' => $msg,'goto'=>$goto];
                 }
 
-                $user = Auth::user();
-
+                $user = Auth::guard('admins')->user();
                 $status = 1;
                 $msg ='Logged in successfully.';
                 $user->save();
+
             }
         } 
         return ['status' => $status, 'msg' => $msg,'goto'=>$goto];
@@ -77,8 +77,8 @@ class LoginController extends Controller
     public function getLogout()
     {
         $url = '/';
-        $user = Auth::user();
-        Auth::logout();
+        $user = Auth::guard('admins')->user();
+        Auth::guard('admins')->logout();
         \session()->forget(['toggleFlag']);
         return redirect($url);  
     }

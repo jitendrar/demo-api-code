@@ -86,7 +86,7 @@
 <script type="text/javascript">
     function openAddMoneyModel(id)
     {
-      var url = "{{ url('addmoney') }}" + '/' + id;
+      var url = "{{ url('admin/addmoney') }}" + '/' + id;
       jQuery('#add-money-model').modal();
       jQuery('#add-money-form').attr('action',url);
 

@@ -11,21 +11,24 @@
             <thead>
                 <tr class="bold">
                     <th width="5%">Id</th>
-                    <th width="15%">Order Id</th>
                     <th width="20">Product Name</th>
                     <th width="20%">Price</th>
-                    <th width="20%">Quantity</th>
+                    <th width="15%">Quantity</th>
                     <th width="20%">Discount</th>
+                    <th width="20%">Total Price</th>
                 </tr>
             </thead>
             @foreach($orderDetail as $detail)
             <tbody>
                 <td width="5%">{{ $detail->id }}</td>
-                <td width="15%">{{$detail->order_id}}</td>
                 <td width="20">{{$detail->product->product_name}}</td>
-                <td width="20%">{{$detail->price}}</td>
-                <td width="20%">{{$detail->quantity}}</td>
-                <td width="20%">{{$detail->discount}}</td>
+                <td width="20%">{{number_format(($detail->price),2)}}</td>
+                <td width="15%">{{$detail->quantity}}</td>
+                <td width="20%">{{number_format(($detail->discount),2)}}</td>
+                @if(!empty($detail->discount))
+                <td width="20%">{{number_format(((($detail->price)*($detail->quantity))-(($detail->discount)*($detail->quantity))),2)}}</td>
+                @else
+                <td width="20%">{{number_format((($detail->price)*($detail->quantity)),2)}}</td>
             </tbody>
             @endforeach
         </table>

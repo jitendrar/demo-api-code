@@ -69,7 +69,7 @@ class UserController extends Controller
         $status = 1;
         $msg = $this->addMsg;
         $data = array();
-        $authUser = \Auth::User();
+        $authUser = \Auth::guard('admins')->user();
         
         $requestData = $request->all();
 

@@ -111,83 +111,16 @@
                             </div>
                             @endforeach
                             <div class="clearfix">&nbsp;</div>
-                               <!--  <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="col-md-3 control-label">Product Name (EN):<span class="required">*</span></label>
-                                            <div class="col-md-9">
-                                                {!! Form::text('product_name',null,['class'=>'form-control','placeholder'=>'enter product name','required'=>'required']) !!}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="col-md-3 control-label">Description (EN):<span class="required">*</span></label>
-                                            <div class="col-md-9">
-                                                {!! Form::textarea('description',null,['class'=>'form-control cleditor','placeholder'=>'description','required'=>'required','cols' =>20,'rows' =>4,'id'=>'cleditor1']) !!}
-                                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Status:<span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            {{ Form::select('status',[1=>"Active",0=>"In-Active"],null,['class'=>'form-control', 'placeholder'=>'Select status']) }}         
                                         </div>
                                     </div>
                                 </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="col-md-3 control-label">Product Name (GUJ):<span class="required">*</span></label>
-                                                <div class="col-md-9">
-                                                    {!! Form::text('product_name',null,['class'=>'form-control','placeholder'=>'enter product name','required'=>'required']) !!}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                    
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="col-md-3 control-label">Description (GUJ):<span class="required">*</span></label>
-                                                <div class="col-md-9">
-                                                    {!! Form::textarea('description',null,['class'=>'form-control cleditor','placeholder'=>'description','required'=>'required','cols' =>20,'rows' =>4,'id'=>'cleditor1']) !!}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> 
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="col-md-3 control-label">Unit Type:<span class="required">*</span></label>
-                                                <div class="col-md-9">
-                                                    {!! Form::text('units_stock_type',null,['class'=>'form-control','placeholder' =>'Unit Type','id'=>'units_stock_type']) !!}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="col-md-3 control-label">Unit Stock:<span class="required">*</span></label>
-                                                <div class="col-md-9">
-                                                    {!! Form::number('units_in_stock',null,['class'=>'form-control','placeholder' => 'Unit Stock','id'=>'units_in_stock','min' =>0,'step' =>0.01]) !!}
-                                                </div>
-                                            </div>
-                                        </div> 
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="col-md-3 control-label">Unit Price:<span class="required">*</span></label>
-                                                <div class="col-md-9">
-                                                    {!! Form::number('unity_price',null,['class'=>'form-control','placeholder' => 'Unit Price','id'=>'unity_price','min' =>0,'step' =>0.01]) !!}
-                                                </div>
-                                            </div>
-                                        </div>-->
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="col-md-3 control-label">Status:<span class="required">*</span></label>
-                                                <div class="col-md-9">
-                                                    {{ Form::select('status',[1=>"Active",0=>"In-Active"],null,['class'=>'form-control', 'placeholder'=>'Select status']) }}         
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                            </div>
                         </fieldset>
                         <fieldset class="scheduler-border">
                             <legend class="scheduler-border">Images</legend>
@@ -199,7 +132,7 @@
                                     <label class="col-md-3 control-label">Image
                                     </label>
                                     <div class="col-md-3">
-                                        <img src="{{ asset('uploads/products/'.$formObj->id.'/'.$img->src)}}" name="" height="50px" width="60px">
+                                        <img src="{{ $img->src }}" name="" height="50px" width="60px">
                                     </div>
                                     <div class="col-md-3">
                                         <input type="radio" name="is_primary" <?php  echo ($img->is_primary == 1)?'checked':'' ?> class="check-box1" value = "{{$img->id}}"> Is primary ?

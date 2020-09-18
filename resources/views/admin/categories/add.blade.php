@@ -76,25 +76,6 @@
                     </div>
                 </div>
                 @endforeach
-                <!-- <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Category Name:<span class="required">*</span></label>
-                            <div class="col-md-9">
-                                {!! Form::text('category_name',null,['class'=>'form-control','placeholder'=>'enter category name','required'=>'required']) !!}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Description:<span class="required">*</span></label>
-                            <div class="col-md-9">
-                                 {!! Form::textarea('description',null,['class'=>'form-control cleditor','placeholder'=>'description','required'=>'required','cols' =>20,'rows' =>4,'id'=>'cleditor']) !!}
-                            </div>
-                        </div>
-                    </div> -->
                 <div class="row"sss>
                     <div class="col-md-6">
                         <div class="form-group">
