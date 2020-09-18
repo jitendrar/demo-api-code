@@ -35,8 +35,8 @@ class Product extends Model implements TranslatableContract
         $formObj = Product::find($product_id);
         if($formObj)
         {
-            $img = $formObj->picture; 
-            if(@GetImageSize($formObj->picture))
+            $img = asset($formObj->picture); 
+            if(file_exists(public_path().$formObj->picture))
             {
                 $img = $img;
             }
