@@ -71,14 +71,19 @@ class AddressController extends Controller
         } else {
             $requestData = $request->all();
             $requestData['status'] = 1;
+            $OldAddress = Address::where('user_id',"=",$requestData['user_id'])->count();
+            $requestData['primary_address'] = 0;
+            if($OldAddress == 0) {
+                $requestData['primary_address'] = 1;
+            }
             $Address = Address::create($requestData);
             if($Address) {
-                if($requestData['primary_address'] == 1) {
-                    $address_id = $Address->id;
-                    $user_id    = $Address->user_id;
-                    Address::where('id',"!=",$address_id)->where('user_id',"=",$user_id)
-                            ->update(['primary_address' => 0]);
-                }
+                // if($requestData['primary_address'] == 1) {
+                //     $address_id = $Address->id;
+                //     $user_id    = $Address->user_id;
+                //     Address::where('id',"!=",$address_id)->where('user_id',"=",$user_id)
+                //             ->update(['primary_address' => 0]);
+                // }
                 $StatusCode     = 200;
                 $status         = 1;
                 $msg            = __('words.address_added');
