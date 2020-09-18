@@ -73,6 +73,10 @@
                                         <div class="form-group">
                                             <label class="control-label">Lastname:<span class="required">*</span></label>
                                             {!! Form::text('last_name',null,['class'=>'form-control','placeholder'=>'lastname','data-required'=>'true']) !!}
+                                        </div> 
+                                        <div class="form-group">
+                                            <label class="control-label">Email:<span class="required">*</span></label>
+                                            {!! Form::text('email',null,['class'=>'form-control','placeholder'=>'email','data-required'=>'true']) !!}
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Phone No:<span class="required">*</span></label>

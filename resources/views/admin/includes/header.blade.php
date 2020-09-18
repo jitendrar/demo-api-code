@@ -1,5 +1,5 @@
 <?php
-$authUser = \Auth::user(); 
+$authUser = \Auth::guard('admins')->user(); 
 $authName = '';
 $formObj = $authUser->id;
 if($authUser)

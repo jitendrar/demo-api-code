@@ -16,8 +16,8 @@
 @endif    
 
 <div class="form-group">
-    <label class="control-label visible-ie8 visible-ie9">Phone No</label>
-    {!! Form::text('phone_no',null,['class'=>'form-control','placeholder'=> 'Enter Your Phone Number','data-required'=>'true','id' =>'phone_no']) !!}
+    <label class="control-label visible-ie8 visible-ie9">Email</label>
+    {!! Form::text('email',null,['class'=>'form-control','placeholder'=> 'Enter Your Email','data-required'=>'true','id' =>'email']) !!}
 </div>
 <div class="form-group">
     <label class="control-label visible-ie8 visible-ie9">Password</label>
