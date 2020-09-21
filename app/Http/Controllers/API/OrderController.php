@@ -148,7 +148,7 @@ class OrderController extends Controller
         $RegisterData = Validator::make($request->all(), [
             'user_id' => 'required|numeric',
             'address_id' => 'required|numeric|not_in:0',
-            'special_information' => 'required',
+            // 'special_information' => 'required',
             'delivery_date' => 'required|date',
             'delivery_time' => 'required',
         ]);
@@ -367,12 +367,14 @@ class OrderController extends Controller
                 if($Orderdata) {
                     $OrderdataArr = $Orderdata->toArray();
                     $user_id = $Orderdata['user_id'];
+                    $ArrUser = User::find($user_id);
                     foreach ($OrderdataArr['order_detail'] as $K => $V) {
                         $arrOrderDetails = array();
-                        $arrOrderDetails['user_id']     = $Orderdata['user_id'];
-                        $arrOrderDetails['product_id']  = $V['product_id'];
-                        $arrOrderDetails['quantity']    = $V['quantity'];
-                        $arrOrderDetails['price']       = $V['price'];
+                        $arrOrderDetails['user_id']             = $Orderdata['user_id'];
+                        $arrOrderDetails['non_login_token']     = $ArrUser->non_login_token;
+                        $arrOrderDetails['product_id']          = $V['product_id'];
+                        $arrOrderDetails['quantity']            = $V['quantity'];
+                        $arrOrderDetails['price']               = $V['price'];
                         CartDetail::create($arrOrderDetails);
                     }
                     $status         = 1;
