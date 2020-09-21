@@ -25,7 +25,7 @@
                                 <?php }
                                 ?> 
                             @foreach($productImg as $img)
-                                <img src="{{ $img->src }}" width="80px" height="80px">
+                                <img src="{{ asset($img->src) }}" width="80px" height="80px">
                             @endforeach
                             </p>
                         </div>

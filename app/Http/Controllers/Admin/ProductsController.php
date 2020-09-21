@@ -152,16 +152,16 @@ class ProductsController extends Controller
                         $file =$val->move($destinationPath,$product_image);
                         $obj = new ProductsImages();
                         if($tempId == $primary){
-                            $model->picture = asset('uploads/products/'.$model->id.'/'.$product_image);
+                            $model->picture = '/uploads/products/'.$model->id.'/'.$product_image;
                             $obj->product_id = $model->id;
-                            $obj->src = asset('uploads/products/'.$model->id.'/'.$product_image);
+                            $obj->src = '/uploads/products/'.$model->id.'/'.$product_image;
                             $obj->file_name = $product_image;
                             $obj->is_primary = 1;
                             $obj->save();
                         }
                         else{
                             $obj->product_id = $model->id;
-                            $obj->src = asset('uploads/products/'.$model->id.'/'.$product_image);
+                            $obj->src = '/uploads/products/'.$model->id.'/'.$product_image;
                             $obj->file_name = $product_image;
                             $obj->is_primary = 0;
                             $obj->save();
@@ -309,16 +309,16 @@ class ProductsController extends Controller
                     $obj = new ProductsImages();
                     if($tempId == $primary){
 
-                        $model->picture = asset('uploads/products/'.$model->id.'/'.$product_image);
+                        $model->picture = '/uploads/products/'.$model->id.'/'.$product_image;
                         $obj->product_id = $model->id;
-                        $obj->src = asset('uploads/products/'.$model->id.'/'.$product_image);
+                        $obj->src = '/uploads/products/'.$model->id.'/'.$product_image;
                         $obj->file_name = $product_image;
                         $obj->is_primary = 1;
                         $obj->save();
                     }
                     else{
                         $obj->product_id = $model->id;
-                        $obj->src = asset('uploads/products/'.$model->id.'/'.$product_image);
+                        $obj->src ='/uploads/products/'.$model->id.'/'.$product_image;
                         $obj->file_name = $product_image;
                         $obj->is_primary = 0;
                         $obj->save();

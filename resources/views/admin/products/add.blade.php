@@ -132,7 +132,7 @@
                                     <label class="col-md-3 control-label">Image
                                     </label>
                                     <div class="col-md-3">
-                                        <img src="{{ $img->src }}" name="" height="50px" width="60px">
+                                        <img src="{{ asset($img->src) }}" name="" height="50px" width="60px">
                                     </div>
                                     <div class="col-md-3">
                                         <input type="radio" name="is_primary" <?php  echo ($img->is_primary == 1)?'checked':'' ?> class="check-box1" value = "{{$img->id}}"> Is primary ?

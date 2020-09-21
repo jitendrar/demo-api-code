@@ -29,6 +29,7 @@
                 <td width="20%">{{number_format(((($detail->price)*($detail->quantity))-(($detail->discount)*($detail->quantity))),2)}}</td>
                 @else
                 <td width="20%">{{number_format((($detail->price)*($detail->quantity)),2)}}</td>
+                @endif
             </tbody>
             @endforeach
         </table>
