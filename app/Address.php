@@ -10,6 +10,11 @@ class Address extends Model
 	protected $table = 'addresses';
 
 	protected $guarded = [];
+
+    public static $ACTIVE_STATUS = 1;
+
+    public static $INACTIVE_STATUS = 0;
+
 	public static function getAddress($id)
     {
         $address = Address::where('user_id',$id)->first();

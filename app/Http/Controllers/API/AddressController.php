@@ -195,7 +195,7 @@ class AddressController extends Controller
         $status         = 0;
         $msg            = "";
         $data           = array();
-        if($address->delete()) {
+        if($address->update(['status' => Address::$INACTIVE_STATUS])) {
             $StatusCode     = 200;
             $status         = 1;
             $msg            = __('words.address_deleted');
@@ -230,7 +230,10 @@ class AddressController extends Controller
             $user_id = $request->get('user_id');
             if(!empty($user_id)) {
                 $PAGINATION_VALUE = env('PAGINATION_VALUE');
-                $addressdata      = Address::where('user_id',$user_id)->paginate($PAGINATION_VALUE);
+                $ACTIVE_STATUS = Address::$ACTIVE_STATUS;
+                $addressdata      = Address::where('user_id',$user_id)
+                                            ->where('status',$ACTIVE_STATUS)
+                                            ->paginate($PAGINATION_VALUE);
                 if($addressdata->count()) {
                     $status         = 1;
                     $StatusCode     = 200;
