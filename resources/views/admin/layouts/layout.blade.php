@@ -36,7 +36,7 @@
 
     <body class="page-container-bg-solid">
         <div class="page-wrapper">
-            @include('admin.includes.Header')
+            @include('admin.includes.header')
             <div class="page-wrapper-row full-height">
                 <div class="page-wrapper-middle">
                     <!-- BEGIN CONTAINER -->
