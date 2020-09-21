@@ -244,4 +244,48 @@ class AddressController extends Controller
         return response($ArrReturn, $StatusCode);
     }
 
+    public function addressselectincart(Request $request, Address $address)
+    {
+        $StatusCode     = 403;
+        $status         = 0;
+        $msg            = "";
+        $data           = array();
+        $RegisterData = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+            'user_id' => 'required|numeric',
+            'is_select' => 'required',
+        ]);
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $requestData = $request->all();
+            if(isset($requestData['id']) && !empty($requestData['id'])) {
+                $address_id = $requestData['id'];
+                $user_id = $requestData['user_id'];
+                Address::where('user_id',"=",$user_id)->update(['is_select' => 0]);
+                Address::where('id',$address_id)->update(['is_select' => 1]);
+                $StatusCode     = 200;
+                $status         = 1;
+                $msg            = __('words.address_updated');
+                $addressdata    = Address::where('id',$address_id)->first();
+                $data           = new AddressResource($addressdata);
+            } else {
+                $StatusCode     = 403;
+                $status         = 0;
+                $msg            = "Something wrong. Please try again.";
+            }
+        }
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
+        $StatusCode = 200;
+        return response($arrReturn,$StatusCode);
+
+    }
+
 }

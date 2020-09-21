@@ -43,7 +43,7 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 		Route::post('sendnewphoneotp', 'API\AuthController@sendnewphoneotp');
 		Route::apiResource('address', 'API\AddressController');
 		Route::post('addressbyuser', 'API\AddressController@listaddressbyuser');
-		
+		Route::post('addressselected', 'API\AddressController@addressselectincart');
 		Route::post('createorder', 'API\OrderController@createorder');
 		Route::post('getorder', 'API\OrderController@getorderbyuser');
 		Route::apiResource('order', 'API\OrderController');

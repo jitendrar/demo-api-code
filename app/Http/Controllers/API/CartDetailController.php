@@ -104,7 +104,7 @@ class CartDetailController extends Controller
                     $CartArr = $cartdata->toArray();
                     $Address = array();
                     if(isset($CartArr[0]['user_id']) && !empty($CartArr[0]['user_id'])) {
-                        $Address    = Address::_GetPrimaryAddressByUserID($CartArr[0]['user_id']);
+                        $Address    = Address::_SelectAddressForCartByUserID($CartArr[0]['user_id']);
                     }
                     $status         = 1;
                     $StatusCode     = 200;
