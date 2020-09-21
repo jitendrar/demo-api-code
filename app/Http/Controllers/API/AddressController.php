@@ -17,7 +17,6 @@ class AddressController extends Controller
      */
     public function index(Request $request)
     {
-
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
@@ -25,13 +24,16 @@ class AddressController extends Controller
         $data           = array();
         $user_id = $request->get('user_id');
         if(!empty($user_id)) {
-            $PAGINATION_VALUE = env('PAGINATION_VALUE');
-            $addressdata      = Address::where('user_id',$user_id)->paginate($PAGINATION_VALUE);
+            $PAGINATION_VALUE   = env('PAGINATION_VALUE');
+            $ACTIVE_STATUS      = Address::$ACTIVE_STATUS;
+            $addressdata        = Address::where('user_id',$user_id)
+                                            ->where('status',$ACTIVE_STATUS)
+                                            ->get();
             if($addressdata->count()) {
                 $status         = 1;
                 $StatusCode     = 200;
                 $msg            = __('words.retrieved_successfully');
-                $data           = $addressdata;
+                $data           = AddressResource::collection($addressdata);
             }
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
@@ -47,7 +49,6 @@ class AddressController extends Controller
      */
     public function store(Request $request)
     {
-
         $StatusCode     = 403;
         $status         = 0;
         $msg            = "";
@@ -208,7 +209,6 @@ class AddressController extends Controller
 
     public function listaddressbyuser(Request $request)
     {
-
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
@@ -229,16 +229,15 @@ class AddressController extends Controller
         } else {
             $user_id = $request->get('user_id');
             if(!empty($user_id)) {
-                $PAGINATION_VALUE = env('PAGINATION_VALUE');
                 $ACTIVE_STATUS = Address::$ACTIVE_STATUS;
                 $addressdata      = Address::where('user_id',$user_id)
                                             ->where('status',$ACTIVE_STATUS)
-                                            ->paginate($PAGINATION_VALUE);
+                                            ->get();
                 if($addressdata->count()) {
                     $status         = 1;
                     $StatusCode     = 200;
                     $msg            = __('words.retrieved_successfully');
-                    $data           = $addressdata;
+                    $data           = AddressResource::collection($addressdata);
                 }
             }
         }
