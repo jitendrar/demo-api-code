@@ -24,6 +24,7 @@ class AddressResource extends JsonResource
             'zipcode' => $this->zipcode,
             'primary_address' => $this->primary_address,
             'status' => _GetStatusName($this->status),
+            'is_select' => $this->is_select,
             'created_at' => date($API_DATE_FORMAT,strtotime($this->created_at)),
             'updated_at' => date($API_DATE_FORMAT,strtotime($this->updated_at)),
         ];
