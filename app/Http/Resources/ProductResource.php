@@ -35,9 +35,9 @@ class ProductResource extends JsonResource
     public function GetImage() {
         $picture = url("/images/no_image.jpeg");
         if(!empty($this->picture)) {
-            $filename = public_path()."/".$this->picture;
+            $filename = public_path().$this->picture;
             if (file_exists($filename)) {
-                $picture = url("/".$this->picture);
+                $picture = url($this->picture);
             }
         }
         return $picture;
