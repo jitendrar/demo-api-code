@@ -221,6 +221,7 @@ class OrderController extends Controller
                             $ArrWallete = array();
                             $Orderdata  = Order::with('orderDetail')->where('id',$order_id)->get();
                             $data       = $Orderdata;
+                            Address::where('user_id',"=",$user_id)->update(['is_select' => 0]);
                         }
                         // if($totalOrderPrice <= $ArrUser->balance) {
                         // } else {
