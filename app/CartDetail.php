@@ -21,4 +21,12 @@ class CartDetail extends Model
 			CartDetail::where('non_login_token',$non_login_token)->update(['user_id' => $user_id]);
 		}
 	}
+
+	public static function _DeleteOtherCartByUserIDByLoginToke($user_id =0, $non_login_token=0) {
+		if(!empty($user_id) && !empty($non_login_token)) {
+			CartDetail::where('user_id', $user_id)
+						->where('non_login_token','!=', $non_login_token)
+						->delete();
+		}
+	}
 }

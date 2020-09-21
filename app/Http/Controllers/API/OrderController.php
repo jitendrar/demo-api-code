@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\CartResource;
+use App\Http\Resources\WalletHistoryResource;
 use App\Http\Resources\OrderDetailResource;
 use Validator;
 
@@ -195,7 +196,7 @@ class OrderController extends Controller
                         $OrderCreate = Order::create($ArrOrder);
                         if($OrderCreate) {
                             $order_id       = $OrderCreate->id;
-                            $order_number   = "ORD_".$order_id;
+                            $order_number   = "ORD".$order_id;
                             Order::where('id',$order_id)->update(['order_number' => $order_number]);
                             $status         = 1;
                             $StatusCode     = 200;
@@ -211,14 +212,15 @@ class OrderController extends Controller
                                     CartDetail::destroy($value->id);
                                 }
                             }
+                            $ArrWallete = array();
                             $ArrWallete['user_id']              = $user_id;
+                            $ArrWallete['order_id']             = $order_id;
                             $ArrWallete['user_balance']         = $AvailableBalance;
                             $ArrWallete['transaction_amount']   = $totalOrderPrice;
                             $ArrWallete['transaction_type']= WalletHistory::$TRANSACTION_TYPE_DEBIT;
                             $ArrWallete['remark'] = "Deduct money for your order";
                             WalletHistory::create($ArrWallete);
                             User::where('id',$ArrUser->id)->update(['balance' => $AvailableBalance]);
-                            $ArrWallete = array();
                             $Orderdata  = Order::with('orderDetail')->where('id',$order_id)->get();
                             $data       = $Orderdata;
                             Address::where('user_id',"=",$user_id)->update(['is_select' => 0]);
@@ -266,12 +268,17 @@ class OrderController extends Controller
                 $ArrUser = User::find($user_id);
                 if($ArrUser) {
                     $PAGINATION_VALUE = env('PAGINATION_VALUE');
-                    $walletdata = WalletHistory::where('user_id',$user_id)->paginate($PAGINATION_VALUE);
+                    $walletdata       = WalletHistory::where('user_id',$user_id)
+                                                    ->paginate($PAGINATION_VALUE);
                     if($walletdata->count()) {
                         $StatusCode     = 200;
                         $status         = 1;
                         $msg            = __('words.retrieved_successfully');
-                        $data       = $walletdata;
+                        foreach ($walletdata as $K => $V) {
+                            $walletdata[$K]   = new WalletHistoryResource($V);
+                        }
+                        $data           = $walletdata;
+                        // $data           = WalletHistoryResource::collection($walletdata);
                     }
                 } else {
                     $StatusCode     = 204;
