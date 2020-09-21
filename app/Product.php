@@ -29,4 +29,27 @@ class Product extends Model implements TranslatableContract
             return $Product;
         }
     }
+    public static function getAttachment($product_id = 0)
+    {
+        $img = '';
+        $formObj = Product::find($product_id);
+        if($formObj)
+        {
+            $img = asset($formObj->picture); 
+            if(file_exists(public_path().$formObj->picture))
+            {
+                $img = $img;
+            }
+            else
+            {
+                $img = asset('images/coming_soon.png');
+            }
+        }
+        return $img;
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ProductsImages::class, 'id');
+    }
 }
