@@ -216,7 +216,7 @@ class AuthController extends Controller
                 $msg = __('words.mobile_not_verified');
                 if($user->status == 1) {
                     User::where('id',$user->id)->update(['non_login_token' => $non_login_token]);
-                    CartDetail::_UpdateUserIDByLoginToke($user->id,$user->non_login_token);
+                    CartDetail::_UpdateUserIDByLoginToke($user->id,$non_login_token);
                     User::where('id',$user->id)->update(['notification_token' => $notification_token]);
                     $ArrDeviceInfo = array();
                     $ArrDeviceInfo['user_id'] = $user->id;
