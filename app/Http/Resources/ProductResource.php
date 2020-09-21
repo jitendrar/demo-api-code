@@ -17,7 +17,7 @@ class ProductResource extends JsonResource
         $API_DATE_FORMAT = env('API_DATE_FORMAT');
         return [
             'id' => $this->id,
-            'category_id' => $this->category_id,
+            // 'category_id' => $this->category_id,
             'product_name' => $this->product_name,
             'description' => $this->description,
             'units_in_stock' => $this->units_in_stock,
