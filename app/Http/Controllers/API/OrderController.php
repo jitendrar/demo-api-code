@@ -382,26 +382,12 @@ class OrderController extends Controller
                         $arrOrderDetails['product_id']          = $V['product_id'];
                         $arrOrderDetails['quantity']            = $V['quantity'];
                         $arrOrderDetails['price']               = $V['price'];
-                        CartDetail::create($arrOrderDetails);
+                        CartDetail::_AddUpdateCartItems($arrOrderDetails);
                     }
                     $status         = 1;
                     $StatusCode     = 200;
                     $msg            = __('words.repeat_order');
                     $data           = array();
-                    // if(!empty($user_id)) {
-                    //     $gst_charge         = 0;
-                    //     $delivery_charge    = 0;
-                    //     $gst_charge         = (int)Config::GetConfigurationList(Config::$GST_CHARGE);
-                    //     $delivery_charge    = (int)Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
-                    //     $cartdata   = CartDetail::with('product')->where('user_id',$user_id)->get();
-                    //     $Address    = Address::_GetPrimaryAddressByUserID($user_id);
-                    //     if($cartdata->count()) {
-                    //         $data['gst_charge'] = $gst_charge;
-                    //         $data['delivery_charge'] = $delivery_charge;
-                    //         $data['address'] = $Address;
-                    //         $data['cart_data'] = CartResource::collection($cartdata);
-                    //     }
-                    // }
                 } else {
                     $StatusCode     = 204;
                     $status         = 0;
