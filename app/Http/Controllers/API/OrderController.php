@@ -271,7 +271,8 @@ class OrderController extends Controller
                 if($ArrUser) {
                     $PAGINATION_VALUE = env('PAGINATION_VALUE');
                     $walletdata       = WalletHistory::where('user_id',$user_id)
-                                                    ->paginate($PAGINATION_VALUE);
+                                                ->orderBy('wallet_history.id', 'desc')
+                                                ->paginate($PAGINATION_VALUE);
                     if($walletdata->count()) {
                         $StatusCode     = 200;
                         $status         = 1;
