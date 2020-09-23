@@ -267,4 +267,34 @@ class CartDetailController extends Controller
         return response($arrReturn,$StatusCode);
     }
 
+
+    public function generatetimeslot()
+    {
+        $intervelHour = 2;
+        $MainstartTime  = date("07:00:00");
+        $startTime      = date("07:00")." AM";
+        $ArrTimeSlot = array();
+        $i=1;
+        while (true) {
+          $EndTime  =  date('h:i A',strtotime("$intervelHour hour",strtotime($startTime)));
+          $MainEndTime =  date('h:i:s',strtotime("$intervelHour hour",strtotime($startTime)));
+          $hour24 =  date('H',strtotime($startTime));
+          $hour24 =  intval(date('H',strtotime($startTime)));
+          $ArrTimeSlot[$hour24] = $startTime." - ".$EndTime;
+          $startTime = $EndTime;
+          $i++;
+          if($MainstartTime == $MainEndTime) {
+            break;
+          }
+        }
+        // echo json_encode($ArrTimeSlot);
+        $ORDER_TIME_SLOT_FILE   = env('ORDER_TIME_SLOT_FILE');
+        $JsonFile               = storage_path($ORDER_TIME_SLOT_FILE);
+        $myfile                 = fopen($JsonFile, "w");
+        $txt                    = json_encode($ArrTimeSlot);
+        fwrite($myfile, $txt);
+        fclose($myfile);
+        exit();
+    }
+
 }
