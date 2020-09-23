@@ -174,7 +174,7 @@ class OrderController extends Controller
             $payment_method         = $request->get('payment_method');
             $delivery_charge        = 0;
             $delivery_charge        = Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
-
+            $delivery_tax           = 0;
             if(!empty($user_id)) {
                 $ArrUser = User::find($user_id);
                 if($ArrUser) {
@@ -184,6 +184,7 @@ class OrderController extends Controller
                         foreach ($cartdata as $key => $value) {
                             $totalOrderPrice = $totalOrderPrice+$value->price;
                         }
+                        $totalOrderPrice = $totalOrderPrice+$delivery_charge;
                         $AvailableBalance = $ArrUser->balance-$totalOrderPrice;
                         $ArrOrder = array();
                         $ArrOrder['user_id']                = $user_id;
