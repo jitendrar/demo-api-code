@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\CartResource;
+use App\Http\Resources\WalletHistoryResource;
 use App\Http\Resources\OrderDetailResource;
 use Validator;
 
@@ -112,7 +113,9 @@ class OrderController extends Controller
             $user_id    = $request->get('user_id');
             if(!empty($user_id)) {
                 $Orderdata = Order::with('address', 'orderDetail.product')
-                                    ->where('user_id',$user_id)->paginate($PAGINATION_VALUE);
+                                    ->where('user_id',$user_id)
+                                    ->orderBy('orders.id', 'desc')
+                                    ->paginate($PAGINATION_VALUE);
                 // $Address    = Address::_GetPrimaryAddressByUserID($user_id);
                 if($Orderdata->count()) {
                     $status         = 1;
@@ -148,7 +151,7 @@ class OrderController extends Controller
         $RegisterData = Validator::make($request->all(), [
             'user_id' => 'required|numeric',
             'address_id' => 'required|numeric|not_in:0',
-            'special_information' => 'required',
+            // 'special_information' => 'required',
             'delivery_date' => 'required|date',
             'delivery_time' => 'required',
         ]);
@@ -171,7 +174,7 @@ class OrderController extends Controller
             $payment_method         = $request->get('payment_method');
             $delivery_charge        = 0;
             $delivery_charge        = Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
-
+            $delivery_tax           = 0;
             if(!empty($user_id)) {
                 $ArrUser = User::find($user_id);
                 if($ArrUser) {
@@ -181,6 +184,7 @@ class OrderController extends Controller
                         foreach ($cartdata as $key => $value) {
                             $totalOrderPrice = $totalOrderPrice+$value->price;
                         }
+                        $totalOrderPrice = $totalOrderPrice+$delivery_charge;
                         $AvailableBalance = $ArrUser->balance-$totalOrderPrice;
                         $ArrOrder = array();
                         $ArrOrder['user_id']                = $user_id;
@@ -195,7 +199,7 @@ class OrderController extends Controller
                         $OrderCreate = Order::create($ArrOrder);
                         if($OrderCreate) {
                             $order_id       = $OrderCreate->id;
-                            $order_number   = "ORD_".$order_id;
+                            $order_number   = "ORD".$order_id;
                             Order::where('id',$order_id)->update(['order_number' => $order_number]);
                             $status         = 1;
                             $StatusCode     = 200;
@@ -211,16 +215,18 @@ class OrderController extends Controller
                                     CartDetail::destroy($value->id);
                                 }
                             }
+                            $ArrWallete = array();
                             $ArrWallete['user_id']              = $user_id;
+                            $ArrWallete['order_id']             = $order_id;
                             $ArrWallete['user_balance']         = $AvailableBalance;
                             $ArrWallete['transaction_amount']   = $totalOrderPrice;
                             $ArrWallete['transaction_type']= WalletHistory::$TRANSACTION_TYPE_DEBIT;
                             $ArrWallete['remark'] = "Deduct money for your order";
                             WalletHistory::create($ArrWallete);
                             User::where('id',$ArrUser->id)->update(['balance' => $AvailableBalance]);
-                            $ArrWallete = array();
                             $Orderdata  = Order::with('orderDetail')->where('id',$order_id)->get();
                             $data       = $Orderdata;
+                            Address::where('user_id',"=",$user_id)->update(['is_select' => 0]);
                         }
                         // if($totalOrderPrice <= $ArrUser->balance) {
                         // } else {
@@ -265,12 +271,18 @@ class OrderController extends Controller
                 $ArrUser = User::find($user_id);
                 if($ArrUser) {
                     $PAGINATION_VALUE = env('PAGINATION_VALUE');
-                    $walletdata = WalletHistory::where('user_id',$user_id)->paginate($PAGINATION_VALUE);
+                    $walletdata       = WalletHistory::where('user_id',$user_id)
+                                                ->orderBy('wallet_history.id', 'desc')
+                                                ->paginate($PAGINATION_VALUE);
                     if($walletdata->count()) {
                         $StatusCode     = 200;
                         $status         = 1;
                         $msg            = __('words.retrieved_successfully');
-                        $data       = $walletdata;
+                        foreach ($walletdata as $K => $V) {
+                            $walletdata[$K]   = new WalletHistoryResource($V);
+                        }
+                        $data           = $walletdata;
+                        // $data           = WalletHistoryResource::collection($walletdata);
                     }
                 } else {
                     $StatusCode     = 204;
@@ -366,32 +378,20 @@ class OrderController extends Controller
                 if($Orderdata) {
                     $OrderdataArr = $Orderdata->toArray();
                     $user_id = $Orderdata['user_id'];
+                    $ArrUser = User::find($user_id);
                     foreach ($OrderdataArr['order_detail'] as $K => $V) {
                         $arrOrderDetails = array();
-                        $arrOrderDetails['user_id']     = $Orderdata['user_id'];
-                        $arrOrderDetails['product_id']  = $V['product_id'];
-                        $arrOrderDetails['quantity']    = $V['quantity'];
-                        $arrOrderDetails['price']       = $V['price'];
-                        CartDetail::create($arrOrderDetails);
+                        $arrOrderDetails['user_id']             = $Orderdata['user_id'];
+                        $arrOrderDetails['non_login_token']     = $ArrUser->non_login_token;
+                        $arrOrderDetails['product_id']          = $V['product_id'];
+                        $arrOrderDetails['quantity']            = $V['quantity'];
+                        $arrOrderDetails['price']               = $V['price'];
+                        CartDetail::_AddUpdateCartItems($arrOrderDetails);
                     }
                     $status         = 1;
                     $StatusCode     = 200;
                     $msg            = __('words.repeat_order');
                     $data           = array();
-                    // if(!empty($user_id)) {
-                    //     $gst_charge         = 0;
-                    //     $delivery_charge    = 0;
-                    //     $gst_charge         = (int)Config::GetConfigurationList(Config::$GST_CHARGE);
-                    //     $delivery_charge    = (int)Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
-                    //     $cartdata   = CartDetail::with('product')->where('user_id',$user_id)->get();
-                    //     $Address    = Address::_GetPrimaryAddressByUserID($user_id);
-                    //     if($cartdata->count()) {
-                    //         $data['gst_charge'] = $gst_charge;
-                    //         $data['delivery_charge'] = $delivery_charge;
-                    //         $data['address'] = $Address;
-                    //         $data['cart_data'] = CartResource::collection($cartdata);
-                    //     }
-                    // }
                 } else {
                     $StatusCode     = 204;
                     $status         = 0;
