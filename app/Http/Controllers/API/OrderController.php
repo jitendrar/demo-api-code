@@ -113,7 +113,9 @@ class OrderController extends Controller
             $user_id    = $request->get('user_id');
             if(!empty($user_id)) {
                 $Orderdata = Order::with('address', 'orderDetail.product')
-                                    ->where('user_id',$user_id)->paginate($PAGINATION_VALUE);
+                                    ->where('user_id',$user_id)
+                                    ->orderBy('orders.id', 'desc')
+                                    ->paginate($PAGINATION_VALUE);
                 // $Address    = Address::_GetPrimaryAddressByUserID($user_id);
                 if($Orderdata->count()) {
                     $status         = 1;
