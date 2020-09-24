@@ -23,5 +23,7 @@ return [
 	'no_cart_in_order_placed' => 'ઓર્ડર બનાવવા માટે કાર્ટ માં આઈટમ નથી',
 	'phone_change_sucsses' => 'તમારો મોબાઇલ નંબર સફળતાપૂર્વક બદલાઈ ગયો',
 	'repeat_order' => 'તમારો ઓર્ડર સફળતાપૂર્વક પુનરાવર્તિત થયો.',
+	'order_status_pending' => 'વિતરણ બાકી',
+	'order_status_delivered' => 'વિતરણ સફળ',
 ];
 ?>

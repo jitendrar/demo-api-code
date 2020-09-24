@@ -23,5 +23,7 @@ return [
 	'no_cart_in_order_placed' => 'There is no item in the cart to make the order.',
 	'phone_change_sucsses' => 'Your mobile number successfully changed ',
 	'repeat_order' => 'Your order repeated successfully.',
+	'order_status_pending' => 'Pending',
+	'order_status_delivered' => 'Delivered',
 ];
 ?>
