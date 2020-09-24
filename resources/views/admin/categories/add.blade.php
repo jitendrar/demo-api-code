@@ -60,8 +60,8 @@
                         <div class="form-group">
                             <label for="" class=" col-md-3 control-label">Category Name [{{ $val }}]:
                              </label>
-                            <div class="col-md-9">
-                            {!! Form::text('category_name['.$lng.'][]',$title,['class' => 'form-control']) !!}
+                            <div class="col-md-6">
+                            {!! Form::text('category_name['.$val.']',$title,['class' => 'form-control']) !!}
                             </div>
                         </div>
                     </div>
@@ -70,13 +70,14 @@
                         <label for="" class="col-md-3 control-label"> Description [{{ $val }}]
                         </label>
                         <div class="col-md-6">
-                            {!! Form::textarea('description['.$lng.'][]',$description,['class' => 'form-control ckeditor']) !!}
+                            {!! Form::textarea('description['.$val.']',$description,['class' => 'form-control ckeditor']) !!}
                         </div>
                         </div>
                     </div>
                 </div>
                 @endforeach
-                <div class="row"sss>
+                <hr>
+                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="col-md-3 control-label">Status:<span class="required">*</span></label>

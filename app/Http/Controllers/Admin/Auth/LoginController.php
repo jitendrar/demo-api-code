@@ -47,11 +47,11 @@ class LoginController extends Controller
         else{
             if (Auth::guard('admins')->attempt(['email' => $request->get('email'), 'password' => $request->get('password')])) 
             {
-                $authuser = AdminUser::where('email',$request->get('email'))->first();
+                /*$authuser = AdminUser::where('email',$request->get('email'))->first();
                 if(!$authuser){
                     $msg = 'Your user cannot do this';
                     return ['status' => 0, 'msg' => $msg,'goto'=>$goto];
-                }
+                }*/
 
                 $user = Auth::guard('admins')->user();
                 $status = 1;
@@ -79,7 +79,6 @@ class LoginController extends Controller
         $url = '/';
         $user = Auth::guard('admins')->user();
         Auth::guard('admins')->logout();
-        \session()->forget(['toggleFlag']);
         return redirect($url);  
     }
 }

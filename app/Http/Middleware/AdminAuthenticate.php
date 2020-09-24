@@ -16,7 +16,8 @@ class AdminAuthenticate
 
     public function handle($request, Closure $next)
     {
-        if (!Auth::guard('admins')->check()) 
+        $guard = "admins";
+        if (!Auth::guard($guard)->check()) 
         {
             if ($request->ajax()) 
             {
@@ -28,5 +29,7 @@ class AdminAuthenticate
             }
         }
         return $next($request);
+        return $response->header('Cache-Control','nocache, no-store, max-age=0, must-revalidate')
+                                        ->header('Pragma','no-cache');
     }
 }
