@@ -1,0 +1,275 @@
+.ms-options-wrap,
+.ms-options-wrap * {
+    box-sizing: border-box;
+}
+.ms-options-wrap{position: relative;}
+.ms-options-wrap > button:focus,
+.ms-options-wrap > button {
+    position: relative;
+    width: 100%;
+    text-align: left;
+    border: 1px solid #aaa;
+    background-color: #fff;
+    padding: 5px 20px 5px 5px;
+    margin-top: 1px;
+    font-size: 13px;
+    color: #aaa;
+    outline-offset: -2px;
+    white-space: nowrap;
+}
+
+.ms-options-wrap > button > span {
+    display: inline-block;
+}
+
+.ms-options-wrap > button[disabled] {
+    background-color: #e5e9ed;
+    color: #808080;
+    opacity: 0.6;
+}
+
+.ms-options-wrap > button:after {
+    content: ' ';
+    height: 0;
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    width: 0;
+    border: 6px solid rgba(0, 0, 0, 0);
+    border-top-color: #999;
+    margin-top: -3px;
+}
+
+.ms-options-wrap.ms-has-selections > button {
+    color: #333;
+}
+
+.ms-options-wrap > .ms-options {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    margin-top: 1px;
+    margin-bottom: 20px;
+    background: white;
+    z-index: 2000;
+    border: 1px solid #2f5682;
+    overflow: auto;
+    visibility: hidden;
+}
+
+.ms-options-wrap.ms-active > .ms-options {
+    visibility: visible;
+    padding: 5px 0;
+    margin-top: -1px;
+}
+
+.ms-options-wrap > .ms-options > .ms-search input {
+    width: 100%;
+    padding: 7px 5px;
+    border: none;
+    border-bottom: 1px groove;
+    outline: none;
+}
+
+.ms-options-wrap > .ms-options .ms-selectall {
+    display: inline-block;
+    font-size: .9em;
+    text-transform: lowercase;
+    text-decoration: none;
+}
+.ms-options-wrap > .ms-options .ms-selectall:hover {
+    text-decoration: underline;
+}
+
+.ms-options-wrap > .ms-options > .ms-selectall.global {
+    margin: 10px 10px 5px;
+    text-transform: capitalize;
+}
+
+.ms-options-wrap > .ms-options > ul,
+.ms-options-wrap > .ms-options > ul > li.optgroup ul {
+    list-style-type: none;
+    padding: 5px;
+    margin: 0;
+}
+
+.ms-options-wrap > .ms-options > ul li.ms-hidden {
+    display: none;
+}
+
+.ms-options-wrap > .ms-options > ul > li.optgroup {
+    padding: 5px;
+}
+.ms-options-wrap > .ms-options > ul > li.optgroup + li.optgroup {
+    border-top: 1px solid #aaa;
+}
+
+.ms-options-wrap > .ms-options > ul > li.optgroup .label {
+    display: block;
+    padding: 5px 0 0 0;
+    font-weight: bold;
+}
+
+.ms-options-wrap > .ms-options > ul label {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    padding: 4px 4px 4px 20px;
+    margin: 1px 0;
+    border: 1px dotted transparent;
+}
+.ms-options-wrap > .ms-options.checkbox-autofit > ul label,
+.ms-options-wrap > .ms-options.hide-checkbox > ul label {
+    padding: 4px;
+}
+
+.ms-options-wrap > .ms-options > ul label.focused,
+.ms-options-wrap > .ms-options > ul label:hover {
+    background-color: #efefef;
+    border-color: #999;
+}
+
+.ms-options-wrap > .ms-options > ul li.selected label {
+    background-color: #efefef;
+    border-color: transparent;
+}
+
+.ms-options-wrap > .ms-options > ul input[type="checkbox"] {
+    margin: 0 5px 0 0;
+    position: absolute;
+    left: 4px;
+    top: 7px;
+}
+
+.ms-options-wrap > .ms-options.hide-checkbox > ul input[type="checkbox"] {
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+}
+.title_belt {
+    padding:15px;
+    border: 1px solid #e1e3e5;
+    margin-bottom:15px;
+    background-color:#f6f7f7;
+}
+.title_belt h2 {
+    color: #001a34 !important;
+    font-size: 48px !important;
+    font-weight: 300 !important;
+    line-height: 1 !important;
+    font-family: 'Ubuntu', Arial, Helvetica, sans-serif !important;
+    margin-top: 15px;
+}
+h2.last_update {
+    margin-top: 0px;
+}
+.title_belt h2 + span {
+    color:#333;
+    font-size:20px;
+    font-weight:400;
+    text-transform: capitalize;
+}
+.title_belt h2 + span:before {
+    content:'';
+    display:inline-block;
+    height:18px;
+    width:4px;
+    background-color:#333;
+    position:relative;
+    top:2px;
+    margin-right:10px;
+}        
+.ms-options-wrap > .ms-options > ul > li.optgroup .label{
+    color: #000 !important;
+    clear: both;
+    margin-bottom: 10px !important;
+}
+/*-------------*/
+#ms-list-1> button{background-color: transparent;
+    border: #2f5682 solid 1px;
+    border: 1px solid #2f5682;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    position: relative;
+    /*width: 466px;*/
+    height: 80px;
+    color: #fff;
+    font-size: 54px;
+    font-weight: 300;
+    line-height: 1;}
+#ms-list-1>button>span{
+    color: #001a34;
+    line-height: 52px;
+}
+.ms-options-wrap > .ms-options > ul li.selected label {
+    background-color: transparent;
+    border-color: transparent;
+    color: inherit;
+}
+.ms-options-wrap > .ms-options > ul label.focused, .ms-options-wrap > .ms-options > ul label:hover {
+    background-color: #041b34!important;
+    color: #fff!important;
+    cursor: pointer;
+}
+.btn-filter-account, .btn-filter-select-account, .btn-select-fees-portfolios{
+    margin: 5px 10px 10px;
+    min-width: 100px;
+}
+
+/*----- 18-08-19 css  -----*/
+.ms-options-radio input[type="checkbox"]{
+}
+
+.ms-options-radio input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+}
+.ms-options-radio input[type="checkbox"] + span.chk-radio {
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+}
+.ms-options-radio input[type="checkbox"] + span.chk-radio:before {
+  content: '';
+  margin-right: 10px;
+  display: inline-block;
+  vertical-align: text-top;
+  width: 18px;
+  height: 18px;
+  background: #ccc;
+  border-radius:25px;
+  -webkit-border-radius:25px;
+  -moz-border-radius:25px;
+}
+.ms-options-radio input[type="checkbox"]:hover + span.chk-radio:before {
+  background: #ccc;
+}
+.ms-options-radio input[type="checkbox"]:checked + span.chk-radio:before {
+  background: #ccc;
+}
+.ms-options-radio input[type="checkbox"]:disabled + span.chk-radio {
+  color: #b8b8b8;
+  cursor: auto;
+}
+.ms-options-radio input[type="checkbox"]:disabled + label:before {
+  box-shadow: none;
+  background: #ddd;
+}
+.ms-options-radio input[type="checkbox"]:checked + span.chk-radio:after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width:10px;
+  height:10px;
+  background: #001a34;
+  border-radius:25px;
+  -webkit-border-radius:25px;
+  -moz-border-radius:25px;  
+}
+.ui-datepicker{z-index: 99999!important;}
+.portlet-title .header-dropdowns{padding-top: 10px;padding-bottom:10px;}
+/*----- 18-08-19 css  end-----*/

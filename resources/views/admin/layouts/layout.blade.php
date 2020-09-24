@@ -29,6 +29,9 @@
         <link href="{{ asset('themes/admin/assets/layouts/layout3/css/themes/default.min.css') }}" rel="stylesheet" type="text/css" id="style_color" />
         <link href="{{ asset('themes/admin/assets/layouts/layout3/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
+        <link href="{{ asset('js/multiselect/jquery.multiselect.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('/themes/admin/assets/global/plugins/select2/css/select2.min.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('/themes/admin/assets/global/plugins/select2/css/select2-bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
         @yield('styles')
 
     </head>
@@ -36,7 +39,7 @@
 
     <body class="page-container-bg-solid">
         <div class="page-wrapper">
-            @include('admin.includes.Header')
+            @include('admin.includes.header')
             <div class="page-wrapper-row full-height">
                 <div class="page-wrapper-middle">
                     <!-- BEGIN CONTAINER -->
@@ -66,7 +69,13 @@
             @include('admin.includes.footer')
 
         </div>
-        
+        <div id="AjaxLoaderDiv" style="display: none;z-index:99999 !important;">
+            <div style="width:100%; height:100%; left:0px; top:0px; position:fixed; opacity:0; filter:alpha(opacity=40); background:#000000;z-index:999999999;">
+            </div>
+            <div style="float:left;width:100%; left:0px; top:50%; text-align:center; position:fixed; padding:0px; z-index:999999999;">
+                <img src="{{ asset('/') }}/images/ajax-loader.gif" />                
+            </div>
+        </div>    
         <div class="quick-nav-overlay"></div>
         {!! Form::open(['method' => 'DELETE','id' => 'global_delete_form']) !!}
         {!! Form::hidden('id', 0,['id' => 'delete_id']) !!}

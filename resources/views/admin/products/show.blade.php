@@ -63,7 +63,9 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Category:</label>
                         <div class="col-sm-9">
-                            <p> {{ $category }}</p>
+                            @foreach($category as $category)
+                            <p> {{ $category}}</p>
+                            @endforeach
                         </div>
                     </div>
                 </form>

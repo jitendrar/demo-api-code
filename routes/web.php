@@ -6,7 +6,6 @@ $ADMIN_PREFIX = "admin";
 //Auth Route before login
 Route::get('/','Admin\Auth\LoginController@getLogin')->name('admin_login');
 Route::get('login','Admin\Auth\LoginController@getLogin')->name('admin_login');
-Route::get('admin','Admin\Auth\LoginController@getLogin')->name('admin_login');
 Route::post('login', 'Admin\Auth\LoginController@postLogin')->name("check_admin_login");
 
 //logout
@@ -28,6 +27,7 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::any('users/data','Admin\UserController@data')->name('users.data');
 	Route::resource('users','Admin\UserController');
 	Route::post('addmoney/{id}','Admin\UserController@addMoney')->name('addmoney');
+	Route::any('users/wallet_history/{id}','Admin\UserController@wallethistory')->name('wallethistory');
 
 
 	//products list

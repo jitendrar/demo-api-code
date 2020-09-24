@@ -21,7 +21,7 @@
             @foreach($orderDetail as $detail)
             <tbody>
                 <td width="5%">{{ $detail->id }}</td>
-                <td width="20">{{$detail->product->product_name}}</td>
+                <td width="20">{{$detail->product->product_name ?? ''}}</td>
                 <td width="20%">{{number_format(($detail->price),2)}}</td>
                 <td width="15%">{{$detail->quantity}}</td>
                 <td width="20%">{{number_format(($detail->discount),2)}}</td>

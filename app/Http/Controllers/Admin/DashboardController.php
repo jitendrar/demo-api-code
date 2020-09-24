@@ -20,7 +20,7 @@ class DashboardController extends Controller
     public function dashboard()
     {        
         $data = array();
-        $authUser = \Auth::user();
+        $authUser = Auth::guard('admins')->user();
         $data['authUser'] = $authUser;
         $data['total_User'] = User::count();
         $order = Order::query()->where('orders.order_status','!=','Delivered')
@@ -172,10 +172,11 @@ class DashboardController extends Controller
         $authUser = \Auth::guard('admins')->user();
         $modal = Order::select('orders.user_id','orders.id','orders.total_price','users.first_name as userName','orders.created_at','addresses.address_line_1')
             ->leftJoin('users','orders.user_id','=','users.id')
-            ->leftJoin('addresses','users.id','=','addresses.user_id')
+            ->leftJoin('addresses','orders.address_id','=','addresses.id')
             ->where('orders.order_status','!=','Delivered')
+            ->orWhere('orders.order_status','!=','D')
             ->where(\DB::raw("DATE_FORMAT(orders.created_at, '%Y-%m-%d')"),'=',date('Y-m-d'));
-        $modal = $modal->orderBy('orders.created_at');
+        $modal = $modal->orderBy('orders.created_at','desc');
         return \DataTables::eloquent($modal)
         ->editColumn('created_at', function($row) {
             if(!empty($row->created_at))

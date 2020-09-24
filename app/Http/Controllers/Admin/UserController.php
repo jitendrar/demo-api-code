@@ -48,7 +48,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $authUser = \Auth::user();
+        $authUser = Auth::guard('admins')->user();
         $data = array();
         $data['formObj'] = $this->modelObj;
         $data['module_title'] = $this->module;
@@ -134,7 +134,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $authUser= \Auth::user();
+        $authUser= Auth::guard('admins')->user();
         $data = array();
         $userObj = $this->modelObj->find($id);
         if(!$userObj)
@@ -148,7 +148,7 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        $authUser = \Auth::user();
+        $authUser = Auth::guard('admins')->user();
         $formObj = $this->modelObj->find($id);
 
         if(!$formObj)
@@ -163,7 +163,7 @@ class UserController extends Controller
         $data['action_url'] = $this->moduleRouteText.".update";
         $data['action_params'] = $formObj->id;
         $data['method'] = "PUT";
-        $data["authUser"] = \Auth::user();
+        $data["authUser"] = $authUser;
         $data['address'] = Address::where('user_id',$formObj->id)->first();
         $data["isEdit"] = 1;
         return view($this->moduleViewName.'.add', $data);
@@ -282,7 +282,7 @@ class UserController extends Controller
     }
     public function data(Request $request)
     {
-        $modelObj = \Auth::User();
+        $modelObj = Auth::guard('admins')->user();
         $model = User::query();
         return DataTables::eloquent($model)
         ->editColumn('status', function($row) {
@@ -300,6 +300,7 @@ class UserController extends Controller
                     'isDelete' =>1,
                     'isView' =>1,
                     'ispay' =>1,
+                    'isshowhistory' => 1,
                 ]
             )->render();
         })->rawcolumns(['action','status'])
@@ -377,12 +378,29 @@ class UserController extends Controller
             $model->balance +=$amount;
             $model->save();
             $obj = new WalletHistory();
+            $obj->order_id = -1; 
             $obj->user_id = $model->id;
             $obj->user_balance = $model->balance;
             $obj->transaction_amount = $amount;
+            $obj->transaction_type = WalletHistory::$TRANSACTION_TYPE_CREDIT;;
             $obj->remark = $description;
             $obj->save();
         }
         return ['status' => $status, 'msg' => $msg, 'data' => $data];
+    }
+
+    public function wallethistory(Request $request,$id){
+        $data = array();
+        $msg = '';
+        $html = '';
+        $status = 1;
+        $wallethistory = WalletHistory::where('user_id',$id)->get();
+        if(!$wallethistory)
+        {
+            return ['status' => 0, 'msg'=>$msg, 'html'=>$html];
+        }
+        $data['wallethistory'] = $wallethistory;
+        $html =  view($this->moduleViewName.'.wallet_history', $data)->render();
+        return ['status' => $status, 'msg'=>$msg, 'html'=>$html];
     }
 }

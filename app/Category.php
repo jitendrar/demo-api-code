@@ -51,5 +51,12 @@ class Category extends Model implements TranslatableContract
             ->pluck('category_translations.category_name', 'category_translations.category_id')
             ->all();
     }
+    public static function getCategories($product_id=0){
+        return ProductMapping::leftJoin('category_translations','product_mappings.category_id','=','category_translations.category_id')
+        ->where('product_mappings.product_id',$product_id)
+        ->where('category_translations.locale','=','en')
+        ->pluck('category_translations.category_name', 'category_translations.category_id')
+        ->all();
+    }
 }
 
