@@ -115,7 +115,6 @@ class ProductController extends Controller
             }
         } else {
             $PAGINATION_VALUE = env('PAGINATION_VALUE');
-            $PAGINATION_VALUE = 10;
             $requestData = $request->all();
             $category_id = $requestData['category_id'];
             $non_login_token     = $requestData['non_login_token'];
