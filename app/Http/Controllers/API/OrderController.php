@@ -380,13 +380,15 @@ class OrderController extends Controller
                     $user_id = $Orderdata['user_id'];
                     $ArrUser = User::find($user_id);
                     foreach ($OrderdataArr['order_detail'] as $K => $V) {
-                        $arrOrderDetails = array();
-                        $arrOrderDetails['user_id']             = $Orderdata['user_id'];
-                        $arrOrderDetails['non_login_token']     = $ArrUser->non_login_token;
-                        $arrOrderDetails['product_id']          = $V['product_id'];
-                        $arrOrderDetails['quantity']            = $V['quantity'];
-                        $arrOrderDetails['price']               = $V['price'];
-                        CartDetail::_AddUpdateCartItems($arrOrderDetails);
+                        if(Product::_CheckProductIsActve($V['product_id'])) {
+                            $arrOrderDetails = array();
+                            $arrOrderDetails['user_id']             = $Orderdata['user_id'];
+                            $arrOrderDetails['non_login_token']     = $ArrUser->non_login_token;
+                            $arrOrderDetails['product_id']          = $V['product_id'];
+                            $arrOrderDetails['quantity']            = $V['quantity'];
+                            $arrOrderDetails['price']               = $V['price'];
+                            CartDetail::_AddUpdateCartItems($arrOrderDetails);
+                        }
                     }
                     $status         = 1;
                     $StatusCode     = 200;
