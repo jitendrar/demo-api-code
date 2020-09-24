@@ -25,10 +25,13 @@ function _GetStatusName($statusid='') {
 }
 
 function _GetOrderStatus($statusid='') {
+  
   if($statusid == "P") {
-    return "Pending";
+    // return "Pending";
+    return __('words.order_status_pending');
   } else if($statusid == "D") {
-    return "Delivered";
+    // return "Delivered";
+    return __('words.order_status_delivered');
   }
 }
 
