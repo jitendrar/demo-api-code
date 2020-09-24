@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
 use App\Order;
 use App\User;
 use App\Address;
@@ -54,7 +57,7 @@ class OrdersController extends Controller
 
     public function show($id)
     {
-        $authUser= \Auth::user();
+        $authUser= Auth::guard('admins')->user();
         $data = array();
         $orderModel = $this->modelObj->find($id);
         if(!$orderModel)
@@ -113,17 +116,21 @@ class OrdersController extends Controller
 
     public function Data(Request $request)
     {
-        $authUser = \Auth::User();
+        $authUser = Auth::guard('admins')->user();
         $modal = Order::select('orders.*','users.first_name','addresses.address_line_1')
             ->leftJoin('users','orders.user_id','=','users.id')
-            ->leftJoin('addresses','users.id','=','addresses.user_id');
-        $modal = $modal->orderBy('orders.created_at');
+            ->leftJoin('addresses','orders.address_id','=','addresses.id')
+            ->groupBy('orders.id');
+        $modal = $modal->orderBy('orders.created_at','desc');
         return \DataTables::eloquent($modal)
         ->editColumn('delivery_date', function($row) {
             if(!empty($row->delivery_date))
                 return date('Y-m-d h:i',strtotime($row->delivery_date));
             else
                 return '';
+        })
+        ->editColumn('totalPrice',function($row){
+            return OrderDetail::getOrderTotalPrice($row->id);
         })
         ->editColumn('created_at', function($row) {
             if(!empty($row->created_at))
@@ -133,9 +140,9 @@ class OrdersController extends Controller
         })
         ->editColumn('order_status', function($row) {
             $crrSts = $row->order_status;
-                if($crrSts == 'Delivered') 
+                if($crrSts == 'Delivered' || $crrSts == 'D') 
                     return '<span class="label label-sm label-success">Delivered</sapn>';
-                else if($crrSts == 'Pending') 
+                else if($crrSts == 'Pending' || $crrSts == 'P') 
                     return '<span class="label label-sm label-primary">Pending</sapn>';
                 else if($crrSts == 'delete') 
                     return '<span class="label label-sm label-danger">Delete</sapn>';
@@ -152,7 +159,7 @@ class OrdersController extends Controller
                     'isProductDetail' => 1,
                 ]
             )->render();
-        })->rawcolumns(['created_at','delivery_date','order_status','action'])
+        })->rawcolumns(['created_at','delivery_date','totalPrice','order_status','action'])
         ->filter(function ($query) 
             {
                 $search_id = request()->get("search_id");                                         
@@ -184,7 +191,7 @@ class OrdersController extends Controller
                     $query = $query->where("orders.order_number", 'LIKE', '%'.$search_oid.'%');
                     $searchData['search_oid'] = $search_oid;
                 } 
-                if($search_status == "Pending" || $search_status == "Delivered" || $search_status == "Delete" )
+                if($search_status == "Pending" || $search_status == "Delivered" || $search_status == "Delete")
                 {
                     $query = $query->where("orders.order_status", $search_status);
                     $searchData['search_status'] = $search_status;

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use App\Order;
 use App\Product;
@@ -10,6 +13,7 @@ use App\Category;
 use App\CategoryTranslation;
 use App\Custom;
 use App\ProductsImages;
+use App\ProductMapping;
 use DataTables;
 use Validator;
 use File;
@@ -59,6 +63,7 @@ class ProductsController extends Controller
         $data['buttonText'] = "<i class='fa fa-check'></i>Add";
         $data["method"] = "POST";
         $data["categories"] = category::categoryList();
+        $data["defaultCategories"] = [];
         $data['languages'] = Custom::__masterLocals();
         $data['images'] = '';
         $data["isEdit"] = 0;
@@ -73,10 +78,11 @@ class ProductsController extends Controller
         $data = array();
         $requestData = $request->all();
         $validationArr =    [
-                                'product_name' => 'required',
-                                'units_stock_type' => 'required',
-                                'units_in_stock' => 'required',
-                                'unity_price' => 'required',
+                                'product_name.*' => 'required',
+                                'description.*' =>'required',
+                                'units_stock_type.*' => 'required',
+                                'units_in_stock.*' => 'required',
+                                'unity_price.*' => 'required',
                                 'category_id' => 'required|exists:categories,id',
                                 'status' => 'required',
                             ];
@@ -101,12 +107,21 @@ class ProductsController extends Controller
             $units_stock_type = $request->get('units_stock_type');
             $units_in_stock = $request->get('units_in_stock');
             $unity_price = $request->get('unity_price');
-            $category_id = $request->get('category_id');
             $status_val = $request->get('status');
             $model = $this->modelObj;
             $model->status = $status_val;
-            $model->category_id =$category_id;
             $model->save();
+            $categories = $request->category_id;
+             if (!empty($categories)) {
+                foreach ($categories as $category) {
+                    $row = [
+                        'category_id' => $category,
+                        'product_id' => $model->id,
+                    ];
+                    $model1 = new ProductMapping($row);
+                    $model1->save();
+                }
+            }
             $languages= Custom::__masterLocals();
 
             foreach ($languages as $locale => $val)
@@ -114,23 +129,23 @@ class ProductsController extends Controller
                 $obj = new \App\ProductTranslation();
                 if(is_array($product_name) && !empty($product_name))
                 {
-                    $obj->product_name = $product_name[$locale][0];
+                    $obj->product_name = $product_name[$val];
                 }
                 if(is_array($description) && !empty($description))
                 {
-                    $obj->description = $description[$locale][0];
+                    $obj->description = $description[$val];
                 } 
                 if(is_array($units_stock_type) && !empty($units_stock_type))
                 {
-                    $obj->units_stock_type = $units_stock_type[$locale][0];
+                    $obj->units_stock_type = $units_stock_type[$val];
                 } 
                 if(is_array($units_in_stock) && !empty($units_in_stock))
                 {
-                    $obj->units_in_stock = $units_in_stock[$locale][0];
+                    $obj->units_in_stock = $units_in_stock[$val];
                 }  
                 if(is_array($unity_price) && !empty($unity_price))
                 {
-                    $obj->unity_price = $unity_price[$locale][0];
+                    $obj->unity_price = $unity_price[$val];
                 }
                 $obj->locale = $val;
                 $obj->product_id = $model->id;
@@ -177,13 +192,14 @@ class ProductsController extends Controller
     {
         $data = array();
         $productmodel = $this->modelObj->find($id);
+        $categories = ProductMapping::where('product_id',$productmodel->id)->get();
         if(!$productmodel)
         {
             return abort(404);
         }
         $data["primaryImg"] = Product::getAttachment($productmodel->id);
         $data["productImg"] = ProductsImages::getProductImages($productmodel->id);
-        $data['category'] = Category::getCategory($productmodel->category_id);
+        $data['category'] = Category::getCategories($productmodel->id);
         $data['product'] = $productmodel;
         return view($this->moduleViewName.'.show', $data);
     }
@@ -205,6 +221,7 @@ class ProductsController extends Controller
         $data['method'] = "PUT";
         $data["isEdit"] = 1;
         $data['languages']= Custom::__masterLocals();
+        $data['defaultCategories'] = category::getCategories($formObj->id);
         $data['categories'] = category::categoryList();
         $data["productImg"] = ProductsImages::select('*')->where('product_id',$formObj->id)->get();
         return view($this->moduleViewName.'.add', $data);
@@ -224,10 +241,11 @@ class ProductsController extends Controller
         $rulesArr = array();
         $requestData = $request->all();
         $validationArr =    [
-                                'product_name' => 'required',
-                                'units_stock_type' => 'required',
-                                'units_in_stock' => 'required',
-                                'unity_price' => 'required',
+                                'product_name.*' => 'required',
+                                'description.*' =>'required',
+                                'units_stock_type.*' => 'required',
+                                'units_in_stock.*' => 'required',
+                                'unity_price.*' => 'required',
                                 'category_id' => 'required|exists:categories,id',
                                 'status' => 'required',
                             ];
@@ -256,7 +274,24 @@ class ProductsController extends Controller
             $avatar_id = $request->file('avatar_id');
             $status_val = $request->get('status');
             $primary = $request->input('is_primary');
-            $model->category_id = $category_id;
+            $categories = $request->category_id;
+
+            if (!empty($categories)) {
+                foreach ($categories as $category) {
+                    $row = [
+                        'category_id' => $category,
+                        'product_id' => $model->id,
+                    ];
+                    $model1 = ProductMapping::where($row)->first();
+                    if (empty($model1)) {
+                        $model1 = new ProductMapping($row);
+                    } else {
+                        $model1->fill($row);
+                    }
+                    $model1->save();
+                }
+            }
+
             $model->status = $status_val;
             $model->save();
             $primaryRm=productsImages::where('product_id',$model->id)->get();
@@ -274,28 +309,29 @@ class ProductsController extends Controller
 
             $languages= Custom::__masterLocals();
             foreach ($languages as $locale => $val)
-            { 
+            {   
                 $obj = \App\ProductTranslation::where('locale',$val)->where('product_id',$model->id)->first();
                 if(is_array($product_name) && !empty($product_name))
                 {
-                    $obj->product_name = $product_name[$locale][0];
+                    $obj->product_name = $product_name[$val];
                 }
                 if(is_array($description) && !empty($description))
                 {
-                    $obj->description = $description[$locale][0];
+                    $obj->description = $description[$val];
                 } 
                 if(is_array($units_stock_type) && !empty($units_stock_type))
                 {
-                    $obj->units_stock_type = $units_stock_type[$locale][0];
+                    $obj->units_stock_type = $units_stock_type[$val];
                 } 
                 if(is_array($units_in_stock) && !empty($units_in_stock))
                 {
-                    $obj->units_in_stock = $units_in_stock[$locale][0];
+                    $obj->units_in_stock = $units_in_stock[$val];
                 }  
                 if(is_array($unity_price) && !empty($unity_price))
                 {
-                    $obj->unity_price = $unity_price[$locale][0];
+                    $obj->unity_price = $unity_price[$val];
                 }
+                
                 $obj->save();
             }
             if($request->file('multi_img')){
@@ -325,6 +361,7 @@ class ProductsController extends Controller
                     }
                     $model->save();
                 }
+
             }
         }
           return ['status' => $status, 'msg' => $msg, 'data' => $data];
@@ -419,10 +456,11 @@ class ProductsController extends Controller
 
     public function data(Request $request)
     {
-        //$model = Product::select('products.*','category_translations.category_name as catName')
-        //->leftJoin('categories','products.category_id','=','categories.id')
-        //->leftJoin('category_translations','categories.id','=','category_translations.category_id');
-        $model = Product::select('products.*')->leftJoin('product_translations','products.id','=','product_translations.product_id')->where('locale','en');
+        $model = Product::select('products.*','product_translations.product_id')
+                ->join('product_translations','products.id','=','product_translations.product_id')
+                ->join('product_mappings','product_mappings.product_id','=','product_translations.product_id')
+                ->where('product_translations.locale','=','en')
+                ->groupBy('products.id');
         return DataTables::eloquent($model)
          ->editColumn('picture', function ($row) {
             $profileImg = Product::getAttachment($row->id);
@@ -440,7 +478,11 @@ class ProductsController extends Controller
                     return '<a class="btn btn-xs btn-danger">Inactive</a>';
             })
         ->editColumn('catName', function($row) {
-                return Category::getCategory($row->category_id);
+                $cat = Category::getCategories($row->id);
+                foreach ($cat as $cat) {
+                    $category_name[] = $cat;
+                }
+                return $category_name;
             })
         ->editColumn('action', function($row) {
             return view("admin.products.action",
@@ -487,7 +529,7 @@ class ProductsController extends Controller
                 } 
                 if(!empty($category))
                 {
-                    $query = $query->where("products.category_id", 'LIKE', '%'.$category.'%');
+                    $query = $query->where("product_mappings.category_id", 'LIKE', '%'.$category.'%');
                     $searchData['category'] = $category;
                 }
                 if($search_status == "1" || $search_status == "0" )

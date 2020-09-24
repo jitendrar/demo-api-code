@@ -16,8 +16,13 @@
 </a>
 @endif
 @if(isset($ispay) && $ispay)
-<a class="btn btn-xs btn-success paid_payment" title="Payment" onclick="openAddMoneyModel({{ $row->id }})">
+<a class="btn btn-xs btn-success paid_payment" title="Add Money" onclick="openAddMoneyModel({{ $row->id }})">
 	<i class="fa fa-money"></i>
+</a>
+@endif
+@if(isset($isshowhistory) && $isshowhistory)
+<a data-id="{{ $row->id }}" class="btn btn-xs btn-primary show-wallet-history" title="View Wallet History">
+	<i class="fa fa-history"></i>
 </a>
 @endif
 </div>

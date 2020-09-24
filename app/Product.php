@@ -22,13 +22,24 @@ class Product extends Model implements TranslatableContract
 
 	public static $STATUS_INACTIVE = 0;
 
-
     public static function _GetProductByID($product_id=0) {
         if(!empty($product_id)) {
             $Product = Product::where('id',$product_id)->first();
             return $Product;
         }
     }
+
+    public static function _CheckProductIsActve($product_id=0) {
+        if(!empty($product_id)) {
+            $Product = Product::where('id',$product_id)->first();
+            if($Product->status == Product::$STATUS_ACTIVE) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public static function getAttachment($product_id = 0)
     {
         $img = '';

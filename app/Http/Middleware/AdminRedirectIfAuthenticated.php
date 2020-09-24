@@ -9,7 +9,7 @@ class AdminRedirectIfAuthenticated
 {
     public function handle($request, Closure $next)
     {
-        if (Auth::check()) 
+        if (Auth::guard('admins')->check()) 
         {
             return redirect('dashboard');
         }

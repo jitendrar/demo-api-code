@@ -70,11 +70,12 @@ return [
     */
 
     'providers' => [
+        // For Frontend
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
         ],
-        // For admin
+        // For Admin
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\AdminUser::class

@@ -100,6 +100,9 @@
 
                     $.ajax({
                         type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                        },
                         url: $(this).attr("action"),
                         data: new FormData(this),
                         contentType: false,
@@ -129,6 +132,31 @@
                 }
                 return false;
             });
+
+            $(document).on('click','.show-wallet-history',function(){
+            var tr = $(this).closest('tr');
+            var id = $(this).attr('data-id');
+            var url = "{{ url('admin/users/wallet_history') }}" + '/'+id;
+            $('.wallet_history_tr').remove();
+            var row = oTableCustom.row(tr);
+             $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    url:url,
+                    method:"POST",
+                    data:$(this).serialize(),
+                    dataType:"json",
+                    success:function(data){
+                     jQuery('<tr class="wallet_history_tr"><td colspan="8">'+data.html+'</td></tr>').insertAfter($('#tr-'+id).closest('tr'));
+                   },
+                   error: function (error)
+                    {
+                        console.log(error);
+                    }
+                })
+            });
+            
             $("#search-frm").submit(function(){
                 oTableCustom.draw();
                 return false;
@@ -150,6 +178,9 @@
                         data.search_pno = $("#search-frm input[name='search_pno']").val();
                         data.search_status = $("#search-frm select[name='search_status']").val();       
                     }
+                },
+                 "fnCreatedRow": function( nRow, aData, iDataIndex ) {
+                    $(nRow).attr('id', 'tr-'+aData['id']);
                 },
                 lengthMenu:
                 [

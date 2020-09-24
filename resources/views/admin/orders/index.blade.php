@@ -16,12 +16,11 @@
                     <thead>
                         <tr>
                             <th width="1%">Id</th>
-                            <th width="3%">Order No</th>
-                            <th align="left">User Name</th>
+                            <th width="5%">Order No</th>
+                            <th align="left" width="20%">User Name</th>
                             <th align="left">Address</th>
-                            <th align="left" width="5%">Total Price</th>
-                            <th align="left" width="5%">Delivery Charge</th>
-                            <th width="3%">status</th>
+                            <th align="left" width="15%">Total Price</th>
+                            <th width="5%">status</th>
                             <th align="left" width="20%">Action</th>
                         </tr>
                     </thead>
@@ -92,8 +91,7 @@
                 {data: 'order_number', name: 'order_number'},
                 { data: 'first_name', name: 'users.first_name'},
                 { data: 'address_line_1' , name: 'addresses.address_line_1'},
-                { data: 'total_price' , name: 'total_price'},
-                { data: 'delivery_charge' , name: 'delivery_charge'},
+                { data: 'totalPrice' , name: 'totalPrice'},
                 { data: 'order_status', name: 'order_status'},
                 { data: 'action', orderable: false, searchable: false,className:'detail-td'},
             ]

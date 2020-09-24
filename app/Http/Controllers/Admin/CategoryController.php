@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
 use App\Category;
 use App\Custom;
 use DataTables;
@@ -75,8 +78,7 @@ class CategoryController extends Controller
         }
 
         $validationArr =    [
-                                'category_name' => 'required',
-                                'description' => 'required',
+                                'category_name.*' => 'required',
                                 'avatar_id' => 'image|max:4000',
                                 'status' => 'required',
                             ];
@@ -109,11 +111,11 @@ class CategoryController extends Controller
                 $obj = new \App\CategoryTranslation();
                 if(is_array($category_name) && !empty($category_name))
                 {
-                    $obj->category_name = $category_name[$locale][0];
+                    $obj->category_name = $category_name[$val];
                 }
                 if(is_array($description) && !empty($description))
                 {
-                    $obj->description = $description[$locale][0];
+                    $obj->description = $description[$val];
                 } 
                 $obj->locale = $val;
                 $obj->category_id = $model->id;
@@ -136,7 +138,7 @@ class CategoryController extends Controller
 
     public function show($id)
     {
-        $authUser= \Auth::user();
+        $authUser= Auth::guard('admins')->user();
         $data = array();
         $catObj = $this->modelObj->find($id);
         if(!$catObj)
@@ -195,8 +197,7 @@ class CategoryController extends Controller
         }
 
         $validationArr =    [
-                                'category_name' => 'required',
-                                'description' => 'required',
+                                'category_name.*' => 'required',
                                 'avatar_id' => 'image|max:4000',
                                 'status' => 'required',
                             ];
@@ -228,11 +229,11 @@ class CategoryController extends Controller
                 $obj = \App\CategoryTranslation::where('locale',$val)->where('category_id',$model->id)->first();
                 if(is_array($category_name) && !empty($category_name))
                 {
-                    $obj->category_name = $category_name[$locale][0];
+                    $obj->category_name = $category_name[$val];
                 }
                 if(is_array($description) && !empty($description))
                 {
-                    $obj->description = $description[$locale][0];
+                    $obj->description = $description[$val];
                 } 
                 $obj->locale = $val;
                 $obj->save();
@@ -282,7 +283,10 @@ class CategoryController extends Controller
     }
     public function data(Request $request)
     {
-        $model = Category::select('categories.*')->Join('category_translations','categories.id','=','category_translations.category_id')->where('locale','en');
+        $model = Category::select('categories.*')
+        ->Join('category_translations','categories.id','=','category_translations.category_id')
+        ->groupBy('categories.id')
+        ->where('locale','en');
         return DataTables::eloquent($model)
          ->editColumn('picture', function ($row) {
             $catImg = Category::getAttachment($row->id); 

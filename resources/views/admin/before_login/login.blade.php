@@ -6,7 +6,6 @@
 <div class="clearfix"></div>
 
 {!! Form::open(['route' => 'check_admin_login', 'files' => true, 'class' => 'login-form', 'id' => 'login-form']) !!}  
-@csrf
 
 @if(Session::has('error_message'))
 <div class="alert alert-danger">
