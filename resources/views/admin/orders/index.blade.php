@@ -55,7 +55,6 @@
 @endsection
 
 @section('scripts')
-        <script src="{{ asset('themes/admin/assets/pages/scripts/table-datatables-managed.min.js')}}" type="text/javascript"></script>
 
 <script type="text/javascript">
      $(document).ready(function(){
@@ -81,6 +80,7 @@
                         }else{
                             $( "#status"+target_id ).parent().html(result.html);    
                         } 
+                        oTableCustom.draw();
                     }
                 }
             });
