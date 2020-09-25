@@ -284,6 +284,7 @@ class UserController extends Controller
     {
         $modelObj = Auth::guard('admins')->user();
         $model = User::query();
+        $model = $model->orderBy('users.created_at','desc');
         return DataTables::eloquent($model)
         ->editColumn('status', function($row) {
                 if($row->status == 1)
@@ -297,7 +298,7 @@ class UserController extends Controller
                     'currentRoute' => $this->moduleRouteText,
                     'row' => $row, 
                     'isEdit' =>1,
-                    'isDelete' =>1,
+                    'isDelete' =>0,
                     'isView' =>1,
                     'ispay' =>1,
                     'isshowhistory' => 1,
@@ -394,7 +395,7 @@ class UserController extends Controller
         $msg = '';
         $html = '';
         $status = 1;
-        $wallethistory = WalletHistory::where('user_id',$id)->get();
+        $wallethistory = WalletHistory::where('user_id',$id)->orderBy('created_at','desc')->get();
         if(!$wallethistory)
         {
             return ['status' => 0, 'msg'=>$msg, 'html'=>$html];

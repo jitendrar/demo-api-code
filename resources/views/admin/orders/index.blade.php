@@ -19,7 +19,7 @@
                             <th width="5%">Order No</th>
                             <th align="left" width="20%">User Name</th>
                             <th align="left">Address</th>
-                            <th align="left" width="15%">Total Price</th>
+                            <th align="left" width="15%">Total + Delivery Charge</th>
                             <th width="5%">status</th>
                             <th align="left" width="20%">Action</th>
                         </tr>
@@ -31,11 +31,41 @@
         </div>
     </div>
 </div>
+<input type="hidden" name="change_status_url" id="change_status_url" value="{{ url('admin/orders/changeStatus/') }}">
 @endsection
 
 @section('scripts')
 <script type="text/javascript">
      $(document).ready(function(){
+        $('body').on('click', '.change-status', function(event){
+        var target_id       = $(this).attr('data-id');
+        if(confirm($(this).data('msg'))){ 
+            var _token          = $('input[name="_token"]').val();
+            var target_path     = $('#change_status_url').val();
+            var _row            = $(this).data('row');
+            $.ajax({
+                "url": target_path+'/'+target_id,
+                "type": "POST",
+                data: { '_token':_token , 'id' : target_id},
+                success: function(result){
+                    if(result.status == true)
+                    {   
+                        if(result.html == ''){ 
+                            if($("#status"+target_id).html() == 'Pending'){
+                                $("#status"+target_id).html('Delivered');
+                                $("#status"+target_id).addClass('btn-success');    
+                                $("#status"+target_id).removeClass('btn-info');
+                            }
+                        }else{
+                            $( "#status"+target_id ).parent().html(result.html);    
+                        } 
+                    }
+                }
+            });
+        }
+        event.preventDefault();
+    });
+
         $(document).on('click','.show-order-detail',function(){
             var tr = $(this).closest('tr');
             var id = $(this).attr('data-id');

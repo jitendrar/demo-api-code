@@ -133,7 +133,7 @@ class OrderController extends Controller
                 } else {
                     $StatusCode     = 204;
                     $status         = 0;
-                    $msg            = "No order found";
+                    $msg            = __('words.no_data_available');
                 }
             }
         }
