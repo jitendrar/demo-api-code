@@ -133,9 +133,14 @@ class ProductController extends Controller
                     $modal = $modal->join('product_translations','products.id','=','product_translations.product_id');
                     $modal = $modal->where('products.status',$STATUS_ACTIVE);
                     $modal = $modal->whereIn('products.id',$ArrProductID);
-                    if(isset($requestData['product_name']) && !empty(trim($requestData['product_name']))) {
-                        $product_name   = trim($requestData['product_name']);
-                        $modal          = $modal->where("product_translations.product_name", 'LIKE', '%'.$product_name.'%');
+                    if(isset($requestData['search_para']) && !empty(trim($requestData['search_para'])))
+                    {
+                        $search_para   = trim($requestData['search_para']);
+                        // $modal          = $modal->where("product_translations.product_name", 'LIKE', '%'.$product_name.'%');
+                        $modal  = $modal->where(function ($query) use ($search_para){
+                                $query->where("product_translations.product_name", 'LIKE', '%'.$search_para.'%')
+                                    ->orWhere("product_translations.description", 'LIKE', '%'.$search_para.'%');
+                        });
                     }
                     $modal = $modal->groupBy('products.id');
                 $products = $modal->paginate($PAGINATION_VALUE);
