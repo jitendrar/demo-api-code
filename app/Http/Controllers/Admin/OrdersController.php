@@ -128,6 +128,8 @@ class OrdersController extends Controller
                 $status =  _GetOrderStatus($model->order_status);
                 if ($status = "Pending"){
                     $model->order_status = 'D';
+                    $model->delivery_date = date('Y-m-d');
+                    $model->delivery_time = date('h:i:s');
                     $model->save();
                     return response()->json(['status' => true, 'message' => "Order status updated successfully.", 'html' => $button_html]);
                 }else{
@@ -169,11 +171,12 @@ class OrdersController extends Controller
                 if($status == 'Delivered') 
                     return '<span class="label label-sm label-success">Delivered</sapn>';
                 else if($status == 'Pending') 
-                    return '<a data-row="'.$row->id.'" class="btn btn-info btn-xs change-status" data-id="'.$row->id.'" title="Make Delivered" href="javascipt:;" data-msg="Are you sure want to change status as delivered?" id="status'.$row->id.'">Pending</a>';                 
+                    return '<span class="label label-sm label-info">Pending</sapn>';          
                 else
                     return '';
         })
         ->editColumn('action', function($row) {
+            $isStatus = ($row->order_status != 'D')?1:0;
             return view("admin.orders.action",
                 [
                     'currentRoute' => $this->moduleRouteText,
@@ -181,6 +184,7 @@ class OrdersController extends Controller
                     'isDelete' =>0,
                     'isView' =>1,
                     'isProductDetail' => 1,
+                    'isStatus' =>  $isStatus,
                 ]
             )->render();
         })->rawcolumns(['created_at','delivery_date','totalPrice','order_status','action'])
