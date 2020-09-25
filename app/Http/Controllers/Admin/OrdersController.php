@@ -105,13 +105,38 @@ class OrdersController extends Controller
         $html = '';
         $status = 1;
         $orderDetail = orderDetail::where('order_id',$id)->get();
+        $totalPrice = OrderDetail::getProductTotalPrice($id);
         if(!$orderDetail)
         {
             return ['status' => 0, 'msg'=>$msg, 'html'=>$html];
         }
         $data['orderDetail'] = $orderDetail;
+        $data['totalPrice'] = $totalPrice;
         $html =  view($this->moduleViewName.'.order_detail', $data)->render();
         return ['status' => $status, 'msg'=>$msg, 'html'=>$html];
+    }
+
+    public function changeOrderStatus(Request $request,$id){
+       // dd($request->all());
+        $button_html = '';
+        if ($request->get('_token') != '') {
+
+            $model = Order::find($id);
+            if (!$model){
+                return response()->json(['status' => "", 'message' => "Order not found!"]);
+            } else {
+                $status =  _GetOrderStatus($model->order_status);
+                if ($status = "Pending"){
+                    $model->order_status = 'D';
+                    $model->save();
+                    return response()->json(['status' => true, 'message' => "Order status updated successfully.", 'html' => $button_html]);
+                }else{
+
+                    return response()->json(['status' => true, 'message' => "Order status is not updated, please try again!", 'html' => $button_html]);
+                }
+            }
+        } else
+            return response()->json(['status' => false, 'message' => "Something went wrong, Please try again later!"]);
     }
 
     public function Data(Request $request)
@@ -130,7 +155,7 @@ class OrdersController extends Controller
                 return '';
         })
         ->editColumn('totalPrice',function($row){
-            return OrderDetail::getOrderTotalPrice($row->id);
+            return number_format((OrderDetail::getOrderTotalPrice($row->id)),2);
         })
         ->editColumn('created_at', function($row) {
             if(!empty($row->created_at))
@@ -140,12 +165,11 @@ class OrdersController extends Controller
         })
         ->editColumn('order_status', function($row) {
             $crrSts = $row->order_status;
-                if($crrSts == 'Delivered' || $crrSts == 'D') 
+            $status = _GetOrderStatus($crrSts);
+                if($status == 'Delivered') 
                     return '<span class="label label-sm label-success">Delivered</sapn>';
-                else if($crrSts == 'Pending' || $crrSts == 'P') 
-                    return '<span class="label label-sm label-primary">Pending</sapn>';
-                else if($crrSts == 'delete') 
-                    return '<span class="label label-sm label-danger">Delete</sapn>';
+                else if($status == 'Pending') 
+                    return '<a data-row="'.$row->id.'" class="btn btn-info btn-xs change-status" data-id="'.$row->id.'" title="Make Delivered" href="javascipt:;" data-msg="Are you sure want to change status as delivered?" id="status'.$row->id.'">Pending</a>';                 
                 else
                     return '';
         })
@@ -154,7 +178,7 @@ class OrdersController extends Controller
                 [
                     'currentRoute' => $this->moduleRouteText,
                     'row' => $row, 
-                    'isDelete' =>1,
+                    'isDelete' =>0,
                     'isView' =>1,
                     'isProductDetail' => 1,
                 ]
@@ -191,7 +215,7 @@ class OrdersController extends Controller
                     $query = $query->where("orders.order_number", 'LIKE', '%'.$search_oid.'%');
                     $searchData['search_oid'] = $search_oid;
                 } 
-                if($search_status == "Pending" || $search_status == "Delivered" || $search_status == "Delete")
+                if($search_status == "P" || $search_status == "D")
                 {
                     $query = $query->where("orders.order_status", $search_status);
                     $searchData['search_status'] = $search_status;

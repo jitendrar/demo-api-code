@@ -31,9 +31,8 @@
                     <label class="control-label">Status</label>
                     <select name="search_status" class="form-control">
                         <option value="all" {!! \Request::get("search_status") == "all" ? 'selected="selected"':'' !!}>All</option>
-                        <option value="Pending" {!! \Request::get("search_status") == "Pending" ? 'selected="selected"':'' !!}>Pending</option> 
-                        <option value="Delivered" {!! \Request::get("search_status") == "Delivered" ? 'selected="selected"':'' !!}>Delivered</option> 
-                        <option value="Delete" {!! \Request::get("search_status") == "delete" ? 'selected="selected"':'' !!}>Delete</option>         
+                        <option value="P" {!! \Request::get("search_status") == "P" ? 'selected="selected"':'' !!}>Pending</option> 
+                        <option value="D" {!! \Request::get("search_status") == "D" ? 'selected="selected"':'' !!}>Delivered</option> 
                     </select>
                 </div>
             </div> 

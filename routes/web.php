@@ -43,5 +43,6 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::any('orders/data','Admin\OrdersController@data')->name('orders.data');
 	Route::resource('orders','Admin\OrdersController');
 	Route::any('orders/detail/{id}','Admin\OrdersController@orderDetail')->name('orders.detail');
+	Route::post('orders/changeStatus/{id}','Admin\OrdersController@changeOrderStatus');
 });
 
