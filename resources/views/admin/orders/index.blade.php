@@ -1,5 +1,25 @@
 @extends('admin.layouts.layout')
-
+@section('styles')
+    <style type="text/css">
+        .change-status{
+            size: 8px;
+        }
+        .dropdown-menu>li>a {
+            padding: 3px 3px;
+        }
+        table.dataTable.no-footer {
+            border-bottom: inherit;
+            overflow-y: visible;
+        }
+        .table-scrollable {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: visible;
+            border: 1px solid #e7ecf1;
+            margin: 10px 0!important;
+        }
+    </style>
+@endsection
 @section('content')
 <div class="container">
     <div class="page-content-inner">
@@ -21,7 +41,7 @@
                             <th align="left">Address</th>
                             <th align="left" width="15%">Total + Delivery Charge</th>
                             <th width="5%">status</th>
-                            <th align="left" width="20%">Action</th>
+                            <th width="20%">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,6 +55,8 @@
 @endsection
 
 @section('scripts')
+        <script src="{{ asset('themes/admin/assets/pages/scripts/table-datatables-managed.min.js')}}" type="text/javascript"></script>
+
 <script type="text/javascript">
      $(document).ready(function(){
         $('body').on('click', '.change-status', function(event){
