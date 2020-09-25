@@ -116,26 +116,31 @@ class ProductController extends Controller
         } else {
             $PAGINATION_VALUE = env('PAGINATION_VALUE');
             $requestData = $request->all();
-            $category_id = $requestData['category_id'];
-            $non_login_token     = $requestData['non_login_token'];
+            $category_id        = $requestData['category_id'];
+            $non_login_token    = $requestData['non_login_token'];
+            // $non_login_token    = $requestData['product_name'];
+
             $ArrProductID  = ProductMapping::_GetProductByCategoryID($category_id);
             if(!empty($ArrProductID)) {
                 // \DB::enableQueryLog();
                 $STATUS_ACTIVE = Product::$STATUS_ACTIVE;
-                $products = Product::leftJoin('cart_details', function($join) use ($non_login_token)
-                {
-                    $join->on('cart_details.product_id', '=', 'products.id');
-                    $join->where('cart_details.non_login_token', '=', $non_login_token);
-                })
-                ->where('products.status',$STATUS_ACTIVE)
-                ->whereIn('products.id',$ArrProductID)
-                ->selectRaw('products.*, cart_details.quantity, IF(cart_details.id, 1, 0) AS isAvailableInCart')
-                ->paginate($PAGINATION_VALUE);
+                $modal = Product::selectRaw('products.*, cart_details.quantity, IF(cart_details.id, 1, 0) AS isAvailableInCart');
+                    $modal = $modal->leftJoin('cart_details', function($join) use ($non_login_token)
+                    {
+                        $join->on('cart_details.product_id', '=', 'products.id');
+                        $join->where('cart_details.non_login_token', '=', $non_login_token);
+                    });
+                    $modal = $modal->join('product_translations','products.id','=','product_translations.product_id');
+                    $modal = $modal->where('products.status',$STATUS_ACTIVE);
+                    $modal = $modal->whereIn('products.id',$ArrProductID);
+                    if(isset($requestData['product_name']) && !empty(trim($requestData['product_name']))) {
+                        $product_name   = trim($requestData['product_name']);
+                        $modal          = $modal->where("product_translations.product_name", 'LIKE', '%'.$product_name.'%');
+                    }
+                    $modal = $modal->groupBy('products.id');
+                $products = $modal->paginate($PAGINATION_VALUE);
                 // prd(\DB::getQueryLog());
                 // prd($products->toArray());
-                // $products = Product::where('status',$STATUS_ACTIVE)
-                //                         ->whereIn('id',$ArrProductID)
-                //                         ->paginate($PAGINATION_VALUE);
                 if($products->count()) {
                     $status         = 1;
                     $StatusCode     = 200;
