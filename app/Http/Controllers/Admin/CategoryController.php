@@ -287,6 +287,7 @@ class CategoryController extends Controller
         ->Join('category_translations','categories.id','=','category_translations.category_id')
         ->groupBy('categories.id')
         ->where('locale','en');
+        $model = $model->orderBy('categories.created_at','desc');
         return DataTables::eloquent($model)
          ->editColumn('picture', function ($row) {
             $catImg = Category::getAttachment($row->id); 
@@ -312,7 +313,7 @@ class CategoryController extends Controller
                     'currentRoute' => $this->moduleRouteText,
                     'row' => $row, 
                     'isEdit' =>1,
-                    'isDelete' =>1,
+                    'isDelete' =>0,
                     'isView' =>1,
                 ]
             )->render();

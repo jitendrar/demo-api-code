@@ -14,6 +14,7 @@ use App\AdminUser;
 use App\Product;
 use App\Category;
 use App\Order;
+use App\OrderDetail;
 
 class DashboardController extends Controller
 {
@@ -173,8 +174,7 @@ class DashboardController extends Controller
         $modal = Order::select('orders.user_id','orders.id','orders.total_price','users.first_name as userName','orders.created_at','addresses.address_line_1')
             ->leftJoin('users','orders.user_id','=','users.id')
             ->leftJoin('addresses','orders.address_id','=','addresses.id')
-            ->where('orders.order_status','!=','Delivered')
-            ->orWhere('orders.order_status','!=','D')
+            ->where('orders.order_status','!=','D')
             ->where(\DB::raw("DATE_FORMAT(orders.created_at, '%Y-%m-%d')"),'=',date('Y-m-d'));
         $modal = $modal->orderBy('orders.created_at','desc');
         return \DataTables::eloquent($modal)
@@ -183,7 +183,9 @@ class DashboardController extends Controller
                 return date('Y-m-d h:i',strtotime($row->created_at));
             else
                 return '';
-        })->rawcolumns(['created_at'])
+        })->editColumn('totalPrice',function($row){
+            return OrderDetail::getOrderTotalPrice($row->id);
+        })->rawcolumns(['created_at','totalPrice'])
         ->make(true);
     }
 }

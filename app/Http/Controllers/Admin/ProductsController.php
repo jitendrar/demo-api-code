@@ -108,6 +108,18 @@ class ProductsController extends Controller
             $units_in_stock = $request->get('units_in_stock');
             $unity_price = $request->get('unity_price');
             $status_val = $request->get('status');
+            $primary = $request->input('is_primary');
+            $images = $request->file('multi_img');
+            if(is_null($images)){
+                $status = 0;
+                $msg = "Please add one image!";
+                return ['status' => $status, 'msg' => $msg, 'data' => $data];
+            }
+            if(is_null($primary)){
+                $status = 0;
+                $msg = "Please add one primary image!";
+                return ['status' => $status, 'msg' => $msg, 'data' => $data];
+            }
             $model = $this->modelObj;
             $model->status = $status_val;
             $model->save();
@@ -151,7 +163,6 @@ class ProductsController extends Controller
                 $obj->product_id = $model->id;
                 $obj->save();
             }
-            $primary = $request->input('is_primary');
             if($request->file('multi_img')){
                     foreach($request->file('multi_img',[]) as $tempId => $val){
                         $imgSize = $val->getSize();
@@ -275,7 +286,12 @@ class ProductsController extends Controller
             $status_val = $request->get('status');
             $primary = $request->input('is_primary');
             $categories = $request->category_id;
-
+            if(is_null($primary)){
+                $status = 0;
+                $msg = "Please add one primary image!";
+                return ['status' => $status, 'msg' => $msg, 'data' => $data];
+            }
+            //dd($primary);
             if (!empty($categories)) {
                 foreach ($categories as $category) {
                     $row = [
@@ -291,6 +307,7 @@ class ProductsController extends Controller
                     $model1->save();
                 }
             }
+            ProductMapping::where(['product_id' => $model->id])->whereNotIn('category_id', $categories ?? [])->delete();
 
             $model->status = $status_val;
             $model->save();
@@ -306,7 +323,6 @@ class ProductsController extends Controller
                     $model->picture = $image->src;
                     $model->save();
                 } 
-
             $languages= Custom::__masterLocals();
             foreach ($languages as $locale => $val)
             {   
@@ -461,6 +477,7 @@ class ProductsController extends Controller
                 ->join('product_mappings','product_mappings.product_id','=','product_translations.product_id')
                 ->where('product_translations.locale','=','en')
                 ->groupBy('products.id');
+        $model = $model->orderBy('products.created_at','desc');
         return DataTables::eloquent($model)
          ->editColumn('picture', function ($row) {
             $profileImg = Product::getAttachment($row->id);
@@ -490,7 +507,7 @@ class ProductsController extends Controller
                     'currentRoute' => $this->moduleRouteText,
                     'row' => $row, 
                     'isEdit' =>1,
-                    'isDelete' =>1,
+                    'isDelete' =>0,
                     'isView' =>1,
                     'isStatus' => 1,
                 ]

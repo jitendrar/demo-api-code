@@ -97,7 +97,7 @@
                         <tr>
                             <th align="left">id</th>
                             <th align="left">Name</th>
-                            <th align="left">Price</th>
+                            <th align="left">Price + Delivery Charge</th>
                             <th align="left">Address</th>
                             <th align="left">Date</th>
                         </tr>
@@ -127,11 +127,16 @@
                     {
                     }
                 },
+                lengthMenu:
+                [
+                [25,50,100,150,200],
+                [25,50,100,150,200]
+                ],
                 "order": [[ 0, "ASC" ]],
             columns: [
                 {data: 'id', name: 'id'},
                 { data: 'userName', name: 'userName' },
-                { data: 'total_price', name: 'total_price' },
+                { data: 'totalPrice', name: 'totalPrice'},
                 { data: 'address_line_1', name: 'addresses.address_line_1' },
                 { data: 'created_at', name: 'created_at' },
             ]
