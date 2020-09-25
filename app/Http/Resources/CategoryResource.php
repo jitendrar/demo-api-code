@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-
+use App\ProductMapping;
 class CategoryResource extends JsonResource
 {
     /**
@@ -17,7 +17,7 @@ class CategoryResource extends JsonResource
         $API_DATE_FORMAT = env('API_DATE_FORMAT');
         return [
             'id' => $this->id,
-            'category_name' => $this->category_name,
+            'category_name' => self::_SetCategoryNameWithCount(),
             'description' => $this->description,
             'picture' => self::GetImage(),
             'created_at' => date($API_DATE_FORMAT,strtotime($this->created_at)),
@@ -25,6 +25,11 @@ class CategoryResource extends JsonResource
         ];
     }
 
+    public function _SetCategoryNameWithCount() {
+        $ArrProductID  = ProductMapping::_GetActiveProductCountByCategoryID($this->id);
+        // return $this->category_name;
+        return $this->category_name." (".$ArrProductID.")";
+    }
     public function GetImage() {
         $picture = url("/images/no_image.jpeg");
         if(!empty($this->picture)) {

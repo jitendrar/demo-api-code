@@ -25,10 +25,13 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 	Route::post('resendotp', 'API\AuthController@otpresend');
 	Route::post('otpverify', 'API\AuthController@verifyotp');
 	Route::post('resetpassword', 'API\AuthController@passwordreset');
+	
+	Route::apiResource('category', 'API\CategoryController');
 	Route::post('listproducts', 'API\ProductController@listproductsbycategory');
 	Route::get('products/{id}', 'API\ProductController@productdetails');
+
 	Route::get('listtimeslot', 'API\OrderController@listoftimeslot');
-	Route::apiResource('category', 'API\CategoryController');
+
 	Route::get('aboutus', 'API\CommonController@getaboutus');
 	Route::get('contactus', 'API\CommonController@getcontactus');
 	Route::post('logout', 'API\AuthController@logout');
