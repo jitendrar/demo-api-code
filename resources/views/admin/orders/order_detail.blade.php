@@ -16,13 +16,18 @@
                 <th>Delivery Date:</th>
                 <td>{{ date('Y-m-d',strtotime($order->delivery_date)) }}</td>
                 <th>Delivery Time:</th>
-                <td> {{ date('h:i:s a',strtotime($order->delivery_time)) }}</td>
+                <td> {{ $order->delivery_time }}</td>
             </tr>
             <tr>
                 <th>Actual Delivery Date:</th>
                 <td>{{ date('Y-m-d',strtotime($order->actual_delivery_date)) }}</td>
                 <th>Actual Delivery Time:</th>
-                <td> {{ date('h:i:s a',strtotime($order->actual_delivery_time)) }} </td>
+                <td>
+                    <?php
+                    $time = $order->actual_delivery_date.' '.$order->actual_delivery_time;
+                    ?>
+                    {{ date('h:i:s A',strtotime($time)) }}
+                </td>
             </tr>
         </table>
         <div class="clearfix">&nbsp;</div>
