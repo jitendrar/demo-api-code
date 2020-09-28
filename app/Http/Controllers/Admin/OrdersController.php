@@ -105,7 +105,7 @@ class OrdersController extends Controller
         $msg = '';
         $html = '';
         $status = 1;
-        $order = Order::find($id)->first();
+        $order = Order::find($id);
         $orderDetail = orderDetail::where('order_id',$id)->get();
         $totalPrice = OrderDetail::getProductTotalPrice($id);
         if(!$orderDetail)
