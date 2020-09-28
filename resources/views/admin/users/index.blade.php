@@ -137,6 +137,10 @@
             var tr = $(this).closest('tr');
             var id = $(this).attr('data-id');
             var url = "{{ url('admin/users/wallet_history') }}" + '/'+id;
+            if($(".Wallet-open-cls").is(":visible")){
+                $('.wallet_history_tr').remove();
+                    return false;
+            }else{
             $('.wallet_history_tr').remove();
             var row = oTableCustom.row(tr);
              $.ajax({
@@ -155,6 +159,7 @@
                         console.log(error);
                     }
                 })
+            }
             });
             
             $("#search-frm").submit(function(){

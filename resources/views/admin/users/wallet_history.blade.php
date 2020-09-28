@@ -1,4 +1,4 @@
-<div class="portlet box green form-fit">
+<div class="portlet box green form-fit Wallet-open-cls">
     <div class="portlet-title">
         <div class="caption">
             <i class="fa fa$order"></i>User Wallet History

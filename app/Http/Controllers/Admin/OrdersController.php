@@ -131,9 +131,9 @@ class OrdersController extends Controller
                 if ($status = "Pending"){
                     $model->order_status = 'D';
                     $model->delivery_date = date('Y-m-d');
-                    $model->delivery_time = date('h:i:s A');
+                    $model->delivery_time = date('H:i:s');
                     $model->actual_delivery_date = date('Y-m-d');
-                    $model->actual_delivery_time = date('h:i:s A');
+                    $model->actual_delivery_time = date('Y-m-d H:i:s');
                     $model->save();
                     return response()->json(['status' => true, 'message' => "Order status updated successfully.", 'html' => $button_html]);
                 }else{

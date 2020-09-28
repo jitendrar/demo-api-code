@@ -86,26 +86,31 @@
             });
         }
         event.preventDefault();
-    });
+        });
 
         $(document).on('click','.show-order-detail',function(){
             var tr = $(this).closest('tr');
             var id = $(this).attr('data-id');
             var url = "{{ url('admin/orders/detail') }}" + '/'+id;
-            $('.order_detail_tr').remove();
-            var row = oTableCustom.row(tr);
-             $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                    },
-                    url:url,
-                    method:"POST",
-                    data:$(this).serialize(),
-                    dataType:"json",
-                    success:function(data){
-                    jQuery('<tr class="order_detail_tr"><td colspan="10">'+data.html+'</td></tr>').insertAfter($('#tr-'+id).closest('tr'));
-                   }
-                })
+                if($(".open-order-details-cls").is(":visible")){
+                    $('.order_detail_tr').remove();
+                    return false;
+                }else{
+                $('.order_detail_tr').remove();
+                var row = oTableCustom.row(tr);
+                 $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                        },
+                        url:url,
+                        method:"POST",
+                        data:$(this).serialize(),
+                        dataType:"json",
+                        success:function(data){
+                        jQuery('<tr class="order_detail_tr"><td colspan="10">'+data.html+'</td></tr>').insertAfter($('#tr-'+id).closest('tr'));
+                       }
+                    })
+                }
             });
             
             $("#search-frm").submit(function(){
