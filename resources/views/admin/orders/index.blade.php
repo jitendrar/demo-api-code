@@ -124,7 +124,7 @@
                     "data": function ( data )
                     {
                         data.search_id = $("#search-frm input[name='search_id']").val();
-                        data.search_fnm = $("#search-frm input[name='search_fnm']").val();
+                        data.search_fnm = $("#search-frm select[name='search_fnm']").val();
                         data.search_oid = $("#search-frm input[name='search_oid']").val();
                         data.search_status = $("#search-frm select[name='search_status']").val();  
                     }
@@ -148,7 +148,6 @@
                 { data: 'action', orderable: false, searchable: false,className:'detail-td'},
             ]
         });
-
 
     });
 </script>

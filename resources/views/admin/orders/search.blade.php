@@ -18,7 +18,7 @@
 
                 <div class="col-md-4">
                     <label class="control-label">UserName</label>
-                    <input type="text" value="{{ \Request::get("search_fnm") }}" class="form-control" name="search_fnm" />
+                      {!! Form::select('search_fnm',[''=>'Search User']+$users,null,['class'=>'form-control search-select']) !!}
                 </div>                                 
                 <div class="col-md-4">
                     <label class="control-label">Order No</label>

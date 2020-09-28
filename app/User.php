@@ -78,4 +78,13 @@ class User extends Authenticatable
         $reArr = array('status' => 0, 'msg' => __('words.user_not_found'));
         return $reArr;
     }
+
+    public static function getUserList()
+    {
+        return User::select('id',\DB::raw('CONCAT(first_name," ",last_name) as userName'))
+                        ->orderBy('userName','ASC')
+                        ->pluck('userName','id')
+                        ->all();
+
+    } 
 }
