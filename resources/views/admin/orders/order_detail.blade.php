@@ -1,9 +1,9 @@
-<div class="portlet box green form-fit">
+<div class="portlet box green form-fit open-order-details-cls open-order-details-cls-{{$order->id}}" id="order-detail">
     <div class="portlet-title">
         <div class="caption">
             <i class="fa fa$order"></i>Order Detail
         </div>
-            <a href="{{ $list_url }}" class="btn btn-default pull-right btn-sm mTop5" style="margin-top: 5px;"><i class="fa fa-arrow-left"></i>Back</a>
+           <!--  <a href="{{ $list_url }}" class="btn btn-default pull-right btn-sm mTop5" style="margin-top: 5px;"><i class="fa fa-arrow-left"></i>Back</a> -->
     </div>
     <div class="portlet-body">
         <div class="clearfix">&nbsp;</div>
@@ -16,13 +16,13 @@
                 <th>Delivery Date:</th>
                 <td>{{ date('Y-m-d',strtotime($order->delivery_date)) }}</td>
                 <th>Delivery Time:</th>
-                <td> {{ $order->delivery_time }}</td>
+                <td> {{ date('h:i:s a',strtotime($order->delivery_time)) }}</td>
             </tr>
             <tr>
                 <th>Actual Delivery Date:</th>
                 <td>{{ date('Y-m-d',strtotime($order->actual_delivery_date)) }}</td>
                 <th>Actual Delivery Time:</th>
-                <td> {{ $order->actual_delivery_time }} </td>
+                <td> {{ date('h:i:s a',strtotime($order->actual_delivery_time)) }} </td>
             </tr>
         </table>
         <div class="clearfix">&nbsp;</div>
