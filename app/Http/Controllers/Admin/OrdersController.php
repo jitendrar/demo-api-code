@@ -41,6 +41,7 @@ class OrdersController extends Controller
         $data['add_url'] = route($this->moduleRouteText.'.create');
         $data['addBtnName'] = $this->module;
         $data['btnAdd'] = 1;
+        $data['users'] = User::getUserList();
 
         return view($this->moduleViewName.'.index', $data);
     }
@@ -104,6 +105,7 @@ class OrdersController extends Controller
         $msg = '';
         $html = '';
         $status = 1;
+        $order = Order::find($id)->first();
         $orderDetail = orderDetail::where('order_id',$id)->get();
         $totalPrice = OrderDetail::getProductTotalPrice($id);
         if(!$orderDetail)
@@ -112,12 +114,12 @@ class OrdersController extends Controller
         }
         $data['orderDetail'] = $orderDetail;
         $data['totalPrice'] = $totalPrice;
+        $data['order'] = $order;
         $html =  view($this->moduleViewName.'.order_detail', $data)->render();
         return ['status' => $status, 'msg'=>$msg, 'html'=>$html];
     }
 
     public function changeOrderStatus(Request $request,$id){
-       // dd($request->all());
         $button_html = '';
         if ($request->get('_token') != '') {
 
@@ -129,7 +131,9 @@ class OrdersController extends Controller
                 if ($status = "Pending"){
                     $model->order_status = 'D';
                     $model->delivery_date = date('Y-m-d');
-                    $model->delivery_time = date('h:i:s');
+                    $model->delivery_time = date('h:i:s A');
+                    $model->actual_delivery_date = date('Y-m-d');
+                    $model->actual_delivery_time = date('h:i:s A');
                     $model->save();
                     return response()->json(['status' => true, 'message' => "Order status updated successfully.", 'html' => $button_html]);
                 }else{
@@ -191,7 +195,7 @@ class OrdersController extends Controller
         ->filter(function ($query) 
             {
                 $search_id = request()->get("search_id");                                         
-                $search_fnm = request()->get("search_fnm");                                         
+                $search_fnm = request()->get("search_fnm"); 
                 $search_pnm = request()->get("search_pnm");                                         
                 $search_oid = request()->get("search_oid");                                         
                 $search_status = request()->get("search_status");
@@ -202,7 +206,7 @@ class OrdersController extends Controller
                 if(!empty($search_id))
                 {
                     $idArr = explode(',', $search_id);
-                    $idArr = array_filter($idArr);                
+                    $idArr = array_filter($idArr);      
                     if(count($idArr)>0)
                     {
                         $query = $query->whereIn("orders.id",$idArr);
@@ -211,7 +215,7 @@ class OrdersController extends Controller
                 } 
                 if(!empty($search_fnm))
                 {
-                    $query = $query->where("users.first_name", 'LIKE', '%'.$search_fnm.'%');
+                    $query = $query->where("users.id", 'LIKE', '%'.$search_fnm.'%');
                     $searchData['search_fnm'] = $search_fnm;
                 }    
                 if(!empty($search_oid))

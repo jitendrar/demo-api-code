@@ -17,12 +17,13 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label class="control-label">FirstName</label>
-                    <input type="text" value="{{ \Request::get("search_fnm") }}" class="form-control" name="search_fnm" />
+                    <label class="control-label">User Name</label>
+                    {!! Form::select('search_fnm',[''=>'Search User']+$users,null,['class'=>'form-control search-select']) !!}
                 </div>
-                <div class="col-md-4">
-                    <label class="control-label">LastName</label>
-                    <input type="text" value="{{ \Request::get("search_lnm") }}" class="form-control" name="search_lnm" />
+                
+                 <div class="col-md-4">
+                    <label class="control-label">Phone No:</label>
+                    <input type="text" value="{{ \Request::get("search_pno") }}" class="form-control" name="search_pno" />
                 </div>
                                    
             </div>
@@ -31,10 +32,6 @@
 			</div>
 			<div class="clearfix">&nbsp;</div>
             <div class="row">
-                 <div class="col-md-4">
-                    <label class="control-label">Phone No:</label>
-                    <input type="text" value="{{ \Request::get("search_pno") }}" class="form-control" name="search_pno" />
-                </div>
                 <div class="col-md-4">
                     <label class="control-label">Status</label>
                     <select name="search_status" class="form-control">

@@ -103,6 +103,7 @@
         <!-- END DATATABLE SCRIPTS -->
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
         <script src="{{ asset('themes/admin/assets/global/scripts/app.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('js/new-custom.js') }}" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <script src="{{ asset('themes/admin/assets/layouts/layout3/scripts/layout.min.js') }}" type="text/javascript"></script>
