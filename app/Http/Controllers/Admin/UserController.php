@@ -43,6 +43,7 @@ class UserController extends Controller
         $data['add_url'] = route($this->moduleRouteText.'.create');
         $data['addBtnName'] = $this->module;
         $data['btnAdd'] = 1;
+        $data['users'] = User::getUserList();
         return view($this->moduleViewName.'.index', $data);
     }
 
@@ -309,7 +310,6 @@ class UserController extends Controller
             {
                 $search_id = request()->get("search_id");                                         
                 $search_fnm = request()->get("search_fnm");                                         
-                $search_lnm = request()->get("search_lnm");                                         
                 $search_pno = request()->get("search_pno");                                         
                 $search_status = request()->get("search_status");
                 $searchData = array();
@@ -326,14 +326,9 @@ class UserController extends Controller
                 } 
                 if(!empty($search_fnm))
                 {
-                    $query = $query->where("users.first_name", 'LIKE', '%'.$search_fnm.'%');
+                    $query = $query->where("users.id", 'LIKE', '%'.$search_fnm.'%');
                     $searchData['search_fnm'] = $search_fnm;
                 }
-                if(!empty($search_lnm))
-                {
-                    $query = $query->where("users.last_name", 'LIKE', '%'.$search_lnm.'%');
-                    $searchData['search_lnm'] = $search_lnm;
-                }  
                 if(!empty($search_pno))
                 {
                     $query = $query->where("users.phone", 'LIKE', '%'.$search_pno.'%');

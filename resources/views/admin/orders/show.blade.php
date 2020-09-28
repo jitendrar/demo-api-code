@@ -16,7 +16,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">User Name:</label>
                         <div class="col-sm-9">
-                            <p> {{  $user->first_name }}</p>
+                            <p> {{  $user->first_name??'' }}</p>
                         </div>
                     </div>
                     <div class="form-group">

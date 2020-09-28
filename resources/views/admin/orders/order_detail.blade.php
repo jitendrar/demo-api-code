@@ -7,6 +7,25 @@
     </div>
     <div class="portlet-body">
         <div class="clearfix">&nbsp;</div>
+        <table>
+            <tr>
+                <th>Delivery Charge:</th>
+                <td>{{ $order->delivery_charge }}</td>
+            </tr>
+            <tr>
+                <th>Delivery Date:</th>
+                <td>{{ date('Y-m-d',strtotime($order->delivery_date)) }}</td>
+                <th>Delivery Time:</th>
+                <td> {{ $order->delivery_time }}</td>
+            </tr>
+            <tr>
+                <th>Actual Delivery Date:</th>
+                <td>{{ date('Y-m-d',strtotime($order->actual_delivery_date)) }}</td>
+                <th>Actual Delivery Time:</th>
+                <td> {{ $order->actual_delivery_time }} </td>
+            </tr>
+        </table>
+        <div class="clearfix">&nbsp;</div>
         <table class="table table-bordered table-striped table-condensed flip-content" id="server-side-datatables">
             <thead>
                 <tr class="bold">
