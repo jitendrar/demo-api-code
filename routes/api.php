@@ -52,7 +52,7 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 		Route::post('transactionhistory', 'API\OrderController@transactionwallethistory');
 		Route::post('mywalletbalance', 'API\OrderController@mywalletbalance');
 		Route::post('repeatorder', 'API\OrderController@repeatorder');
-		Route::post('profleupdate', 'API\AuthController@updateProfile');
+		Route::post('profileupdate', 'API\AuthController@updateProfile');
 	});
 });
 
