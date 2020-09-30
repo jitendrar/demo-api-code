@@ -467,7 +467,7 @@ class AuthController extends Controller
             if ($user) {
                 if(!empty($picture)) {
                     $folderPath =  'uploads'.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR.$user->id;
-                    $fileName = $user->id;
+                    $fileName = $user->id.time();
                     $output = _SaveBased64Image($picture, $fileName, $folderPath);
                     $arrUpdate = array();
                     $arrUpdate['picture'] = $output;
