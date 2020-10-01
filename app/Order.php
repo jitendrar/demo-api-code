@@ -15,14 +15,16 @@ class Order extends Model
 	
 	public static $ORDER_STATUS_COMPLETE = "C";
 
-	
-	public function orderDetail()
-	{
+	public function orderDetail() {
 		return $this->hasMany('App\OrderDetail');
 	}
 
 	public function address() {
 		return $this->belongsTo('App\Address');
 	}
-	
+
+	public function deliveryMaster() {
+		return $this->belongsTo('App\DeliveryMaster');
+	}
+
 }

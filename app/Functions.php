@@ -90,3 +90,14 @@ function _SaveBased64Image($base64_string, $fileName, $folderPath)
     file_put_contents($output_file, $image_base64);
     return $folderPath.DIRECTORY_SEPARATOR. $fileName.'.'.$image_type;
 }
+
+function _ReturnImageForAPI($picturepath='') {
+  $picture = url("/images/no_image.jpeg");
+  if(!empty($picturepath)) {
+      $filename = public_path().$picturepath;
+      if (file_exists($filename)) {
+          $picture = url($picturepath);
+      }
+  }
+  return $picture;
+}

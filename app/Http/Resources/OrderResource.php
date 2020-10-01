@@ -6,6 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\OrderDetailResource;
 use App\Http\Resources\AddressResource;
+use App\Http\Resources\DeliveryMasterResource;
 class OrderResource extends JsonResource
 {
     /**
@@ -34,6 +35,7 @@ class OrderResource extends JsonResource
                 'updated_at' => strtotime($this->updated_at),
                 'address' => new AddressResource($this->address),
                 'order_detail' => OrderDetailResource::collection($this->orderDetail),
+                'delivery_master' => new DeliveryMasterResource($this->deliveryMaster),
         ];
 
     }
