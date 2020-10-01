@@ -75,3 +75,18 @@ function _CURLGeneralForAll($strRequestURL = null, $Method=null, $HeaderKey = ar
         return $ArrReturn;
     }
 }
+
+
+function _SaveBased64Image($base64_string, $fileName, $folderPath)
+{
+    if (!file_exists($folderPath)) {
+      mkdir($folderPath, 0777, true);
+    }
+    $image_parts    = explode(";base64,", $base64_string);
+    $image_type_aux = explode("image/", $image_parts[0]);
+    $image_type     = $image_type_aux[1];
+    $image_base64   = base64_decode($image_parts[1]);
+    $output_file    = public_path().DIRECTORY_SEPARATOR.$folderPath.DIRECTORY_SEPARATOR. $fileName.'.'.$image_type;
+    file_put_contents($output_file, $image_base64);
+    return $folderPath.DIRECTORY_SEPARATOR. $fileName.'.'.$image_type;
+}

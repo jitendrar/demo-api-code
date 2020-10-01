@@ -23,9 +23,19 @@ class UserResource extends JsonResource
             'new_phone' => $this->new_phone,
             'phone_otp' => $this->phone_otp,
             'status' => _GetStatusName($this->status),
+            'picture' => self::GetImage(),
             'created_at' => date($API_DATE_FORMAT,strtotime($this->created_at)),
             'updated_at' => date($API_DATE_FORMAT,strtotime($this->updated_at)),
         ];
-
+    }
+    public function GetImage() {
+        $picture = url("/images/no_image.jpeg");
+        if(!empty($this->picture)) {
+            $filename = public_path().DIRECTORY_SEPARATOR.$this->picture;
+            if (file_exists($filename)) {
+                $picture = url($this->picture);
+            }
+        }
+        return $picture;
     }
 }

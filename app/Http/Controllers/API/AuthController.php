@@ -439,4 +439,49 @@ class AuthController extends Controller
         return response($arrReturn, $StatusCode);
     }
 
+    public function updateProfile(Request $request)
+    {
+        $StatusCode = 401;
+        $status = 0;
+        $msg = __('words.user_not_found');
+        $accessToken = "";
+        $data = [];
+        $data = array();
+        $loginData = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+        ]);
+        // check validations
+        if ($loginData->fails()) {
+            $messages = $loginData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode = 409;
+                break;
+            }
+        } else {
+            $id    = $request->get("id");
+            $picture    = $request->get("picture");
+            $user       = User::where('id',$id)->first();
+            if ($user) {
+                if(!empty($picture)) {
+                    $folderPath =  'uploads'.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR.$user->id;
+                    $fileName = $user->id.time();
+                    $output = _SaveBased64Image($picture, $fileName, $folderPath);
+                    $arrUpdate = array();
+                    $arrUpdate['picture'] = $output;
+                    User::where('id', $user->id)->update($arrUpdate);
+                }
+                $StatusCode     = 200;
+                $status         = 1;
+                $msg    = __('words.profile_image_changed');
+                $user   = User::where('id',$user->id)->first();
+                $data   = new UserResource($user);
+            }
+        }
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        $StatusCode = 200;
+        return response($arrReturn, $StatusCode);
+    }
 }

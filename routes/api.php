@@ -42,7 +42,6 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 	Route::post('generatetimeslot', 'API\CartDetailController@generatetimeslot');
 
 	Route::group(['middleware' => ['auth:api']], function () {
-
 		Route::post('sendnewphoneotp', 'API\AuthController@sendnewphoneotp');
 		Route::apiResource('address', 'API\AddressController');
 		Route::post('addressbyuser', 'API\AddressController@listaddressbyuser');
@@ -53,7 +52,7 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 		Route::post('transactionhistory', 'API\OrderController@transactionwallethistory');
 		Route::post('mywalletbalance', 'API\OrderController@mywalletbalance');
 		Route::post('repeatorder', 'API\OrderController@repeatorder');
-
+		Route::post('profileupdate', 'API\AuthController@updateProfile');
 	});
 });
 

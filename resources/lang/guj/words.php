@@ -26,5 +26,6 @@ return [
 	'order_status_pending' => 'વિતરણ બાકી',
 	'order_status_delivered' => 'વિતરણ સફળ',
 	'order_status_cancel' => 'વિતરણ રદ',
+	'profile_image_changed' => 'તમારો પ્રોફાઈલ ફોટો સફળતાપૂર્વક બદલવામાં આવ્યો છે.',
 ];
 ?>
