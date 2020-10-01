@@ -110,7 +110,7 @@ class OrdersController extends Controller
         $status = 1;
         $order = Order::find($id);
         $orderDetail = orderDetail::where('order_id',$id)->get();
-        $deliveryUser = DeliveryMaster::find($order->assign_delivery_boy_id);
+        $deliveryUser = DeliveryMaster::find($order->delivery_master_id);
         $totalPrice = OrderDetail::getProductTotalPrice($id);
         if(!$orderDetail)
         {
