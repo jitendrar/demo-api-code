@@ -25,6 +25,7 @@ return [
 	'repeat_order' => 'તમારો ઓર્ડર સફળતાપૂર્વક પુનરાવર્તિત થયો.',
 	'order_status_pending' => 'વિતરણ બાકી',
 	'order_status_delivered' => 'વિતરણ સફળ',
+	'order_status_cancel' => 'વિતરણ રદ',
 	'profile_image_changed' => 'તમારો પ્રોફાઈલ ફોટો સફળતાપૂર્વક બદલવામાં આવ્યો છે.',
 ];
 ?>
