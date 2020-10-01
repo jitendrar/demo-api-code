@@ -25,6 +25,7 @@ return [
 	'repeat_order' => 'Your order repeated successfully.',
 	'order_status_pending' => 'Pending',
 	'order_status_delivered' => 'Delivered',
+	'order_status_cancel' => 'Cancel',
 	'profile_image_changed' => 'Your profile photo has been successfully changed.',
 ];
 ?>

@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use App\Order;
+use App\DeliveryMaster;
+use Validator;
 use App\User;
 use App\Address;
 use App\OrderDetail;
@@ -42,6 +44,7 @@ class OrdersController extends Controller
         $data['addBtnName'] = $this->module;
         $data['btnAdd'] = 1;
         $data['users'] = User::getUserList();
+        $data['deliveryUsers'] = DeliveryMaster::getActiveDeliveryUsers();
 
         return view($this->moduleViewName.'.index', $data);
     }
@@ -107,6 +110,7 @@ class OrdersController extends Controller
         $status = 1;
         $order = Order::find($id);
         $orderDetail = orderDetail::where('order_id',$id)->get();
+        $deliveryUser = DeliveryMaster::find($order->delivery_master_id);
         $totalPrice = OrderDetail::getProductTotalPrice($id);
         if(!$orderDetail)
         {
@@ -114,13 +118,16 @@ class OrdersController extends Controller
         }
         $data['orderDetail'] = $orderDetail;
         $data['totalPrice'] = $totalPrice;
+        $data['deliveryUser'] = $deliveryUser;
         $data['order'] = $order;
         $html =  view($this->moduleViewName.'.order_detail', $data)->render();
         return ['status' => $status, 'msg'=>$msg, 'html'=>$html];
     }
 
     public function changeOrderStatus(Request $request,$id){
+        $inputStatusName = $request->status_name;
         $button_html = '';
+        $data= '';
         if ($request->get('_token') != '') {
 
             $model = Order::find($id);
@@ -128,23 +135,72 @@ class OrdersController extends Controller
                 return response()->json(['status' => "", 'message' => "Order not found!"]);
             } else {
                 $status =  _GetOrderStatus($model->order_status);
-                if ($status = "Pending"){
-                    $model->order_status = 'D';
-                    $model->delivery_date = date('Y-m-d');
-                    $model->delivery_time = date('H:i:s');
-                    $model->actual_delivery_date = date('Y-m-d');
-                    $model->actual_delivery_time = date('Y-m-d H:i:s');
-                    $model->save();
-                    return response()->json(['status' => true, 'message' => "Order status updated successfully.", 'html' => $button_html]);
-                }else{
+                if($inputStatusName == "cancel"){
+                     if ($status = "Pending"){
+                        $data = 'cancel';
+                        $model->order_status = 'C';
+                        $model->save();
+                        return response()->json(['status' => true, 'message' => "Order status updated successfully.", 'html' => $button_html,'data' =>$data]);
+                    }else{
 
-                    return response()->json(['status' => true, 'message' => "Order status is not updated, please try again!", 'html' => $button_html]);
+                        return response()->json(['status' => true, 'message' => "Order status is not updated, please try again!", 'html' => $button_html]);
+                    }
+                }
+                else if($inputStatusName == "delivered"){
+                    if ($status = "Pending"){
+                        $data = 'delivered';
+                        $model->order_status = 'D';
+                        $model->delivery_date = date('Y-m-d');
+                        $model->delivery_time = date('H:i:s');
+                        $model->actual_delivery_date = date('Y-m-d');
+                        $model->actual_delivery_time = date('Y-m-d H:i:s');
+                        $model->save();
+                        return response()->json(['status' => true, 'message' => "Order status updated successfully.", 'html' => $button_html,'data' => $data]);
+                    }else{
+
+                        return response()->json(['status' => true, 'message' => "Order status is not updated, please try again!", 'html' => $button_html]);
+                    }
                 }
             }
         } else
             return response()->json(['status' => false, 'message' => "Something went wrong, Please try again later!"]);
     }
 
+    public function assignDeliveryBoy(Request $request,$id){
+        $status = 1;
+        $msg = "Delivery Boy has been assigned succussfully.";
+        $redirectUrl = $this->list_url;
+
+        $id = $request->get("id");
+        $model = Order::find($id);
+        if ($model) {
+            $rules = [
+                        'delivery_boy_id' => 'required',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                $messages = $validator->messages();
+
+                $status = 0;
+                $msg = "";
+
+                foreach ($messages->all() as $message) {
+                    $msg .= $message . "<br />";
+                }
+            } else {
+                $delivery_boy_id = $request->get("delivery_boy_id");
+                $model->delivery_master_id = $delivery_boy_id;
+                $model->save();  
+            }
+        }else {
+                $status = 0;
+                $msg = "Order not found!";
+            }
+
+            return ['status' => $status, 'msg' => $msg,'redirect_url' => $redirectUrl];                             
+
+    }
     public function Data(Request $request)
     {
         $authUser = Auth::guard('admins')->user();
@@ -175,7 +231,9 @@ class OrdersController extends Controller
                 if($status == 'Delivered') 
                     return '<span class="label label-sm label-success">Delivered</sapn>';
                 else if($status == 'Pending') 
-                    return '<span class="label label-sm label-info">Pending</sapn>';          
+                    return '<span class="label label-sm label-info">Pending</sapn>';  
+                else if($status == 'Cancel') 
+                    return '<span class="label label-sm label-default">Cancel</sapn>';          
                 else
                     return '';
         })

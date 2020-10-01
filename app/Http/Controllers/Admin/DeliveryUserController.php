@@ -7,23 +7,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
-use App\Category;
-use App\Custom;
-use DataTables;
+use App\User;
+use App\DeliveryMaster;
+use App\Order;
 use Validator;
+use DataTables;
 
-class CategoryController extends Controller
+class DeliveryUserController extends Controller
 {
     public function __construct() {
-
-        $this->moduleRouteText = "categories";
-        $this->moduleViewName = "admin.categories";
+        $this->moduleRouteText = "delivery-users";
+        $this->moduleViewName = "admin.delivery_users";
         $this->list_url = route($this->moduleRouteText.".index");
 
-        $module = 'Category';
+        $module = 'Delivery User';
         $this->module = $module;
 
-        $this->modelObj = new Category();
+        $this->modelObj = new DeliveryMaster();
 
         $this->addMsg = $module ."has been added successfully!";
         $this->updateMsg = $module ." has been updated successfully!";
@@ -34,19 +34,21 @@ class CategoryController extends Controller
         view()->share("moduleRouteText", $this->moduleRouteText);
         view()->share("moduleViewName", $this->moduleViewName);
     }
+
     public function index()
     {
         $data = array();
-        $data['module_title'] ='Category List'; 
+        $data['module_title'] ='Delivery User'; 
         $data['add_url'] = route($this->moduleRouteText.'.create');
         $data['addBtnName'] = $this->module;
         $data['btnAdd'] = 1;
-
+        $data['users'] = DeliveryMaster::getDeliveryUsers();
         return view($this->moduleViewName.'.index', $data);
     }
 
     public function create()
     {
+        $authUser = Auth::guard('admins')->user();
         $data = array();
         $data['formObj'] = $this->modelObj;
         $data['module_title'] = $this->module;
@@ -54,20 +56,22 @@ class CategoryController extends Controller
         $data['action_params'] = 0;
         $data['buttonText'] = "<i class='fa fa-check'></i>Add";
         $data["method"] = "POST";
-        $data['languages']= Custom::__masterLocals();
+        $data["authUser"] = $authUser;
+        $data["address"] = '';
         $data["isEdit"] = 0;
 
         return view($this->moduleViewName.'.add', $data);
     }
-    
+
     public function store(Request $request)
     {
+        
         $status = 1;
         $msg = $this->addMsg;
         $data = array();
+        $authUser = \Auth::guard('admins')->user();
         
         $requestData = $request->all();
-         
         $avatar_id = $request->file('avatar_id');
         if($avatar_id){
             $imgSize = $avatar_id->getSize();
@@ -78,8 +82,10 @@ class CategoryController extends Controller
         }
 
         $validationArr =    [
-                                'category_name.*' => 'required',
-                                'avatar_id' => 'image|max:4000',
+                                'first_name' => 'required',
+                                'last_name' => 'required',
+                                'phone' => 'required|max:10',
+                                'avatar_id' => 'required',
                                 'status' => 'required',
                             ];
         $validator = Validator::make($requestData,$validationArr);
@@ -98,61 +104,48 @@ class CategoryController extends Controller
         }
         else
         {
-            $category_name = $request->get('category_name');
-            $description = $request->get('description');
-            $avatar_id = $request->file('avatar_id');
+            $first_name = $request->get('first_name');
+            $last_name = $request->get('last_name');
+            $phone = $request->get('phone');
             $status_val = $request->get('status');
             $model = $this->modelObj;
+            $model->first_name = $first_name;
+            $model->last_name   = $last_name;
+            $model->phone = $phone;
             $model->status = $status_val;
             $model->save();
-            $languages= Custom::__masterLocals();
-            foreach ($languages as $locale => $val)
-            { 
-                $obj = new \App\CategoryTranslation();
-                if(is_array($category_name) && !empty($category_name))
-                {
-                    $obj->category_name = $category_name[$val];
-                }
-                if(is_array($description) && !empty($description))
-                {
-                    $obj->description = $description[$val];
-                } 
-                $obj->locale = $val;
-                $obj->category_id = $model->id;
-                $obj->save();
-            }
             if(!empty($avatar_id))
             {
-                $destinationPath = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.$model->id;
+                $destinationPath = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'delivery_users'.DIRECTORY_SEPARATOR.$model->id;
                 $image_name =$avatar_id->getClientOriginalName();
                 $extension =$avatar_id->getClientOriginalExtension();
                 $image_name=md5($image_name);
                 $product_image= $image_name.'.'.$extension;
                 $file =$avatar_id->move($destinationPath,$product_image);
-                $model->picture = '/uploads/categories/'.$model->id.'/'.$product_image;
+                $model->picture = '/uploads/delivery_users/'.$model->id.'/'.$product_image;
                 $model->save();
             }
         }
-          return ['status' => $status, 'msg' => $msg, 'data' => $data];
+        return ['status' => $status, 'msg' => $msg, 'data' => $data];
     }
 
     public function show($id)
     {
         $authUser= Auth::guard('admins')->user();
         $data = array();
-        $catObj = $this->modelObj->find($id);
-        if(!$catObj)
+        $userObj = $this->modelObj->find($id);
+        if(!$userObj)
         {
             return abort(404);
         }
-        $data['category'] = $catObj;
-        $data["catImg"] = Category::getAttachment($catObj->id);
-
+        $data['user'] = $userObj;
+        $data["deliveryUserImg"] = DeliveryMaster::getAttachment($userObj->id);
         return view($this->moduleViewName.'.show', $data);
     }
 
     public function edit($id)
     {
+        $authUser = Auth::guard('admins')->user();
         $formObj = $this->modelObj->find($id);
 
         if(!$formObj)
@@ -163,14 +156,13 @@ class CategoryController extends Controller
         $data = array();
         $data['formObj'] = $formObj;
         $data['module_title'] ='edit'.$this->module;
-        $data['buttonText'] = " <i class='fa fa-check'></i> Update";
+        $data['buttonText'] = "<i class='fa fa-check'></i> Update";
         $data['action_url'] = $this->moduleRouteText.".update";
         $data['action_params'] = $formObj->id;
         $data['method'] = "PUT";
+        $data["authUser"] = $authUser;
+        $data["deliveryUserImg"] = DeliveryMaster::getAttachment($formObj->id);
         $data["isEdit"] = 1;
-        $data['languages']= Custom::__masterLocals();
-        $data["catImg"] = Category::getAttachment($formObj->id);
-
         return view($this->moduleViewName.'.add', $data);
     }
 
@@ -197,7 +189,9 @@ class CategoryController extends Controller
         }
 
         $validationArr =    [
-                                'category_name.*' => 'required',
+                                'first_name' => 'required',
+                                'last_name' => 'required',
+                                'phone' =>'required',
                                 'avatar_id' => 'image|max:4000',
                                 'status' => 'required',
                             ];
@@ -217,83 +211,47 @@ class CategoryController extends Controller
         }
         else
         {
-            $category_name = $request->get('category_name');
-            $description = $request->get('description');
+            $first_name = $request->get('first_name');
+            $last_name = $request->get('last_name');
+            $phone = $request->get('phone');
             $avatar_id = $request->file('avatar_id');
             $status_val = $request->get('status');
+            $model->first_name = $first_name;
+            $model->last_name = $last_name;
+            $model->phone = $phone;
             $model->status = $status_val;
             $model->save();
-            $languages= Custom::__masterLocals();
-            foreach ($languages as $locale => $val)
-            { 
-                $obj = \App\CategoryTranslation::where('locale',$val)->where('category_id',$model->id)->first();
-                if(is_array($category_name) && !empty($category_name))
-                {
-                    $obj->category_name = $category_name[$val];
-                }
-                if(is_array($description) && !empty($description))
-                {
-                    $obj->description = $description[$val];
-                } 
-                $obj->locale = $val;
-                $obj->save();
-            }
             if(!empty($avatar_id))
             {
-                $destinationPath = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.$model->id;
+                $destinationPath = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'delivery_users'.DIRECTORY_SEPARATOR.$model->id;
                 $image_name =$avatar_id->getClientOriginalName();
                 $extension =$avatar_id->getClientOriginalExtension();
                 $image_name=md5($image_name);
                 $product_image= $image_name.'.'.$extension;
                 $file =$avatar_id->move($destinationPath,$product_image);
-                $model->picture = '/uploads/categories/'.$model->id.'/'.$product_image;
+                $model->picture = '/uploads/delivery_users/'.$model->id.'/'.$product_image;
                 $model->save();
             }
         }
           return ['status' => $status, 'msg' => $msg, 'data' => $data];
     }
 
-    public function destroy(Request $request,$id)
+    public function destroy($id)
     {
-        $modelObj = $this->modelObj->find($id);
-        if($modelObj) 
-        {
-            try 
-            {
-                $backUrl = $request->server('HTTP_REFERER');
-                $url = public_path().'/uploads/categories/$modelObj->id'.$modelObj->picture;
-                if (file_exists($url)) {
-                    @unlink($url);
-                }
-                $modelObj->delete();
-                session()->flash('success_message', $this->deleteMsg);
-                return redirect($this->list_url);
-            }
-            catch (Exception $e) 
-            {
-                session()->flash('error_message', $this->deleteErrorMsg);
-                return redirect($this->list_url);
-            }
-        } 
-        else 
-        {
-            session()->flash('error_message','Record Does Not Exists');
-            return redirect($this->list_url);
-        }
+        //
     }
+
     public function data(Request $request)
     {
-        $model = Category::select('categories.*')
-        ->Join('category_translations','categories.id','=','category_translations.category_id')
-        ->groupBy('categories.id')
-        ->where('locale','en');
-        $model = $model->orderBy('categories.created_at','desc');
+        $modelObj = Auth::guard('admins')->user();
+        $model = DeliveryMaster::query();
+        $model = $model->orderBy('delivery_master.created_at','desc');
         return DataTables::eloquent($model)
-         ->editColumn('picture', function ($row) {
-            $catImg = Category::getAttachment($row->id); 
+        ->editColumn('picture', function ($row) {
+            $deliveryUserImg = DeliveryMaster::getAttachment($row->id); 
             if(isset($row->id) && $row->id != 0)
             {
-               return '<img src="'.$catImg.'" border="2" width="50" height="50" class="img-rounded" align="center" />';
+               return '<img src="'.$deliveryUserImg.'" border="2" width="50" height="50" class="img-rounded" align="center" />';
             }else{
                 return '<img src="{{ asset("images/coming_soon.png")}}" border="0" width="40" class="img-rounded" align="center" />';
             }
@@ -304,28 +262,24 @@ class CategoryController extends Controller
                 else
                     return '<a class="btn btn-xs btn-danger">Inactive</a>';
             })
-        ->editColumn('category_name', function($row) {
-              return Category::getCategory($row->id);
-            })
         ->editColumn('action', function($row) {
-            return view("admin.categories.action",
+            return view("admin.delivery_users.action",
                 [
                     'currentRoute' => $this->moduleRouteText,
                     'row' => $row, 
                     'isEdit' =>1,
                     'isDelete' =>0,
-                    'isView' =>1,
+                    'isView' =>1
                 ]
             )->render();
-        })->rawcolumns(['picture','action','status'])
-        ->filter(function ($query) 
+        })->rawcolumns(['action','status','picture'])
+         ->filter(function ($query) 
             {
                 $search_id = request()->get("search_id");                                         
-                $search_cnm = request()->get("search_cnm");                                         
+                $search_fnm = request()->get("search_fnm");                                         
+                $search_pno = request()->get("search_pno");                                         
                 $search_status = request()->get("search_status");
-
                 $searchData = array();
-
 
                 if(!empty($search_id))
                 {
@@ -333,18 +287,23 @@ class CategoryController extends Controller
                     $idArr = array_filter($idArr);                
                     if(count($idArr)>0)
                     {
-                        $query = $query->whereIn("categories.id",$idArr);
+                        $query = $query->whereIn("delivery_master.id",$idArr);
                         $searchData['search_id'] = $search_id;
                     } 
                 } 
-                if(!empty($search_cnm))
+                if(!empty($search_fnm))
                 {
-                    $query = $query->where("category_translations.category_name", 'LIKE', '%'.$search_cnm.'%');
-                    $searchData['search_cnm'] = $search_cnm;
+                    $query = $query->where("delivery_master.id", 'LIKE', '%'.$search_fnm.'%');
+                    $searchData['search_fnm'] = $search_fnm;
+                }
+                if(!empty($search_pno))
+                {
+                    $query = $query->where("delivery_master.phone", 'LIKE', '%'.$search_pno.'%');
+                    $searchData['search_pno'] = $search_pno;
                 }
                 if($search_status == "1" || $search_status == "0" )
                 {
-                    $query = $query->where("categories.status", $search_status);
+                    $query = $query->where("delivery_master.status", $search_status);
                 }
                     $searchData['search_status'] = $search_status;
                     $goto = \URL::route($this->moduleRouteText.'.index', $searchData);

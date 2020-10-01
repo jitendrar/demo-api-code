@@ -29,6 +29,9 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::post('addmoney/{id}','Admin\UserController@addMoney')->name('addmoney');
 	Route::any('users/wallet_history/{id}','Admin\UserController@wallethistory')->name('wallethistory');
 
+	//delivery users
+	Route::any('delivery-users/data','Admin\DeliveryUserController@data')->name('delivery-users.data');
+	Route::resource('delivery-users','Admin\DeliveryUserController');
 
 	//products list
 	Route::any('products/data','Admin\ProductsController@data')->name('products.data');
@@ -44,5 +47,10 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::resource('orders','Admin\OrdersController');
 	Route::any('orders/detail/{id}','Admin\OrdersController@orderDetail')->name('orders.detail');
 	Route::post('orders/changeStatus/{id}','Admin\OrdersController@changeOrderStatus');
+	Route::any('orders/assign-delivery-boy/{id}','Admin\OrdersCOntroller@assignDeliveryBoy')->name('assign-driver');
+	//activity types
+	Route::resource('admin-action','Admin\AdminActionController');
+	//activity logs
+	Route::resource('admin-activity-logs','Admin\AdminActivityLogsController');
 });
 

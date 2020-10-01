@@ -72,6 +72,11 @@ if($authUser)
                             </a>
                             </li>
                             <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
+                            <a href="{{ route('delivery-users.index')}}"> Delivery Users
+                                <span class="arrow"></span>
+                            </a>
+                            </li>
+                            <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
                             <a href="{{ route('orders.index')}}"> Orders
                                 <span class="arrow"></span>
                             </a>

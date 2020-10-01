@@ -32,6 +32,9 @@ function _GetOrderStatus($statusid='') {
   } else if($statusid == "D") {
     // return "Delivered";
     return __('words.order_status_delivered');
+  } else if($statusid == 'C'){
+    // return cancel
+    return __('words.order_status_cancel');
   }
 }
 
@@ -86,4 +89,15 @@ function _SaveBased64Image($base64_string, $fileName, $folderPath)
     $output_file    = public_path().DIRECTORY_SEPARATOR.$folderPath.DIRECTORY_SEPARATOR. $fileName.'.'.$image_type;
     file_put_contents($output_file, $image_base64);
     return $folderPath.DIRECTORY_SEPARATOR. $fileName.'.'.$image_type;
+}
+
+function _ReturnImageForAPI($picturepath='') {
+  $picture = url("/images/no_image.jpeg");
+  if(!empty($picturepath)) {
+      $filename = public_path().$picturepath;
+      if (file_exists($filename)) {
+          $picture = url($picturepath);
+      }
+  }
+  return $picture;
 }
