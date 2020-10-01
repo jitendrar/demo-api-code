@@ -33,8 +33,8 @@ class Category extends Model implements TranslatableContract
         $formObj = Category::find($cat_id);
         if($formObj)
         {
-            $img = asset('uploads/categories/'.$formObj->id.'/'.$formObj->picture);    
-            if(file_exists(public_path().'/uploads/categories/'.$formObj->id.'/'.$formObj->picture))
+            $img = asset($formObj->picture);    
+            if(file_exists(public_path().$formObj->picture))
             {
                 $img = $img;
             }

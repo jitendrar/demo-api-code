@@ -190,7 +190,7 @@ class OrdersController extends Controller
                 }
             } else {
                 $delivery_boy_id = $request->get("delivery_boy_id");
-                $model->assign_delivery_boy_id = $delivery_boy_id;
+                $model->delivery_master_id = $delivery_boy_id;
                 $model->save();  
             }
         }else {
