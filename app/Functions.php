@@ -32,6 +32,9 @@ function _GetOrderStatus($statusid='') {
   } else if($statusid == "D") {
     // return "Delivered";
     return __('words.order_status_delivered');
+  } else if($statusid == 'C'){
+    // return cancel
+    return __('words.order_status_cancel');
   }
 }
 

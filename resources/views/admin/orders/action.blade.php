@@ -20,17 +20,22 @@
 
 @if(isset($isStatus) && $isStatus)
 <div class="btn-group">
-<button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> Status
-<i class="fa fa-angle-down"></i>
-</button>
-<ul class="dropdown-menu" role="menu" style="min-width: 80px !important;">
-<li>
-<a data-row="{{ $row->id }}" class="btn btn-info btn-xs change-status" data-id=" {{ $row->id }}" title="Make Delivered" href="javascipt:;" data-msg="Are you sure want to change status as delivered?" id="status{{$row->id}}">Delivered</a>
-</li>
-<li>
- <a data-row="{{ $row->id }}" class="btn btn-default btn-xs" data-id="{{ $row->id }} " title="Make Cancel" href="#" id="status'.$row->id.'">Cancel</a>
-</li>
-</ul>
+	<button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> Status
+	<i class="fa fa-angle-down"></i>
+	</button>
+	<ul class="dropdown-menu" role="menu" style="min-width: 80px !important;">
+		<li>
+			<a data-row="{{ $row->id }}" class="btn btn-info btn-xs change-status" data-id=" {{ $row->id }}" title="Make Delivered" href="javascipt:;" data-msg="Are you sure want to change status as delivered?" id="delivered">Delivered</a>
+		</li>
+		<li>
+		 	<a data-row="{{ $row->id }}" class="btn btn-default btn-xs change-status" data-id="{{ $row->id }} " title="Make Cancel" href="javascipt:;" data-msg = "Are you sure want to change status as cancel?" id="cancel">Cancel</a>
+		</li>
+	</ul>
 </div>
+@if(empty($row->assign_delivery_boy_id))
+<a data-id="{{ $row->id }}" class="btn btn-xs btn-primary assign-delivery-boy" title="Assign Delivery Boy" data-row ="{{$row->assign_delivery_boy_id }}">
+    <i class="fa fa-plus"></i>
+</a>
+@endif
 @endif
 </div>
