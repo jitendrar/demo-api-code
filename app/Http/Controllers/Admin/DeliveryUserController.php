@@ -122,7 +122,7 @@ class DeliveryUserController extends Controller
                 $image_name=md5($image_name);
                 $product_image= $image_name.'.'.$extension;
                 $file =$avatar_id->move($destinationPath,$product_image);
-                $model->picture = $product_image;
+                $model->picture = '/uploads/delivery_users/'.$model->id.'/'.$product_image;
                 $model->save();
             }
         }
@@ -229,7 +229,7 @@ class DeliveryUserController extends Controller
                 $image_name=md5($image_name);
                 $product_image= $image_name.'.'.$extension;
                 $file =$avatar_id->move($destinationPath,$product_image);
-                $model->picture = $product_image;
+                $model->picture = '/uploads/delivery_users/'.$model->id.'/'.$product_image;
                 $model->save();
             }
         }

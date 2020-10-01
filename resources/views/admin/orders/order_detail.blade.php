@@ -11,7 +11,7 @@
             <tr>
                 <th>Delivery Charge:</th>
                 <td>{{ $order->delivery_charge }}</td>
-                @if(!empty($order->assign_delivery_boy_id))
+                @if(!empty($order->delivery_master_id))
                 <th>Delivery User Name:</th>
                     <td>{{ $deliveryUser->first_name.' '.$deliveryUser->last_name}}</td>
                 @endif

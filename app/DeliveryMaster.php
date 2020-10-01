@@ -14,8 +14,8 @@ class DeliveryMaster extends Model
 	  $formObj = DeliveryMaster::find($id);
 	  if($formObj)
 	  {
-  		$img = asset('uploads/delivery_users/'.$formObj->id.'/'.$formObj->picture);    
-        if(file_exists(public_path().'/uploads/delivery_users/'.$formObj->id.'/'.$formObj->picture))
+  		$img = asset($formObj->picture);    
+        if(file_exists(public_path().$formObj->picture))
 	      {
 	          $img = $img;
 	      }
@@ -43,6 +43,6 @@ class DeliveryMaster extends Model
 
 	public function orders()
 	{
-		return $this->hasMany(Order::class, 'assign_delivery_boy_id');
+		return $this->hasMany(Order::class, 'delivery_master_id');
 	}
 }
