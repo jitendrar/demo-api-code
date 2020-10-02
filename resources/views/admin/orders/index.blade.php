@@ -68,7 +68,7 @@
                         <label for="">Find Delivery Boy By Name</label>
                         <div class="row">
                             <div class="col-md-12">
-                                {!! Form::select('load_delivery_user_id',[''=>'Search User']+$deliveryUsers,null,['class'=>'form-control search-select']) !!}                     
+                                {!! Form::select('load_delivery_user_id',[''=>'Search User']+$deliveryUsers,null,['class'=>'form-control  select_user search-select']) !!}                     
                             </div>                            
                         </div>                                
                     </div>
@@ -90,44 +90,44 @@
 @section('scripts')
 
 <script type="text/javascript">
-     $(document).ready(function(){
+    $(document).ready(function(){
         $('body').on('click', '.change-status', function(event){
-        var target_id       = $(this).attr('data-id');
-        var status_name       = $(this).attr('id');
-        if(confirm($(this).data('msg'))){ 
-            var _token          = $('input[name="_token"]').val();
-            var target_path     = $('#change_status_url').val();
-            var _row            = $(this).data('row');
-            $.ajax({
-                "url": target_path+'/'+target_id,
-                "type": "POST",
-                data: { '_token':_token , 'id' : target_id , 'status_name' : status_name},
-                success: function(result){
-                    if(result.status == true)
-                    {   
-                        if(result.html == ''){
-                            if(result.data == 'delivered'){
-                                if($("#status"+target_id).html() == 'Pending'){
-                                    $("#status"+target_id).html('Delivered');
-                                    $("#status"+target_id).addClass('btn-success');    
-                                    $("#status"+target_id).removeClass('btn-info');
+            var target_id       = $(this).attr('data-id');
+            var status_name       = $(this).attr('id');
+            if(confirm($(this).data('msg'))){ 
+                var _token          = $('input[name="_token"]').val();
+                var target_path     = $('#change_status_url').val();
+                var _row            = $(this).data('row');
+                $.ajax({
+                    "url": target_path+'/'+target_id,
+                    "type": "POST",
+                    data: { '_token':_token , 'id' : target_id , 'status_name' : status_name},
+                    success: function(result){
+                        if(result.status == true)
+                        {   
+                            if(result.html == ''){
+                                if(result.data == 'delivered'){
+                                    if($("#status"+target_id).html() == 'Pending'){
+                                        $("#status"+target_id).html('Delivered');
+                                        $("#status"+target_id).addClass('btn-success');    
+                                        $("#status"+target_id).removeClass('btn-info');
+                                    }
+                                }else{
+                                    if($("#status"+target_id).html() == 'Pending'){
+                                        $("#status"+target_id).html('Cancel');
+                                        $("#status"+target_id).addClass('btn-default');    
+                                        $("#status"+target_id).removeClass('btn-info');
+                                    }
                                 }
                             }else{
-                                if($("#status"+target_id).html() == 'Pending'){
-                                    $("#status"+target_id).html('Cancel');
-                                    $("#status"+target_id).addClass('btn-default');    
-                                    $("#status"+target_id).removeClass('btn-info');
-                                }
-                            }
-                        }else{
-                            $( "#status"+target_id ).parent().html(result.html);    
-                        } 
-                        oTableCustom.draw();
+                                $( "#status"+target_id ).parent().html(result.html);    
+                            } 
+                            oTableCustom.draw();
+                        }
                     }
-                }
-            });
-        }
-        event.preventDefault();
+                });
+            }
+            event.preventDefault();
         });
 
         $(document).on('click','.show-order-detail',function(){
@@ -153,16 +153,16 @@
                        }
                     })
                 }
-            });
-            
-            $("#search-frm").submit(function(){
-                oTableCustom.draw();
-                return false;
-            });
-            
-            $.fn.dataTableExt.sErrMode = 'throw';
+        });
+        
+        $("#search-frm").submit(function(){
+            oTableCustom.draw();
+            return false;
+        });
+        
+        $.fn.dataTableExt.sErrMode = 'throw';
 
-            var oTableCustom = $('#server-side-datatables').DataTable({
+        var oTableCustom = $('#server-side-datatables').DataTable({
                 processing: true,
                 serverSide: true,
                 searching: false,
@@ -185,24 +185,23 @@
                 [25,50,100,150,200]
                 ],
                 "order": [[ 0, "desc" ]],
-            columns: [
-                {data: 'id', name: 'id'},
-                {data: 'order_number', name: 'order_number'},
-                { data: 'first_name', name: 'users.first_name'},
-                { data: 'address_line_1' , name: 'addresses.address_line_1'},
-                { data: 'totalPrice' , name: 'totalPrice'},
-                { data: 'order_status', name: 'order_status'},
-                { data: 'action', orderable: false, searchable: false,className:'detail-td'},
-            ]
+                columns: [
+                    {data: 'id', name: 'id'},
+                    {data: 'order_number', name: 'order_number'},
+                    { data: 'first_name', name: 'users.first_name'},
+                    { data: 'address_line_1' , name: 'addresses.address_line_1'},
+                    { data: 'totalPrice' , name: 'totalPrice'},
+                    { data: 'order_status', name: 'order_status'},
+                    { data: 'action', orderable: false, searchable: false,className:'detail-td'},
+                ]
         });
 
         $(document).on("click",".assign-delivery-boy",function(){
-            $id = $(this).data("id");
-            $row = $(this).data("row");
-            $("#assign-delivery-boy #load_delivery_user_id").val($id);
-            $(".select2_users").val(null).trigger("change");
+            var id = $(this).data("id");
+            var row = $(this).data("row");
+            $("#assign-delivery-boy #load_delivery_user_id").val(id);
+            $(".select_user").val(row).trigger("change");
             $("#assign-delivery-boy").modal();
-            jQuery('#assign-delivery-boy').attr('delivery_id',$row);
         });
 
         $(document).on("click",".btn-submit-assign-driver",function(){

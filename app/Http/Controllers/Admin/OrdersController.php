@@ -70,8 +70,10 @@ class OrdersController extends Controller
         {
             return abort(404);
         }
+        $statusName = _GetOrderStatus($orderModel->order_status);
         $data['order'] = $orderModel;
         $data['user'] = User::find($orderModel->user_id);
+        $data['statusName'] = $statusName;
         if(!empty($orderModel->address_id)){
             $data['address'] = Address::find($orderModel->address_id);
         }
