@@ -12,7 +12,7 @@ class AdminActionTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('admin_action')->delete();
+        // DB::table('admin_action')->delete();
 
         $actions = [
             ['id' => 1, 'title' => 'Logout', 'remark' => 'User Logout','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
@@ -32,7 +32,12 @@ class AdminActionTableSeeder extends Seeder
             ['id' => 15, 'title' => 'Order Status', 'remark' => 'Change Order Status','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
             ['id' => 16, 'title' => 'Assign Delivery User', 'remark' => 'Assign Delivery User','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
  		];
-
-        AdminAction::insert($actions);
+        foreach($actions as $action) {
+            $isexist = AdminAction::find($action['id']);
+            if (!$isexist) {
+                AdminAction::Create($action);
+            }
+        }
+        // AdminAction::insert($actions);
     }
 }
