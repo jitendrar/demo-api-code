@@ -13,6 +13,8 @@ use App\Category;
 use App\CategoryTranslation;
 use App\Custom;
 use App\ProductsImages;
+use App\AdminAction;
+use App\ActivityLogs;
 use App\ProductMapping;
 use DataTables;
 use Validator;
@@ -22,6 +24,7 @@ use DB;
 class ProductsController extends Controller
 {
     public function __construct() {
+        $this->activityAction = new AdminAction();
 
         $this->moduleRouteText = "products";
         $this->moduleViewName = "admin.products";
@@ -73,6 +76,7 @@ class ProductsController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::guard('admins')->user();
         $status = 1;
         $msg = $this->addMsg;
         $data = array();
@@ -195,6 +199,13 @@ class ProductsController extends Controller
                         $model->save();
                     }
             }
+               /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->ADD_PRODUCT;
+                $params['user_id']  = $user->id;
+                $params['action_id']  = $this->activityAction->ADD_PRODUCT;
+                $params['remark']   = 'Add Product';
+                ActivityLogs::storeActivityLog($params);
         }
           return ['status' => $status, 'msg' => $msg, 'data' => $data];
     }
@@ -240,6 +251,7 @@ class ProductsController extends Controller
 
     public function update(Request $request, $id)
     {
+        $user = Auth::guard('admins')->user();
         $model = $this->modelObj->find($id);
         $status = 1;
         $msg = $this->updateMsg;
@@ -379,6 +391,13 @@ class ProductsController extends Controller
                 }
 
             }
+            /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->EDIT_PRODUCT;
+                $params['user_id']  = $user->id;
+                $params['action_id']  = $this->activityAction->EDIT_PRODUCT;
+                $params['remark']   = 'Edit Product';
+                ActivityLogs::storeActivityLog($params);
         }
           return ['status' => $status, 'msg' => $msg, 'data' => $data];
 

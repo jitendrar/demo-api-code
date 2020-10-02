@@ -49,8 +49,10 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::post('orders/changeStatus/{id}','Admin\OrdersController@changeOrderStatus');
 	Route::any('orders/assign-delivery-boy/{id}','Admin\OrdersController@assignDeliveryBoy')->name('assign-driver');
 	//activity types
+	Route::any('admin-action/data','Admin\AdminActionController@data')->name('admin-action.data');
 	Route::resource('admin-action','Admin\AdminActionController');
 	//activity logs
+	Route::any('admin-activity-logs/data','Admin\AdminActivityLogsController@data')->name('admin-activity-logs.data');
 	Route::resource('admin-activity-logs','Admin\AdminActivityLogsController');
 });
 
