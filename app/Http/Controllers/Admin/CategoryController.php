@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use App\Category;
+use App\AdminAction;
+use App\ActivityLogs;
 use App\Custom;
 use DataTables;
 use Validator;
@@ -15,6 +17,7 @@ use Validator;
 class CategoryController extends Controller
 {
     public function __construct() {
+        $this->activityAction = new AdminAction();
 
         $this->moduleRouteText = "categories";
         $this->moduleViewName = "admin.categories";
@@ -62,6 +65,7 @@ class CategoryController extends Controller
     
     public function store(Request $request)
     {
+        $user = Auth::guard('admins')->user();
         $status = 1;
         $msg = $this->addMsg;
         $data = array();
@@ -132,6 +136,13 @@ class CategoryController extends Controller
                 $model->picture = '/uploads/categories/'.$model->id.'/'.$product_image;
                 $model->save();
             }
+              /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->ADD_CATEGORY;
+                $params['user_id']  = $user->id;
+                $params['action_id']  = $this->activityAction->ADD_CATEGORY;
+                $params['remark']   = 'Add Category';
+                ActivityLogs::storeActivityLog($params);
         }
           return ['status' => $status, 'msg' => $msg, 'data' => $data];
     }
@@ -176,6 +187,7 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
+        $user = Auth::guard('admins')->user();
         $model = $this->modelObj->find($id);
         $status = 1;
         $msg = $this->updateMsg;
@@ -249,6 +261,13 @@ class CategoryController extends Controller
                 $model->picture = '/uploads/categories/'.$model->id.'/'.$product_image;
                 $model->save();
             }
+             /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->EDIT_CATEGORY;
+                $params['user_id']  = $user->id;
+                $params['action_id']  = $this->activityAction->EDIT_CATEGORY;
+                $params['remark']   = 'Edit Category';
+                ActivityLogs::storeActivityLog($params);
         }
           return ['status' => $status, 'msg' => $msg, 'data' => $data];
     }

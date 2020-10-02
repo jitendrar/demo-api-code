@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
+use App\AdminAction;
+use App\ActivityLogs;
 use App\User;
 use App\DeliveryMaster;
 use App\Order;
@@ -16,6 +18,7 @@ use DataTables;
 class DeliveryUserController extends Controller
 {
     public function __construct() {
+        $this->activityAction = new AdminAction();
         $this->moduleRouteText = "delivery-users";
         $this->moduleViewName = "admin.delivery_users";
         $this->list_url = route($this->moduleRouteText.".index");
@@ -125,6 +128,13 @@ class DeliveryUserController extends Controller
                 $model->picture = '/uploads/delivery_users/'.$model->id.'/'.$product_image;
                 $model->save();
             }
+                /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->ADD_DELIVERY_USER;
+                $params['user_id']  = $authUser->id;
+                $params['action_id']  = $this->activityAction->ADD_DELIVERY_USER;
+                $params['remark']   = 'Add Delivery User';
+                ActivityLogs::storeActivityLog($params);
         }
         return ['status' => $status, 'msg' => $msg, 'data' => $data];
     }
@@ -168,6 +178,7 @@ class DeliveryUserController extends Controller
 
     public function update(Request $request, $id)
     {
+        $authUser = \Auth::guard('admins')->user();
         $model = $this->modelObj->find($id);
         $status = 1;
         $msg = $this->updateMsg;
@@ -232,6 +243,13 @@ class DeliveryUserController extends Controller
                 $model->picture = '/uploads/delivery_users/'.$model->id.'/'.$product_image;
                 $model->save();
             }
+                /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->EDIT_DELIVERY_USER;
+                $params['user_id']  = $authUser->id;
+                $params['action_id']  = $this->activityAction->EDIT_DELIVERY_USER;
+                $params['remark']   = 'Edit Delivery User';
+                ActivityLogs::storeActivityLog($params);
         }
           return ['status' => $status, 'msg' => $msg, 'data' => $data];
     }

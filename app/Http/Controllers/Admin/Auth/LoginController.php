@@ -9,12 +9,17 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use Validator;
 use App\AdminUser;
+use App\ActivityLogs;
+use App\AdminAction;
+
 
 class LoginController extends Controller
 {
     public function __construct()
     {
         $this->middleware('guest_admin',['except' => ['getLogout']]);
+       $this->activityAction = new AdminAction();
+
     }
     public function getLogin()
     {   
@@ -58,6 +63,14 @@ class LoginController extends Controller
                 $msg ='Logged in successfully.';
                 $user->save();
 
+                /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->LOGIN_USER;
+                $params['user_id']  = $user->id;
+                $params['action_id']  = $this->activityAction->LOGIN_USER;
+                $params['remark']   = 'Login Admin User';
+                ActivityLogs::storeActivityLog($params);
+
             }
         } 
         return ['status' => $status, 'msg' => $msg,'goto'=>$goto];
@@ -78,6 +91,13 @@ class LoginController extends Controller
     {
         $url = '/';
         $user = Auth::guard('admins')->user();
+        /* store log */
+        $params=array();
+        $params['activity_type_id'] = $this->activityAction->LOGOUT;
+        $params['user_id']  = $user->id;
+        $params['action_id']  = $this->activityAction->LOGOUT;
+        $params['remark']   = 'Logout User';
+        ActivityLogs::storeActivityLog($params);
         Auth::guard('admins')->logout();
         return redirect($url);  
     }

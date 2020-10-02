@@ -62,9 +62,25 @@ if($authUser)
                     <div class="hor-menu  ">
                         <ul class="nav navbar-nav">
                             <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
-                                <a href="{{ route('admin-dashboard')}}"> Dashboard
+                                <a href="javascript:;"> Dashboard
                                     <span class="arrow"></span>
                                 </a>
+                                <ul class="dropdown-menu pull-left">
+                                    <li aria-haspopup="true" class=" ">
+                                        <a href="{{ route('admin-dashboard')}}" class="nav-link  ">
+                                            Dashboard
+                                        </a>
+                                    </li>
+                                    <li aria-haspopup="true" class=" ">
+                                        <a href="{{route('admin-action.index')}}" class="nav-link  ">
+                                            Admin Action </a>
+                                    </li>
+                                    <li aria-haspopup="true" class=" ">
+                                        <a href="{{ route('admin-activity-logs.index')}}" class="nav-link  ">
+                                            Admin Logs
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                             <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
                             <a href="{{ route('users.index')}}"> Users
