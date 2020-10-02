@@ -19,7 +19,7 @@ class DeliveryMasterResource extends JsonResource
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'phone' => $this->phone,
-            'phone' => _ReturnImageForAPI($this->picture)
+            'picture' => _ReturnImageForAPI($this->picture)
         ];
 
     }
