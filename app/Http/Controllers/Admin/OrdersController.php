@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use App\Order;
 use App\DeliveryMaster;
+use App\AdminAction;
+use App\ActivityLogs;
 use Validator;
 use App\User;
 use App\Address;
@@ -17,7 +19,7 @@ use App\OrderDetail;
 class OrdersController extends Controller
 {
     public function __construct() {
-
+        $this->activityAction = new AdminAction();
         $this->moduleRouteText = "orders";
         $this->moduleViewName = "admin.orders";
         $this->list_url = route($this->moduleRouteText.".index");
@@ -125,6 +127,7 @@ class OrdersController extends Controller
     }
 
     public function changeOrderStatus(Request $request,$id){
+        $user = Auth::guard('admins')->user();
         $inputStatusName = $request->status_name;
         $button_html = '';
         $data= '';
@@ -140,6 +143,13 @@ class OrdersController extends Controller
                         $data = 'cancel';
                         $model->order_status = 'C';
                         $model->save();
+                        /* store log */
+                        $params=array();
+                        $params['activity_type_id'] = $this->activityAction->ORDER_STATUS;
+                        $params['user_id']  = $user->id;
+                        $params['action_id']  = $this->activityAction->ORDER_STATUS;
+                        $params['remark']   = 'Order Status Cancel successfully';
+                        ActivityLogs::storeActivityLog($params);
                         return response()->json(['status' => true, 'message' => "Order status updated successfully.", 'html' => $button_html,'data' =>$data]);
                     }else{
 
@@ -155,6 +165,13 @@ class OrdersController extends Controller
                         $model->actual_delivery_date = date('Y-m-d');
                         $model->actual_delivery_time = date('Y-m-d H:i:s');
                         $model->save();
+                        /* store log */
+                        $params=array();
+                        $params['activity_type_id'] = $this->activityAction->ORDER_STATUS;
+                        $params['user_id']  = $user->id;
+                        $params['action_id']  = $this->activityAction->ORDER_STATUS;
+                        $params['remark']   = 'Order Status Delivered successfully';
+                        ActivityLogs::storeActivityLog($params);
                         return response()->json(['status' => true, 'message' => "Order status updated successfully.", 'html' => $button_html,'data' => $data]);
                     }else{
 
@@ -167,6 +184,7 @@ class OrdersController extends Controller
     }
 
     public function assignDeliveryBoy(Request $request,$id){
+        $user = Auth::guard('admins')->user();
         $status = 1;
         $msg = "Delivery Boy has been assigned succussfully.";
         $redirectUrl = $this->list_url;
@@ -191,7 +209,14 @@ class OrdersController extends Controller
             } else {
                 $delivery_boy_id = $request->get("delivery_boy_id");
                 $model->delivery_master_id = $delivery_boy_id;
-                $model->save();  
+                $model->save(); 
+                 /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->ASSIGN_DELIVERY_USER;
+                $params['user_id']  = $user->id;
+                $params['action_id']  = $this->activityAction->ASSIGN_DELIVERY_USER;
+                $params['remark']   = 'Assign Delivery Boy for  order '.$model->id.' successfully';
+                ActivityLogs::storeActivityLog($params); 
             }
         }else {
                 $status = 0;

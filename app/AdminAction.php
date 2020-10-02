@@ -16,8 +16,20 @@ class AdminAction extends Model
     public $UPDATE_PROFILE = 3;
     public $ADD_USERS = 4;
     public $EDIT_USERS = 5;
-    public $SHOW_USERS =6;
-    public $DELETE_USERS = 7;
-    public $CHANGE_PASSWORD = 8;
-    public $ADD_AMOUNT = 15;
+    public $DELETE_USERS = 6;
+    public $CHANGE_PASSWORD = 7;
+    public $ADD_AMOUNT = 8;
+    public $ADD_PRODUCT = 9;
+    public $EDIT_PRODUCT = 10;
+    public $ADD_CATEGORY = 11;
+    public $EDIT_CATEGORY = 12;
+    public $ADD_DELIVERY_USER = 13;
+    public $EDIT_DELIVERY_USER = 14;
+    public $ORDER_STATUS = 15;
+    public $ASSIGN_DELIVERY_USER = 16;
+
+    public static function activityTypeList()
+    {
+        return AdminAction::select('*')->pluck('title','id')->all();
+    }
 }

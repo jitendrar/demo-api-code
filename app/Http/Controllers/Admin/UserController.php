@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use App\User;
 use App\Order;
+use App\AdminAction;
+use App\ActivityLogs;
 use App\Address;
 use App\WalletHistory;
 use Validator;
@@ -18,6 +20,7 @@ class UserController extends Controller
 {
     public function __construct() {
 
+        $this->activityAction = new AdminAction();
         $this->moduleRouteText = "users";
         $this->moduleViewName = "admin.users";
         $this->list_url = route($this->moduleRouteText.".index");
@@ -129,6 +132,13 @@ class UserController extends Controller
             $obj->status = $address_status;
             $obj->user_id =$model->id;
             $obj->save();
+                /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->ADD_USERS;
+                $params['user_id']  = $authUser->id;
+                $params['action_id']  = $this->activityAction->ADD_USERS;
+                $params['remark']   = 'Add User';
+                ActivityLogs::storeActivityLog($params);
         }
         return ['status' => $status, 'msg' => $msg, 'data' => $data];
     }
@@ -172,6 +182,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+        $authUser = \Auth::guard('admins')->user();
         $model = $this->modelObj->find($id);
         $status = 1;
         $msg = $this->updateMsg;
@@ -253,6 +264,13 @@ class UserController extends Controller
                 $obj->user_id = $model->id;
                 $obj->save();
             }
+            /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->EDIT_USERS;
+                $params['user_id']  = $authUser->id;
+                $params['action_id']  = $this->activityAction->EDIT_USERS;
+                $params['remark']   = 'Edit User';
+                ActivityLogs::storeActivityLog($params);
         }
           return ['status' => $status, 'msg' => $msg, 'data' => $data];
     }
