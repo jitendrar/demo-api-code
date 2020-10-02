@@ -37,13 +37,25 @@
                             <p> {{ $user->balance }}</p>
                         </div>
                     </div>
-                    @if(isset($address) && !empty($address->user_id))
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Address:</label>
-                        <div class="col-sm-9">
-                            <p> {{ $address->address_line_1 }} ,{{ $address->address_line_2 }}, {{ $address->city }} , {{ $address->zipcode }}</p>
-                        </div>
-                    </div>
+                    @if($address)
+                        @foreach ($address as $k => $addres)
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Address {{++$k}}: </label>
+                                <div class="col-sm-9">
+                                    <p> {{ $addres->address_line_1 }} ,{{ $addres->address_line_2 }}, {{ $addres->city }} , {{ $addres->zipcode }}</p>
+                                    <?php
+                                        $TextColor = "text-success";
+                                        if($addres->status == 0){
+                                            $TextColor = "text-danger";
+                                        }
+                                    ?>
+                                    Status ::
+                                    <span class="{{$TextColor}}">
+                                            {{_GetStatusName($addres->status)}}
+                                    </span>
+                                </div>
+                            </div>
+                        @endforeach
                     @endif
                 </form>
             </div>

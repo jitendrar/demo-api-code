@@ -153,7 +153,7 @@ class UserController extends Controller
             return abort(404);
         }
         $data['user'] = $userObj;
-        $data["address"] = Address::where('user_id',$userObj->id)->first();
+        $data["address"] = Address::where('user_id',$userObj->id)->get();
         return view($this->moduleViewName.'.show', $data);
     }
 
