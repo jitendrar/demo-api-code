@@ -32,10 +32,9 @@
 		</li>
 	</ul>
 </div>
-@if(empty($row->delivery_master_id))
 <a data-id="{{ $row->id }}" class="btn btn-xs btn-primary assign-delivery-boy" title="Assign Delivery Boy" data-row ="{{$row->delivery_master_id }}">
     <i class="fa fa-plus"></i>
 </a>
-@endif
+
 @endif
 </div>
