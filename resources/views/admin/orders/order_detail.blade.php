@@ -57,7 +57,7 @@
                     @endif
                     <td width="5%">{{ $detail->id }}</td>
                     <td width="20">{{$detail->product->product_name ?? ''}}</td>
-                    <td width="20%"><input type="number" name="price" value="{{number_format($detail->price,2)}}" class="form-control total_product_price" id="productPrice_{{ $detail->id }}" disabled="disabled"></td>
+                    <td width="20%"><input type="number" name="price" value="{{ $detail->price }}" class="form-control total_product_price" id="productPrice_{{ $detail->id }}" disabled="disabled"></td>
                     <td width="25%">
                         <div class="col-md-4">
                             @if($order->order_status != 'D')
@@ -77,7 +77,7 @@
                 @endforeach
                 <tr>
                     <td colspan="2" align="center">Total Price</td>
-                    <td colspan="4"><input type="number" name="total_price" value="{{ number_format($totalPrice,2) }}" class="form-control" id="total_price" disabled="disabled"></td>
+                    <td colspan="4"><input type="number" name="total_price" value="{{ $totalPrice }}" class="form-control" id="total_price" disabled="disabled"></td>
                 </tr>
             </tbody>
         </table>
