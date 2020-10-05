@@ -59,10 +59,10 @@
                             
                             <input type="hidden" name="unit_price" class="form-control qty-price">
                              <span class="input-group-btn">
-                                    <button class="qnt-cal-btn btn red bootstrap-touchspin-down btn-qty-minus pull-right" data-id="{{ $detail->id }}" type="button" data-type="dec">-</button>
+                                    <button class="btn-xs qnt-cal-btn btn red bootstrap-touchspin-down btn-qty-minus pull-right" data-id="{{ $detail->id }}" type="button" data-type="dec">-</button>
                                 </span>
                             <span class="input-group-btn">
-                                <button class="qnt-cal-btn btn blue bootstrap-touchspin-up btn-qty-plus pull-left" data-id="{{ $detail->id }}" type="button" data-type="inc">+</button>
+                                <button class="btn-xs qnt-cal-btn btn blue bootstrap-touchspin-up btn-qty-plus pull-left" data-id="{{ $detail->id }}" type="button" data-type="inc">+</button>
                             </span>
                             <input id="qty_{{ $detail->id }}" type="text" data-id="{{ $detail->id }}" value="{{ $detail->quantity}}" name="qty" class="form-control  qty-input">
                         </div>
