@@ -70,8 +70,10 @@ class OrdersController extends Controller
         {
             return abort(404);
         }
+        $statusName = _GetOrderStatus($orderModel->order_status);
         $data['order'] = $orderModel;
         $data['user'] = User::find($orderModel->user_id);
+        $data['statusName'] = $statusName;
         if(!empty($orderModel->address_id)){
             $data['address'] = Address::find($orderModel->address_id);
         }
@@ -225,6 +227,67 @@ class OrdersController extends Controller
 
             return ['status' => $status, 'msg' => $msg,'redirect_url' => $redirectUrl];                             
 
+    }
+    public function changeQtyData(Request $request){
+        $status = 0;
+        $totalPrice = 0;
+        $total_price = 0;
+        $totalDelPrice = 0;
+        $data = 0;
+        $message ='';
+        $orderDetail = OrderDetail::find($request->id);
+        if($orderDetail)
+        {
+            $req_qtn = $request->qty;
+            $req_date_type = $request->data_type;
+             $req_qtn = ($req_date_type == 'dec')?$req_qtn-1:$req_qtn+1;
+
+            if($req_qtn <= 0){
+                $orderDetail->delete();
+                $message ="Product has been deleted successfully";
+                $status = 0;
+            }else{
+                $unitprice = $orderDetail->price / $orderDetail->quantity;
+                $totalPrice = OrderDetail::getProductTotalPrice($request->order_id);
+                $totalPrice = $totalPrice - $orderDetail->price;
+                $new_price = ($unitprice * $req_qtn);
+                $orderDetail->quantity = $req_qtn;
+                $orderDetail->price = $new_price;
+                $orderDetail->save();
+                $totalPrice = $totalPrice +  $new_price;
+                $data= $new_price;
+                $total_price =  $totalPrice;
+                $totalDelPrice = OrderDetail::getOrderTotalPrice($request->order_id);
+                $status = 1;
+                $message = 'Quantity updated successfully';
+            }
+        }
+            return ['status' => $status, 'message' => $message,'data' =>$data,'total_price' => $total_price,'req_qtn'=>$req_qtn,'price_del_charge' => $totalDelPrice];
+       
+
+    }
+    public function deleteProduct(Request $request){
+        $orderDetail = OrderDetail::find($request->id);
+        if($orderDetail) 
+        {
+            try 
+            {
+                $orderDetail->delete();
+                $msg ="Product has been deleted successfully";
+                session()->flash('success_message', $msg);
+                return ['status' => 1, 'msg' => $msg];
+            }
+            catch (Exception $e) 
+            {
+                session()->flash('error_message', $this->deleteErrorMsg);
+                return redirect()->back()->withInput();
+            }
+        } 
+        else 
+        {
+           session()->flash('error_message','Record Does Not Exists');
+            return redirect()->route('orders.index');
+        }
     }
     public function Data(Request $request)
     {

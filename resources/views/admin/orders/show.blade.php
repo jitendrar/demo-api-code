@@ -46,6 +46,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-sm-2 control-label">Delivery Time:</label>
+                        <div class="col-sm-9">
+                            <p> {{ $order->delivery_time }}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">Info:</label>
                         <div class="col-sm-9">
                             <p> {{ $order->special_information }}</p>
@@ -54,7 +60,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Order Status:</label>
                         <div class="col-sm-9">
-                            <p> {{ $order->order_status }}</p>
+                            <p> {{ $statusName }}</p>
                         </div>
                     </div>
                 </form>
