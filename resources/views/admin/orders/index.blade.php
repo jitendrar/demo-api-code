@@ -242,6 +242,82 @@
 
             return false;
         });
+
+        $(document).on('click','.qnt-cal-btn',function(e){
+              var date_id = $(this).attr('data-id');
+              var data_type = $(this).attr('data-type');
+
+            var qty = $('#qty_'+date_id).val();
+            qntCalculation(date_id,qty,data_type);
+        });
+         
+
+        $(document).on('click','.remove_prod',function(){
+            //e.preventDefault();
+            var confirm = deleteFunction();
+            if(confirm == true){
+            var id = $(this).attr('data-id');
+            var url = "{{ url('admin/deleteProduct') }}" + '/'+id;
+
+             $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                url:url,
+                method:"POST",
+                data:{'id':id},
+                success:function(result){
+                    $('#AjaxLoaderDiv').fadeOut(100);
+                    if (result.status == 1)
+                    {
+                        $.bootstrapGrowl(result.msg, {type: 'success', delay: 4000});
+                    }
+                    else
+                    {
+                        $.bootstrapGrowl(result.msg, {type: 'danger', delay: 4000});
+                    }
+                    oTableCustom.draw();
+                }
+            });
+
+            }
+            return false;
+        });
     });
+    
+    function qntCalculation(id,qty,data_type)
+    {
+            var order_id = $('#cart_id').attr('data-id');
+            var url = "{{ url('admin/changeQty') }}" + '/'+id;
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                url:url,
+                method:"POST",
+                data:{ 'qty' : qty ,'id':id ,'order_id':order_id,'data_type':data_type },
+                success:function(data){
+                    if(data.status == 1){
+                         $('#productPrice_'+id).val(data.data);
+                         $('#total_price').val(data.total_price);
+                         $('#qty_'+id).val(data.req_qtn);
+                         $.bootstrapGrowl(data.message, {type: 'success', delay: 4000});
+                    }else
+                    {
+                        $.bootstrapGrowl(data.message, {type: 'danger', delay: 4000});
+                    }
+                    oTableCustom.draw();
+                },
+                error: function (error)
+                {
+                    console.log(error);
+                }
+            });
+            return false;
+    }
+    function deleteFunction(){
+        var r = confirm("are you sure want to delete?");
+        return r;
+    }
 </script>
 @endsection
