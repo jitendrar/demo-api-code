@@ -232,6 +232,7 @@ class OrdersController extends Controller
         $status = 0;
         $totalPrice = 0;
         $total_price = 0;
+        $totalDelPrice = 0;
         $data = 0;
         $message ='';
         $orderDetail = OrderDetail::find($request->id);
@@ -256,11 +257,12 @@ class OrdersController extends Controller
                 $totalPrice = $totalPrice +  $new_price;
                 $data= $new_price;
                 $total_price =  $totalPrice;
+                $totalDelPrice = OrderDetail::getOrderTotalPrice($request->order_id);
                 $status = 1;
                 $message = 'Quantity updated successfully';
             }
         }
-            return ['status' => $status, 'message' => $message,'data' =>$data,'total_price' => $total_price,'req_qtn'=>$req_qtn];
+            return ['status' => $status, 'message' => $message,'data' =>$data,'total_price' => $total_price,'req_qtn'=>$req_qtn,'price_del_charge' => $totalDelPrice];
        
 
     }

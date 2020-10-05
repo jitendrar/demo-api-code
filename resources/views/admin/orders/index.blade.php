@@ -90,6 +90,39 @@
 @section('scripts')
 
 <script type="text/javascript">
+    function qntCalculation(id,qty,data_type,main_order_id)
+    {
+            var order_id = $('#cart_id').attr('data-id');
+            var url = "{{ url('admin/changeQty') }}" + '/'+id;
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                url:url,
+                method:"POST",
+                data:{ 'qty' : qty ,'id':id ,'order_id':order_id,'data_type':data_type },
+                success:function(data){
+                    if(data.status == 1){
+                         $('#productPrice_'+id).val(parseFloat(data.data).toFixed(2));
+                         $('#total_price').val(parseFloat(data.total_price).toFixed(2));
+                         $('#qty_'+id).val(data.req_qtn);
+                         console.log(data.price_del_charge);
+                         $('#tr-'+main_order_id).find('.totalprice_td').html(parseFloat(data.price_del_charge).toFixed(2));
+                         $.bootstrapGrowl(data.message, {type: 'success', delay: 4000});
+                    }else
+                    {
+                        $.bootstrapGrowl(data.message, {type: 'danger', delay: 4000});
+                    }
+
+                     
+                },
+                error: function (error)
+                {
+                    console.log(error);
+                }
+            });
+            return false;
+    }
     $(document).ready(function(){
         $('body').on('click', '.change-status', function(event){
             var target_id       = $(this).attr('data-id');
@@ -190,7 +223,7 @@
                     {data: 'order_number', name: 'order_number'},
                     { data: 'first_name', name: 'users.first_name'},
                     { data: 'address_line_1' , name: 'addresses.address_line_1'},
-                    { data: 'totalPrice' , name: 'totalPrice'},
+                    { data: 'totalPrice' , name: 'totalPrice',className:'totalprice_td',orderable: false},
                     { data: 'order_status', name: 'order_status'},
                     { data: 'action', orderable: false, searchable: false,className:'detail-td'},
                 ]
@@ -245,10 +278,10 @@
 
         $(document).on('click','.qnt-cal-btn',function(e){
               var date_id = $(this).attr('data-id');
+              var main_order_id = $('#qty_'+date_id).attr('data-main-id');
               var data_type = $(this).attr('data-type');
-
             var qty = $('#qty_'+date_id).val();
-            qntCalculation(date_id,qty,data_type);
+            qntCalculation(date_id,qty,data_type,main_order_id );
         });
          
 
@@ -285,36 +318,6 @@
         });
     });
     
-    function qntCalculation(id,qty,data_type)
-    {
-            var order_id = $('#cart_id').attr('data-id');
-            var url = "{{ url('admin/changeQty') }}" + '/'+id;
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                },
-                url:url,
-                method:"POST",
-                data:{ 'qty' : qty ,'id':id ,'order_id':order_id,'data_type':data_type },
-                success:function(data){
-                    if(data.status == 1){
-                         $('#productPrice_'+id).val(data.data);
-                         $('#total_price').val(data.total_price);
-                         $('#qty_'+id).val(data.req_qtn);
-                         $.bootstrapGrowl(data.message, {type: 'success', delay: 4000});
-                    }else
-                    {
-                        $.bootstrapGrowl(data.message, {type: 'danger', delay: 4000});
-                    }
-                    oTableCustom.draw();
-                },
-                error: function (error)
-                {
-                    console.log(error);
-                }
-            });
-            return false;
-    }
     function deleteFunction(){
         var r = confirm("are you sure want to delete?");
         return r;
