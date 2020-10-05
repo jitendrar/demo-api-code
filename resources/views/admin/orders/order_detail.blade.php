@@ -39,7 +39,9 @@
         <table class="table table-bordered table-striped table-condensed flip-content" id="cart_id" name="cart" data-id="{{ $order->id }}">
             <thead>
                 <tr class="bold">
+                    @if($order->order_status != 'D')
                     <th></th>
+                    @endif
                     <th width="5%">Id</th>
                     <th width="20">Product Name</th>
                     <th width="20%">Price</th>
@@ -50,13 +52,15 @@
             <tbody>
                 @foreach($orderDetail as $detail)
                 <tr name="order_lines" data-id="{{$detail->id}}" id="order_lines">
+                    @if($order->order_status != 'D')
                     <td width="5%"><button type="button" name="remove_prod" data-id ="{{ $detail->id }}" class="btn btn-danger btn-sm remove_prod" id="remove_prod"><i class="fa fa-minus"></i></button></td>
+                    @endif
                     <td width="5%">{{ $detail->id }}</td>
                     <td width="20">{{$detail->product->product_name ?? ''}}</td>
-                    <td width="20%"><input type="number" name="price" value="{{$detail->price}}" class="form-control total_product_price" id="productPrice_{{ $detail->id }}"></td>
+                    <td width="20%"><input type="number" name="price" value="{{ $detail->price }}" class="form-control total_product_price" id="productPrice_{{ $detail->id }}" disabled="disabled"></td>
                     <td width="25%">
                         <div class="col-md-4">
-                            
+                            @if($order->order_status != 'D')
                             <input type="hidden" name="unit_price" class="form-control qty-price">
                              <span class="input-group-btn">
                                     <button class="btn-xs qnt-cal-btn btn red bootstrap-touchspin-down btn-qty-minus pull-right" data-id="{{ $detail->id }}" type="button" data-type="dec">-</button>
@@ -64,7 +68,8 @@
                             <span class="input-group-btn">
                                 <button class="btn-xs qnt-cal-btn btn blue bootstrap-touchspin-up btn-qty-plus pull-left" data-id="{{ $detail->id }}" type="button" data-type="inc">+</button>
                             </span>
-                            <input id="qty_{{ $detail->id }}" type="text" data-id="{{ $detail->id }}" value="{{ $detail->quantity}}" name="qty" class="form-control  qty-input">
+                            @endif
+                            <input id="qty_{{ $detail->id }}" data-main-id="{{  $detail->order_id }}" type="text" data-id="{{ $detail->id }}" value="{{ $detail->quantity}}" <?php if ($order->order_status == 'D'){ ?> disabled <?php   } ?> name="qty" class="form-control  qty-input">
                         </div>
                     </td>
                     <td width="20%">{{number_format(($detail->discount),2)}}</td>
