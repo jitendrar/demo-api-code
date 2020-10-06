@@ -11,7 +11,7 @@ use App\Order;
 use App\DeliveryMaster;
 use App\AdminAction;
 use App\ActivityLogs;
-use App\wallethistory;
+use App\WalletHistory;
 use Validator;
 use App\User;
 use App\Address;
@@ -240,7 +240,7 @@ class OrdersController extends Controller
         $orderDetail = OrderDetail::find($request->id);
         $order = Order::find($request->order_id);
         $user = User::find($order->user_id);
-        $wallethistory = wallethistory::where('order_id',$order->id)->first();
+        $wallethistory = WalletHistory::where('order_id',$order->id)->first();
         if($orderDetail)
         {
             $req_qtn = $request->qty;
@@ -315,7 +315,7 @@ class OrdersController extends Controller
         $orderDetail = OrderDetail::find($request->id);
         $order = Order::find($orderDetail->order_id);
         $user = User::find($order->user_id);
-        $wallethistory = wallethistory::where('order_id',$order->id)->first();
+        $wallethistory = WalletHistory::where('order_id',$order->id)->first();
         if($orderDetail) 
         {
             try 
