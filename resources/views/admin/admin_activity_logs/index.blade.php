@@ -18,10 +18,10 @@
                         <tr>
                             <th width="1%">ID</th>
                             <th width="20%">Activity Type</th>
-                            <th width="20%">Name</th>
-                            <th width="10%">Action Id</th>
+                            <th width="15%">Name</th>
+                            <th width="5%">Action Id</th>
                             <th width="30%">Remark</th>
-                            <th align="left" width="20%">Date</th>
+                            <th align="left" width="30%">Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,10 +35,10 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function(){
-                $("#search-frm").submit(function(){
-                    oTableCustom.draw();
-                    return false;
-                });
+            $("#search-frm").submit(function(){
+                oTableCustom.draw();
+                return false;
+            });
             
             $.fn.dataTableExt.sErrMode = 'throw';
 
@@ -56,6 +56,9 @@
                         data.search_end_date = $("#search-frm input[name='search_end_date']").val();
                     }
                 },
+                "fnCreatedRow": function( nRow, aData, iDataIndex ) {
+                    $(nRow).attr('id', 'tr-'+aData['id']);
+                },
                 lengthMenu:
                 [
                 [25,50,100,150,200],
@@ -70,6 +73,31 @@
                     { data: 'remark', name: 'remark' },
                     { data: 'date', name: 'created_at' },
                 ]
+            });
+
+            $(document).on('click','.view-log-detail',function(){
+                var tr = $(this).closest('tr');
+                var id = $(this).attr('data-id');
+                var url = "{{ url('admin/admin-activity-logs/logDetail') }}" + '/'+id;
+                if($(".open-log-details-cls").is(":visible")){
+                    $('.log_detail_tr').remove();
+                    return false;
+                }else{
+                $('.log_detail_tr').remove();
+                var row = oTableCustom.row(tr);
+                 $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                        },
+                        url:url,
+                        method:"POST",
+                        data:$(this).serialize(),
+                        dataType:"json",
+                        success:function(data){
+                        jQuery('<tr class="log_detail_tr"><td colspan="10">'+data.html+'</td></tr>').insertAfter($('#tr-'+id).closest('tr'));
+                       }
+                    })
+                }
             });
         });
     </script>
