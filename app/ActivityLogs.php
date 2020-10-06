@@ -15,6 +15,7 @@ class ActivityLogs extends Model
         $obj->user_id     = (isset($params['user_id'])) ? $params['user_id'] : '';
         $obj->action_id     = (isset($params['action_id'])) ? $params['action_id'] : '';
         $obj->remark      = (isset($params['remark'])) ? $params['remark'] : '';
+        $obj->data      = (isset($params['data'])) ? $params['data'] : '';
         $obj->save();
     }  
 }
