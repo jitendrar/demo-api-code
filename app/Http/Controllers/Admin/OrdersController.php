@@ -237,6 +237,7 @@ class OrdersController extends Controller
         $message ='';
         $user = Auth::guard('admins')->user();
         $orderDetail = OrderDetail::find($request->id);
+        $order = Order::find($request->order_id);
         if($orderDetail)
         {
             $req_qtn = $request->qty;
@@ -258,6 +259,9 @@ class OrdersController extends Controller
                 $totalPrice = $totalPrice +  $new_price;
                 $data= $new_price;
                 $total_price =  $totalPrice;
+                $order->total_price = $total_price;
+                $order->save();
+
                 $totalDelPrice = OrderDetail::getOrderTotalPrice($request->order_id);
                 $status = 1;
                 $message = 'Quantity updated successfully';
