@@ -281,10 +281,15 @@ class OrdersController extends Controller
     public function deleteProduct(Request $request){
         $user = Auth::guard('admins')->user();
         $orderDetail = OrderDetail::find($request->id);
+        $order = Order::find($orderDetail->order_id);
         if($orderDetail) 
         {
             try 
             {
+                $totalPrice = OrderDetail::getProductTotalPrice($orderDetail->order_id);
+                $totalPrice = $totalPrice - $orderDetail->price;
+                $order->total_price = $totalPrice;
+                $order->save(); 
                 $orderDetail->delete();
                   /* store log */
                 $params=array();
