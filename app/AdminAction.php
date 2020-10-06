@@ -27,6 +27,8 @@ class AdminAction extends Model
     public $EDIT_DELIVERY_USER = 14;
     public $ORDER_STATUS = 15;
     public $ASSIGN_DELIVERY_USER = 16;
+    public $EDIT_ORDER = 17;
+    public $DELETE_ORDER_PRODUCT = 18;
 
     public static function activityTypeList()
     {

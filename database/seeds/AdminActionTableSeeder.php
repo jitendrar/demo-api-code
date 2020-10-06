@@ -31,6 +31,8 @@ class AdminActionTableSeeder extends Seeder
             ['id' => 14, 'title' => 'Edit Delivery User', 'remark' => 'Edit Delivery User','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
             ['id' => 15, 'title' => 'Order Status', 'remark' => 'Change Order Status','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
             ['id' => 16, 'title' => 'Assign Delivery User', 'remark' => 'Assign Delivery User','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
+            ['id' => 17, 'title' => 'Edit Order', 'remark' => 'Edit Order','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
+            ['id' => 18, 'title' => 'Delete Order Product', 'remark' => 'Delete Order Product','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
  		];
         foreach($actions as $action) {
             $isexist = AdminAction::find($action['id']);
