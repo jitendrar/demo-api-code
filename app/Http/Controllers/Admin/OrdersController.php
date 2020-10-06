@@ -235,6 +235,7 @@ class OrdersController extends Controller
         $totalDelPrice = 0;
         $data = 0;
         $message ='';
+        $user = Auth::guard('admins')->user();
         $orderDetail = OrderDetail::find($request->id);
         if($orderDetail)
         {
@@ -260,6 +261,13 @@ class OrdersController extends Controller
                 $totalDelPrice = OrderDetail::getOrderTotalPrice($request->order_id);
                 $status = 1;
                 $message = 'Quantity updated successfully';
+                /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->EDIT_ORDER;
+                $params['user_id']  = $user->id;
+                $params['action_id']  = $this->activityAction->EDIT_ORDER;
+                $params['remark']   = 'Edit the Order '.$request->order_id;
+                ActivityLogs::storeActivityLog($params);
             }
         }
             return ['status' => $status, 'message' => $message,'data' =>$data,'total_price' => $total_price,'req_qtn'=>$req_qtn,'price_del_charge' => $totalDelPrice];
@@ -267,12 +275,20 @@ class OrdersController extends Controller
 
     }
     public function deleteProduct(Request $request){
+        $user = Auth::guard('admins')->user();
         $orderDetail = OrderDetail::find($request->id);
         if($orderDetail) 
         {
             try 
             {
                 $orderDetail->delete();
+                  /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->DELETE_ORDER_PRODUCT;
+                $params['user_id']  = $user->id;
+                $params['action_id']  = $this->activityAction->DELETE_ORDER_PRODUCT;
+                $params['remark']   = 'Delete the Product';
+                ActivityLogs::storeActivityLog($params);
                 $msg ="Product has been deleted successfully";
                 session()->flash('success_message', $msg);
                 return ['status' => 1, 'msg' => $msg];
