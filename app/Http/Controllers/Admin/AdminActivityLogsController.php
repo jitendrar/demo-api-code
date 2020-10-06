@@ -107,9 +107,20 @@ class AdminActivityLogsController extends Controller
     {
         //
     }
+    public function logDetail($id){
+        $data = array();
+        $msg = '';
+        $html = '';
+        $status = 1;
+        $detail = ActivityLogs::select('*','activity_logs.data as log_data')->where('id',$id)->first();
+        $data['detail'] = $detail;
+        $data['dataValue'] = json_decode($detail->log_data);
+        $html =  view($this->moduleViewName.'.log_detail', $data)->render();
+        return ['status' => $status, 'msg'=>$msg, 'html'=>$html];
+    }
 
     public function data(){
-        $model = ActivityLogs::select('activity_logs.*','admin_action.title as type_name','admin_user.first_name as user_name')
+        $model = ActivityLogs::select('activity_logs.*','admin_action.title as type_name','admin_user.first_name as user_name','activity_logs.data as log_data')
                     ->leftJoin('admin_action','activity_logs.activity_type_id','admin_action.id')
                     ->leftJoin('admin_user','activity_logs.user_id','admin_user.id');
         $model = $model->orderBy('activity_logs.created_at','desc');
@@ -119,8 +130,14 @@ class AdminActivityLogsController extends Controller
                 return date('Y-m-d h:i:s',strtotime($row->created_at));
             else
                 return '';
+        })  
+        ->editColumn('remark', function($row) {
+            if(!empty($row->log_data))
+                return ''.$row->remark.'<br/><a data-id="'.$row->id.'" class="btn btn-xs btn-primary view-log-detail" title="Log Detail"><i class="fa fa-eye"></i></a>';
+            else
+                return ''.$row->remark.'';
         })
-        ->rawcolumns(['date'])
+        ->rawcolumns(['date','remark'])
         ->filter(function ($query)
         {
             $action_id = request()->get("action_id");

@@ -11,6 +11,7 @@ use App\Order;
 use App\DeliveryMaster;
 use App\AdminAction;
 use App\ActivityLogs;
+use App\wallethistory;
 use Validator;
 use App\User;
 use App\Address;
@@ -235,9 +236,11 @@ class OrdersController extends Controller
         $totalDelPrice = 0;
         $data = 0;
         $message ='';
-        $user = Auth::guard('admins')->user();
+        $authUser = Auth::guard('admins')->user();
         $orderDetail = OrderDetail::find($request->id);
         $order = Order::find($request->order_id);
+        $user = User::find($order->user_id);
+        $wallethistory = wallethistory::where('order_id',$order->id)->first();
         if($orderDetail)
         {
             $req_qtn = $request->qty;
@@ -249,6 +252,8 @@ class OrdersController extends Controller
                 $message ="Product has been deleted successfully";
                 $status = 0;
             }else{
+                $oldPrice = $orderDetail->price;
+                $oldQuantity = $orderDetail->quantity;
                 $unitprice = $orderDetail->price / $orderDetail->quantity;
                 $totalPrice = OrderDetail::getProductTotalPrice($request->order_id);
                 $totalPrice = $totalPrice - $orderDetail->price;
@@ -259,18 +264,45 @@ class OrdersController extends Controller
                 $totalPrice = $totalPrice +  $new_price;
                 $data= $new_price;
                 $total_price =  $totalPrice;
-                $order->total_price = $total_price;
-                $order->save();
-
                 $totalDelPrice = OrderDetail::getOrderTotalPrice($request->order_id);
+                $order->total_price = $totalDelPrice;
+                $order->save();
+                $wallethistory->transaction_amount = $totalDelPrice;
+                if($req_date_type == 'dec'){
+                     $diffPrice = $oldPrice - $new_price;
+                     $wallethistory->user_balance = $user->balance + $diffPrice;
+                }else{
+                     $diffPrice = $new_price - $oldPrice;
+                     $wallethistory->user_balance = $user->balance - $diffPrice;
+                }
+                $wallethistory->save();
+                $user->balance = $wallethistory->user_balance;
+                $user->save();
+
                 $status = 1;
                 $message = 'Quantity updated successfully';
+                //old order value
+                $stroeData = array();
+                $stroeData['id'] = isset($orderDetail->id)?$orderDetail->id:'';
+                $stroeData['order_id'] = isset($orderDetail->order_id)?$orderDetail->order_id:'';
+                $stroeData['product_id'] = isset($orderDetail->product_id)?$orderDetail->product_id:'';
+                $stroeData['old_quantity'] = isset($oldQuantity)?$oldQuantity:'';
+                $stroeData['old_price'] = isset($oldPrice)?$oldPrice:'';
+                $stroeData['old_discount'] = isset($orderDetail->discount)?$orderDetail->discount:'';
+                $stroeData['old_updated_at'] = isset($orderDetail->updated_at)?$orderDetail->updated_at:'';
+                //new order value
+                $stroeData['new_quantity'] = isset($req_qtn)?$req_qtn:'';
+                $stroeData['new_price'] = isset($new_price)?$new_price:'';
+                $stroeData['new_discount'] = '-';
+                $stroeData['new_updated_at'] = date('y-m-d h:i:s');
+               
                 /* store log */
                 $params=array();
                 $params['activity_type_id'] = $this->activityAction->EDIT_ORDER;
-                $params['user_id']  = $user->id;
+                $params['user_id']  = $authUser->id;
                 $params['action_id']  = $this->activityAction->EDIT_ORDER;
                 $params['remark']   = 'Edit the Order '.$request->order_id;
+                $params['data']   = json_encode($stroeData);
                 ActivityLogs::storeActivityLog($params);
             }
         }
@@ -279,22 +311,30 @@ class OrdersController extends Controller
 
     }
     public function deleteProduct(Request $request){
-        $user = Auth::guard('admins')->user();
+        $authUser = Auth::guard('admins')->user();
         $orderDetail = OrderDetail::find($request->id);
         $order = Order::find($orderDetail->order_id);
+        $user = User::find($order->user_id);
+        $wallethistory = wallethistory::where('order_id',$order->id)->first();
         if($orderDetail) 
         {
             try 
             {
-                $totalPrice = OrderDetail::getProductTotalPrice($orderDetail->order_id);
-                $totalPrice = $totalPrice - $orderDetail->price;
-                $order->total_price = $totalPrice;
-                $order->save(); 
+                $oldPrice = $orderDetail->price;
                 $orderDetail->delete();
+                $totalDelPrice = OrderDetail::getOrderTotalPrice($orderDetail->order_id);
+                $order->total_price = $totalDelPrice;
+                $order->save(); 
+                $wallethistory->transaction_amount = $totalDelPrice;
+                $wallethistory->user_balance = $user->balance + $oldPrice;
+                $wallethistory->save();
+                $user->balance = $wallethistory->user_balance;
+                $user->save();
+
                   /* store log */
                 $params=array();
                 $params['activity_type_id'] = $this->activityAction->DELETE_ORDER_PRODUCT;
-                $params['user_id']  = $user->id;
+                $params['user_id']  = $authUser->id;
                 $params['action_id']  = $this->activityAction->DELETE_ORDER_PRODUCT;
                 $params['remark']   = 'Delete the Product';
                 ActivityLogs::storeActivityLog($params);
