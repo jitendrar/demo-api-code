@@ -51,9 +51,9 @@
             </thead>
             <tbody>
                 @foreach($orderDetail as $detail)
-                <tr name="order_lines" data-id="{{$detail->id}}" id="order_lines">
+                <tr name="order_lines" data-id="{{$detail->id}}" id="order_lines_{{$detail->id}}">
                     @if($order->order_status != 'D')
-                    <td width="5%"><button type="button" name="remove_prod" data-id ="{{ $detail->id }}" class="btn btn-danger btn-sm remove_prod" id="remove_prod"><i class="fa fa-minus"></i></button></td>
+                    <td width="5%"><button type="button" name="remove_prod" data-id ="{{ $detail->id }}" class="btn btn-danger btn-sm remove_prod" id="remove_prod" main-data-id ="{{  $detail->order_id }}"><i class="fa fa-minus"></i></button></td>
                     @endif
                     <td width="5%">{{ $detail->id }}</td>
                     <td width="20">{{$detail->product->product_name ?? ''}}</td>

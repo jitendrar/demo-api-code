@@ -8,6 +8,15 @@
         <div class="clearfix">&nbsp;</div>
         <table class="table table-bordered table-striped table-condensed flip-content" data-id="{{ $detail->id }}">
             <thead>
+                @if($detail->activity_type_id == 18)
+                <tr>
+                    <th colspan="2" align="center">Delete Following Product From Order</th>
+                </tr>
+                @else
+                <tr>
+                    <th colspan="2" align="center">Edit Following Product</th>
+                </tr>
+                @endif
                 <tr>
                     <th width="20%">Id</th>
                     <td width="80%">{{ $dataValue->id }}</td>
@@ -24,9 +33,7 @@
         </table>
         <table class="table table-bordered table-striped table-condensed flip-content" id="log_detail" name="log_detail" data-id="{{ $detail->id }}">
             <thead>
-                <tr>
-                    <th colspan="3" align="center">Change Value</th>
-                </tr>
+            @if($detail->activity_type_id != 18)
                 <tr>
                     <th width="20%">Field</th>
                     <th width="40%">Old Value</th>
@@ -53,6 +60,24 @@
                     <td width="40%">{{ date('Y-m-d h:i:s',strtotime($dataValue->new_updated_at)) }}</td>
                 </tr>
             </thead>
+            @else
+            <tr>
+                <th width="20%">Quantity</th>
+                <td width="80%">{{ $dataValue->old_quantity }}</td>
+            </tr>
+            <tr>
+                <th width="20%">Price</th>
+                <td width="80%">{{ $dataValue->old_price }}</td>
+            </tr>
+            <tr>
+                <th width="20%">Discount</th>
+                <td width="80%">{{ $dataValue->old_discount }}</td>
+            </tr>
+            <tr>
+                <th width="20%">Updated Date</th>
+                <td width="40%">{{ date('Y-m-d h:i:s',strtotime($dataValue->old_updated_at)) }}</td>
+            </tr>
+            @endif
             <tbody>
             </tbody>
         </table>
