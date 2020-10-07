@@ -24,7 +24,7 @@ class DashboardController extends Controller
         $authUser = Auth::guard('admins')->user();
         $data['authUser'] = $authUser;
         $data['total_User'] = User::count();
-        $order = Order::query()->where('orders.order_status','!=','Delivered')
+        $order = Order::query()->where('orders.order_status','!=','D')
             ->where(\DB::raw("DATE_FORMAT(orders.created_at, '%Y-%m-%d')"),'=',date('Y-m-d'))->count();
         $data['total_today_orders'] = $order;
         $data['total_orders'] = Order::count();
