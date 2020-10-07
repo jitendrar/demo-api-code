@@ -248,9 +248,40 @@ class OrdersController extends Controller
              $req_qtn = ($req_date_type == 'dec')?$req_qtn-1:$req_qtn+1;
 
             if($req_qtn <= 0){
+                $oldPrice = $orderDetail->price;
+                $oldQty = $orderDetail->quantity;
                 $orderDetail->delete();
+                $totalPrice = OrderDetail::getProductTotalPrice($request->order_id);
+                $totalPrice = $totalPrice;
+                $totalDelPrice = OrderDetail::getOrderTotalPrice($request->order_id);
+                $order->total_price = $totalDelPrice;
+                $order->save();
+                $wallethistory->transaction_amount = $totalDelPrice;
+                $wallethistory->user_balance = $user->balance + $oldPrice;
+                $wallethistory->save();
+                $user->balance = $wallethistory->user_balance;
+                $user->save();
+                $total_price = $totalPrice;
+                $totalDelPrice = $totalDelPrice;
+                 //old order value
+                $stroeData = array();
+                $stroeData['id'] = isset($orderDetail->id)?$orderDetail->id:'';
+                $stroeData['order_id'] = isset($orderDetail->order_id)?$orderDetail->order_id:'';
+                $stroeData['product_id'] = isset($orderDetail->product_id)?$orderDetail->product_id:'';
+                $stroeData['old_quantity'] = isset($oldQty)?$oldQty:'';
+                $stroeData['old_price'] = isset($oldPrice)?$oldPrice:'';
+                $stroeData['old_discount'] = isset($orderDetail->discount)?$orderDetail->discount:'';
+                $stroeData['old_updated_at'] = isset($orderDetail->updated_at)?$orderDetail->updated_at:'';
+                    /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->DELETE_ORDER_PRODUCT;
+                $params['user_id']  = $authUser->id;
+                $params['action_id']  = $this->activityAction->DELETE_ORDER_PRODUCT;
+                $params['remark']   = 'Delete the Product of order '.$orderDetail->order_id;
+                $params['data']   = json_encode($stroeData);
+                ActivityLogs::storeActivityLog($params);
                 $message ="Product has been deleted successfully";
-                $status = 0;
+                $status = 2;
             }else{
                 $oldPrice = $orderDetail->price;
                 $oldQuantity = $orderDetail->quantity;
@@ -320,8 +351,10 @@ class OrdersController extends Controller
         {
             try 
             {
+                $oldQty = $orderDetail->quantity;
                 $oldPrice = $orderDetail->price;
                 $orderDetail->delete();
+                $totalPrice = OrderDetail::getProductTotalPrice($orderDetail->order_id);
                 $totalDelPrice = OrderDetail::getOrderTotalPrice($orderDetail->order_id);
                 $order->total_price = $totalDelPrice;
                 $order->save(); 
@@ -330,17 +363,26 @@ class OrdersController extends Controller
                 $wallethistory->save();
                 $user->balance = $wallethistory->user_balance;
                 $user->save();
-
+                 //old order value
+                $stroeData = array();
+                $stroeData['id'] = isset($orderDetail->id)?$orderDetail->id:'';
+                $stroeData['order_id'] = isset($orderDetail->order_id)?$orderDetail->order_id:'';
+                $stroeData['product_id'] = isset($orderDetail->product_id)?$orderDetail->product_id:'';
+                $stroeData['old_quantity'] = isset($oldQty)?$oldQty:'';
+                $stroeData['old_price'] = isset($oldPrice)?$oldPrice:'';
+                $stroeData['old_discount'] = isset($orderDetail->discount)?$orderDetail->discount:'';
+                $stroeData['old_updated_at'] = isset($orderDetail->updated_at)?$orderDetail->updated_at:'';
                   /* store log */
                 $params=array();
                 $params['activity_type_id'] = $this->activityAction->DELETE_ORDER_PRODUCT;
                 $params['user_id']  = $authUser->id;
                 $params['action_id']  = $this->activityAction->DELETE_ORDER_PRODUCT;
-                $params['remark']   = 'Delete the Product';
+                $params['remark']   = 'Delete the Product of order '.$orderDetail->order_id;
+                $params['data']   = json_encode($stroeData);
                 ActivityLogs::storeActivityLog($params);
                 $msg ="Product has been deleted successfully";
-                session()->flash('success_message', $msg);
-                return ['status' => 1, 'msg' => $msg];
+                //session()->flash('success_message', $msg);
+                return ['status' => 1, 'msg' => $msg,'total_price' => $totalPrice,'price_del_charge' => $totalDelPrice];
             }
             catch (Exception $e) 
             {

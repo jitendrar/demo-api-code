@@ -106,8 +106,12 @@
                          $('#productPrice_'+id).val(parseFloat(data.data).toFixed(2));
                          $('#total_price').val(parseFloat(data.total_price).toFixed(2));
                          $('#qty_'+id).val(data.req_qtn);
-                         console.log(data.price_del_charge);
                          $('#tr-'+main_order_id).find('.totalprice_td').html(parseFloat(data.price_del_charge).toFixed(2));
+                         $.bootstrapGrowl(data.message, {type: 'success', delay: 4000});
+                    } else if(data.status == 2){
+                         $('#total_price').val(parseFloat(data.total_price).toFixed(2));
+                         $('#tr-'+main_order_id).find('.totalprice_td').html(parseFloat(data.price_del_charge).toFixed(2));
+                         $('#order_lines_'+id).remove();
                          $.bootstrapGrowl(data.message, {type: 'success', delay: 4000});
                     }else
                     {
@@ -286,10 +290,10 @@
          
 
         $(document).on('click','.remove_prod',function(){
-            //e.preventDefault();
             var confirm = deleteFunction();
             if(confirm == true){
             var id = $(this).attr('data-id');
+            var main_order_id = $(this).attr('main-data-id');
             var url = "{{ url('admin/deleteProduct') }}" + '/'+id;
 
              $.ajax({
@@ -303,13 +307,15 @@
                     $('#AjaxLoaderDiv').fadeOut(100);
                     if (result.status == 1)
                     {
+                         $('#total_price').val(parseFloat(result.total_price).toFixed(2));
+                         $('#tr-'+main_order_id).find('.totalprice_td').html(parseFloat(result.price_del_charge).toFixed(2));
+                         $('#order_lines_'+id).remove();
                         $.bootstrapGrowl(result.msg, {type: 'success', delay: 4000});
                     }
                     else
                     {
                         $.bootstrapGrowl(result.msg, {type: 'danger', delay: 4000});
                     }
-                    oTableCustom.draw();
                 }
             });
 
