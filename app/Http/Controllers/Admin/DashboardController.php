@@ -182,7 +182,7 @@ class DashboardController extends Controller
             else
                 return '';
         })->editColumn('totalPrice',function($row){
-            return OrderDetail::getOrderTotalPrice($row->id);
+            return number_format((OrderDetail::getOrderTotalPrice($row->id)),2);
         })->rawcolumns(['created_at','totalPrice'])
         ->make(true);
     }

@@ -136,7 +136,7 @@
             columns: [
                 {data: 'id', name: 'id'},
                 { data: 'userName', name: 'userName' },
-                { data: 'totalPrice', name: 'totalPrice'},
+                { data: 'totalPrice', name: 'totalPrice' , orderable: false},
                 { data: 'address_line_1', name: 'addresses.address_line_1' },
                 { data: 'created_at', name: 'created_at' },
             ]

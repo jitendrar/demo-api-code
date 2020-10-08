@@ -40,6 +40,7 @@
                             <th align="left" width="15%">User Name</th>
                             <th align="left">Address</th>
                             <th align="left" width="15%">Total + Delivery Charge</th>
+                            <th align="left">Delivery User</th>
                             <th width="5%">status</th>
                             <th width="25%">Action</th>
                         </tr>
@@ -209,6 +210,7 @@
                     {
                         data.search_id = $("#search-frm input[name='search_id']").val();
                         data.search_fnm = $("#search-frm select[name='search_fnm']").val();
+                        data.search_delivery_user = $("#search-frm select[name='search_delivery_user']").val();
                         data.search_oid = $("#search-frm input[name='search_oid']").val();
                         data.search_status = $("#search-frm select[name='search_status']").val();  
                     }
@@ -228,6 +230,7 @@
                     { data: 'first_name', name: 'users.first_name'},
                     { data: 'address_line_1' , name: 'addresses.address_line_1'},
                     { data: 'totalPrice' , name: 'totalPrice',className:'totalprice_td',orderable: false},
+                    { data: 'deliveryUser' , name: 'deliveryUser',orderable: false},
                     { data: 'order_status', name: 'order_status'},
                     { data: 'action', orderable: false, searchable: false,className:'detail-td'},
                 ]
