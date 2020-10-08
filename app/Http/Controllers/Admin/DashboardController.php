@@ -24,9 +24,8 @@ class DashboardController extends Controller
         $authUser = Auth::guard('admins')->user();
         $data['authUser'] = $authUser;
         $data['total_User'] = User::count();
-        $order = Order::query()->where('orders.order_status','!=','D')
-            ->where(\DB::raw("DATE_FORMAT(orders.created_at, '%Y-%m-%d')"),'=',date('Y-m-d'))->count();
-        $data['total_today_orders'] = $order;
+        $order = Order::query()->where('orders.order_status','=','P')->count();
+        $data['total_pending_orders'] = $order;
         $data['total_orders'] = Order::count();
         $data['totalProducts'] = Product::where('status',1)->count();
         $data['totalCategories'] = Category::where('status',1)->count();
@@ -174,8 +173,7 @@ class DashboardController extends Controller
         $modal = Order::select('orders.user_id','orders.id','orders.total_price','users.first_name as userName','orders.created_at','addresses.address_line_1')
             ->leftJoin('users','orders.user_id','=','users.id')
             ->leftJoin('addresses','orders.address_id','=','addresses.id')
-            ->where('orders.order_status','!=','D')
-            ->where(\DB::raw("DATE_FORMAT(orders.created_at, '%Y-%m-%d')"),'=',date('Y-m-d'));
+            ->where('orders.order_status','=','P');
         $modal = $modal->orderBy('orders.created_at','desc');
         return \DataTables::eloquent($modal)
         ->editColumn('created_at', function($row) {

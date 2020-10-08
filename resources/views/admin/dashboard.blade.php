@@ -51,9 +51,9 @@
             </div>
             <div class="details">
                 <div class="number">
-                    <span data-counter="counterup" data-value="{{ $total_today_orders }} ">0</span>
+                    <span data-counter="counterup" data-value="{{ $total_pending_orders }} ">0</span>
                 </div>
-                <div class="desc">Total Today  Orders</div>
+                <div class="desc">Total Pending  Orders</div>
             </div>
         </a>
     </div>
