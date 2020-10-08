@@ -48,6 +48,7 @@ class OrdersController extends Controller
         $data['btnAdd'] = 1;
         $data['users'] = User::getUserList();
         $data['deliveryUsers'] = DeliveryMaster::getActiveDeliveryUsers();
+        $data['allDeliveryUser'] = DeliveryMaster::getDeliveryUsers();
 
         return view($this->moduleViewName.'.index', $data);
     }
@@ -399,9 +400,10 @@ class OrdersController extends Controller
     public function Data(Request $request)
     {
         $authUser = Auth::guard('admins')->user();
-        $modal = Order::select('orders.*','users.first_name','addresses.address_line_1')
+        $modal = Order::select('orders.*','users.first_name','addresses.address_line_1',\DB::raw('CONCAT(delivery_master.first_name," ",delivery_master.last_name) as deliveryUser'))
             ->leftJoin('users','orders.user_id','=','users.id')
             ->leftJoin('addresses','orders.address_id','=','addresses.id')
+            ->leftJoin('delivery_master','delivery_master.id','=','orders.delivery_master_id')
             ->groupBy('orders.id');
         $modal = $modal->orderBy('orders.created_at','desc');
         return \DataTables::eloquent($modal)
@@ -452,6 +454,7 @@ class OrdersController extends Controller
                 $search_pnm = request()->get("search_pnm");                                         
                 $search_oid = request()->get("search_oid");                                         
                 $search_status = request()->get("search_status");
+                $search_delivery_user = request()->get("search_delivery_user");
 
                 $searchData = array();
 
@@ -476,6 +479,10 @@ class OrdersController extends Controller
                     $query = $query->where("orders.order_number", 'LIKE', '%'.$search_oid.'%');
                     $searchData['search_oid'] = $search_oid;
                 } 
+                if(!empty($search_delivery_user)){
+                    $query = $query->where('orders.delivery_master_id','LIKE','%'.$search_delivery_user.'%');
+                    $searchData['search_delivery_user'] = $search_delivery_user;
+                }
                 if($search_status == "P" || $search_status == "D")
                 {
                     $query = $query->where("orders.order_status", $search_status);
