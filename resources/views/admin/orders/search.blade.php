@@ -28,6 +28,10 @@
 			<div class="clearfix">&nbsp;</div>
             <div class="row">
                 <div class="col-md-4">
+                    <label class="control-label">Delivery User</label>
+                    {!! Form::select('search_delivery_user',[''=>'Search User']+$allDeliveryUser,null,['class'=>'form-control search-select']) !!}
+                </div>
+                <div class="col-md-4">
                     <label class="control-label">Status</label>
                     <select name="search_status" class="form-control">
                         <option value="all" {!! \Request::get("search_status") == "all" ? 'selected="selected"':'' !!}>All</option>

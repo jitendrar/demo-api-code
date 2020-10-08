@@ -11,18 +11,20 @@
             <thead>
                 <tr class="bold">
                     <th width="5%">Id</th>
-                    <th width="20">Transaction Amount</th>
-                    <th width="20%">Transaction Type</th>
-                    <th width="35%">Remark</th>
+                    <th width="15%">Balance</th>
+                    <th width="15%">Transaction Amount</th>
+                    <th width="15%">Transaction Type</th>
+                    <th width="30%">Remark</th>
                     <th width="20%">Date</th>
                 </tr>
             </thead>
             @foreach($wallethistory as $history)
             <tbody>
                 <td width="5%">{{ $history->id }}</td>
-                <td width="20">{{number_format(($history->transaction_amount),2)}}</td>
-                <td width="20%">{{$history->transaction_type ?? '-'}}</td>
-                <td width="35%">{{$history->remark ?? ''}}</td>
+                <td width="15%">{{ number_format(($history->user_balance),2) }}</td>
+                <td width="15%">{{number_format(($history->transaction_amount),2)}}</td>
+                <td width="15%">{{$history->transaction_type ?? '-'}}</td>
+                <td width="30%">{{$history->remark ?? ''}}</td>
                 <td width="20%">{{date('Y-m-d h:i',strtotime($history->created_at))}}</td>
             </tbody>
             @endforeach
