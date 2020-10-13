@@ -269,9 +269,9 @@ class DeliveryUserController extends Controller
             $deliveryUserImg = DeliveryMaster::getAttachment($row->id); 
             if(isset($row->id) && $row->id != 0)
             {
-               return '<img src="'.$deliveryUserImg.'" border="2" width="50" height="50" class="img-rounded" align="center" />';
+               return '<img src="'.$deliveryUserImg.'" border="2" width="50" height="50" class="img-rounded thumbnail zoom" align="center" />';
             }else{
-                return '<img src="{{ asset("images/coming_soon.png")}}" border="0" width="40" class="img-rounded" align="center" />';
+                return '<img src="{{ asset("images/coming_soon.png")}}" border="0" width="40" class="img-rounded thumbnail zoom" align="center" />';
             }
         })
         ->editColumn('status', function($row) {

@@ -15,6 +15,7 @@ use App\Product;
 use App\Category;
 use App\Order;
 use App\OrderDetail;
+use App\DeliveryMaster;
 
 class DashboardController extends Controller
 {
@@ -30,6 +31,9 @@ class DashboardController extends Controller
         $data['totalProducts'] = Product::where('status',1)->count();
         $data['totalCategories'] = Category::where('status',1)->count();
         $data['total_inactive_products'] = Product::where('status',0)->count();
+        $data['deliveryUsers'] = DeliveryMaster::getActiveDeliveryUsers();
+        $data['categories'] = Category::categoryList();
+        $data['products'] = Product::productList();
         return view('admin.dashboard',$data);
     }
     public function myProfile()

@@ -63,4 +63,11 @@ class Product extends Model implements TranslatableContract
     {
         return $this->hasMany(ProductsImages::class, 'id');
     }
+
+    public static function productList(){
+        return Product::where('status', 1)->leftJoin('product_translations','products.id','=','product_translations.product_id')
+            ->orderBy('product_translations.product_name', 'desc')
+            ->pluck('product_translations.product_name', 'product_translations.product_id')
+            ->all();
+    }
 }
