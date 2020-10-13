@@ -9,6 +9,10 @@
         <div class="clearfix">&nbsp;</div>
         <table>
             <tr>
+                <th>Address</th>
+                <td>{{ $address->address_line_1??'' }} ,{{ $address->address_line_2??'' }}, {{ $address->city??'' }} , {{ $address->zipcode??'' }}</td>
+            </tr>
+            <tr>
                 <th>Delivery Charge:</th>
                 <td>{{ $order->delivery_charge }}</td>
                 @if(!empty($order->delivery_master_id))
@@ -34,9 +38,20 @@
                 </td>
             </tr>
         </table>
-            <div class="clearfix">&nbsp;</div>
+        <div class="clearfix">&nbsp;</div>
         <form name="cart" class="form-group">
-        <table class="table table-bordered table-striped table-condensed flip-content" id="cart_id" name="cart" data-id="{{ $order->id }}">
+        <div class="portlet-title">
+            @if($order->order_status != 'D')
+            <div class="caption">
+                <a data-id="{{ $order->id }}" class="btn btn-sm btn-primary pull-right add_product" title="Add Product" data-row ="{{ $order->id }}">
+                     <i class="fa fa-plus"></i>Add Product
+                </a>
+            </div>
+            @endif
+        </div>
+        <div class="clearfix">&nbsp;</div>
+        <div class="clearfix">&nbsp;</div>
+        <table class="table table-bordered table-striped table-condensed flip-content" id="cart_id" name="cart" data-id="{{ $order->id }}"> 
             <thead>
                 <tr class="bold">
                     @if($order->order_status != 'D')
@@ -51,12 +66,13 @@
             </thead>
             <tbody>
                 @foreach($orderDetail as $detail)
+                <?php $image = App\Product::getAttachment($detail->product_id);?>
                 <tr name="order_lines" data-id="{{$detail->id}}" id="order_lines_{{$detail->id}}">
                     @if($order->order_status != 'D')
                     <td width="5%"><button type="button" name="remove_prod" data-id ="{{ $detail->id }}" class="btn btn-danger btn-sm remove_prod" id="remove_prod" main-data-id ="{{  $detail->order_id }}"><i class="fa fa-minus"></i></button></td>
                     @endif
                     <td width="5%">{{ $detail->id }}</td>
-                    <td width="20">{{$detail->product->product_name ?? ''}}</td>
+                    <td width="20">{{$detail->product->product_name ?? ''}}<img src="{{ $image }}" border="2" width="50" height="50" class="img-rounded thumbnail zoom" align="center" /></td>
                     <td width="20%"><input type="number" name="price" value="{{ $detail->price }}" class="form-control total_product_price" id="productPrice_{{ $detail->id }}" disabled="disabled"></td>
                     <td width="25%">
                         <div class="col-md-4">

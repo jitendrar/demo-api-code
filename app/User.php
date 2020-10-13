@@ -81,9 +81,9 @@ class User extends Authenticatable
 
     public static function getUserList()
     {
-        return User::select('id',\DB::raw('CONCAT(first_name," ",last_name) as userName'))
+        return User::select('id',\DB::raw('CONCAT(first_name," ",last_name) as userName'),\DB::raw('CONCAT(CONCAT(first_name," ",last_name)," ",CONCAT("(",phone,")")) as fullName'))
                         ->orderBy('userName','ASC')
-                        ->pluck('userName','id')
+                        ->pluck('fullName','id')
                         ->all();
 
     } 

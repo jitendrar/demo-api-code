@@ -33,10 +33,12 @@
                 </div>
                 <div class="col-md-4">
                     <label class="control-label">Status</label>
-                    <select name="search_status" class="form-control">
+                    <select name="search_status" class="form-control search-select">
+                        <option value="" >Search Status</option>
                         <option value="all" {!! \Request::get("search_status") == "all" ? 'selected="selected"':'' !!}>All</option>
                         <option value="P" {!! \Request::get("search_status") == "P" ? 'selected="selected"':'' !!}>Pending</option> 
-                        <option value="D" {!! \Request::get("search_status") == "D" ? 'selected="selected"':'' !!}>Delivered</option> 
+                        <option value="D" {!! \Request::get("search_status") == "D" ? 'selected="selected"':'' !!}>Delivered</option>  
+                        <option value="C" {!! \Request::get("search_status") == "C" ? 'selected="selected"':'' !!}>Cancel</option> 
                     </select>
                 </div>
             </div> 

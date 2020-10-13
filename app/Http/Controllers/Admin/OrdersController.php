@@ -12,8 +12,11 @@ use App\DeliveryMaster;
 use App\AdminAction;
 use App\ActivityLogs;
 use App\WalletHistory;
+use App\ProductTranslation;
 use Validator;
 use App\User;
+use App\Category;
+use App\Product;
 use App\Address;
 use App\OrderDetail;
 
@@ -49,6 +52,8 @@ class OrdersController extends Controller
         $data['users'] = User::getUserList();
         $data['deliveryUsers'] = DeliveryMaster::getActiveDeliveryUsers();
         $data['allDeliveryUser'] = DeliveryMaster::getDeliveryUsers();
+        $data['categories'] = Category::categoryList();
+        $data['products'] = Product::productList();
 
         return view($this->moduleViewName.'.index', $data);
     }
@@ -122,6 +127,7 @@ class OrdersController extends Controller
         {
             return ['status' => 0, 'msg'=>$msg, 'html'=>$html];
         }
+        $data["address"] = Address::where('id',$order->address_id)->first();
         $data['orderDetail'] = $orderDetail;
         $data['totalPrice'] = $totalPrice;
         $data['deliveryUser'] = $deliveryUser;
@@ -397,14 +403,91 @@ class OrdersController extends Controller
             return redirect()->route('orders.index');
         }
     }
+
+    public function addProduct(Request $request){
+        $authUser = Auth::guard('admins')->user();
+        $status = 1;
+        $orderId = $request->get("id");
+        $msg = "Add new product of order ".$orderId. "successfully.";
+        $productId = $request->get("product_id");
+        $quantity = $request->get('quantity');
+        $product = Product::find($productId);
+        $ProductDetail =  ProductTranslation::where('product_id',$productId)->first();
+        $model = Order::find($orderId);
+        $user = User::find($model->user_id);
+        $wallethistory = WalletHistory::where('order_id',$orderId)->first();
+        if ($model) {
+            $rules = [
+                        'product_id' => 'required',
+                        'quantity' => 'required',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                $messages = $validator->messages();
+
+                $status = 0;
+                $msg = "";
+
+                foreach ($messages->all() as $message) {
+                    $msg .= $message . "<br />";
+                }
+            } else {
+                $orderDetail = New OrderDetail();
+                $orderDetail->order_id = $orderId;
+                $orderDetail->product_id = $productId;
+                $orderDetail->quantity = $quantity;
+                $new_quantity = $orderDetail->quantity;
+                $orderDetail->price = $ProductDetail->unity_price * $quantity;
+                $add_new_product_price =  $orderDetail->price;
+                $orderDetail->save(); 
+                $totalPrice = OrderDetail::getProductTotalPrice($orderId);
+                $totalDelPrice = OrderDetail::getOrderTotalPrice($orderId);
+                $model->total_price = $totalDelPrice;
+                $model->save();
+                $wallethistory->transaction_amount = $totalDelPrice;
+                $wallethistory->user_balance = $user->balance - $add_new_product_price;
+                $wallethistory->save();
+                $user->balance = $wallethistory->user_balance;
+                $user->save();
+                  //old order value
+                $stroeData = array();
+                $stroeData['id'] = isset($orderDetail->id)?$orderDetail->id:'';
+                $stroeData['order_id'] = isset($orderDetail->order_id)?$orderDetail->order_id:'';
+                $stroeData['product_id'] = isset($orderDetail->product_id)?$orderDetail->product_id:'';
+                $stroeData['old_quantity'] = isset($new_quantity)?$new_quantity:'';
+                $stroeData['old_price'] = isset($add_new_product_price)?$add_new_product_price:'';
+                $stroeData['old_discount'] = '';
+                $stroeData['old_updated_at'] = isset($orderDetail->updated_at)?$orderDetail->updated_at:'';
+                 /* store log */
+                $params=array();
+                $params['activity_type_id'] = $this->activityAction->ADD_ORDER_PRODUCT;
+                $params['user_id']  = $authUser->id;
+                $params['action_id']  = $this->activityAction->ADD_ORDER_PRODUCT;
+                $params['remark']   = 'Add Product of '.$model->id.' successfully';
+                $params['data']   = json_encode($stroeData);
+                ActivityLogs::storeActivityLog($params); 
+            }
+        }else {
+                $status = 0;
+                $msg = "Order not found!";
+            }
+
+            return ['status' => $status, 'msg' => $msg,'total_price' => $totalPrice,'price_del_charge' => $totalDelPrice];                  
+
+    }
+
     public function Data(Request $request)
     {
         $authUser = Auth::guard('admins')->user();
-        $modal = Order::select('orders.*','users.first_name','addresses.address_line_1',\DB::raw('CONCAT(delivery_master.first_name," ",delivery_master.last_name) as deliveryUser'))
+        $modal = Order::select('orders.*','users.phone','addresses.address_line_1',\DB::raw('CONCAT(delivery_master.first_name," ",delivery_master.last_name) as deliveryUser'),\DB::raw('CONCAT(users.first_name," ",users.last_name) as userName'),'delivery_master.picture as deliveryUserImage')
             ->leftJoin('users','orders.user_id','=','users.id')
             ->leftJoin('addresses','orders.address_id','=','addresses.id')
             ->leftJoin('delivery_master','delivery_master.id','=','orders.delivery_master_id')
             ->groupBy('orders.id');
+        if($request->name == 'dashboard'){
+            $modal = $modal->where('orders.order_status','=','P');
+        }
         $modal = $modal->orderBy('orders.created_at','desc');
         return \DataTables::eloquent($modal)
         ->editColumn('delivery_date', function($row) {
@@ -412,6 +495,20 @@ class OrdersController extends Controller
                 return date('Y-m-d h:i',strtotime($row->delivery_date));
             else
                 return '';
+        })
+        ->editColumn('userName',function($row){
+           return $row->userName.'<br/>'.$row->phone;
+        })
+        ->editColumn('deliveryUser',function($row){
+            $deliveryUserImg = DeliveryMaster::getAttachment($row->delivery_master_id); 
+            $path = url("admin/delivery-users/".$row->delivery_master_id);
+            if(isset($row->id) && $row->id != 0)
+            {
+               return ''.$row->deliveryUser.'<a href="'.$path.'"><img src="'.$deliveryUserImg.'" border="2" width="50" height="50" class="img-rounded thumbnail zoom" align="center" /></a>';
+            }else{
+                return '<img src="{{ asset("images/coming_soon.png")}}" border="0" width="40" class="img-rounded thumbnail zoom" align="center" />'.$row->deliveryUser.'';
+            }
+
         })
         ->editColumn('totalPrice',function($row){
             return number_format((OrderDetail::getOrderTotalPrice($row->id)),2);
@@ -446,7 +543,7 @@ class OrdersController extends Controller
                     'isStatus' =>  $isStatus,
                 ]
             )->render();
-        })->rawcolumns(['created_at','delivery_date','totalPrice','order_status','action'])
+        })->rawcolumns(['created_at','delivery_date','totalPrice','order_status','action','userName','deliveryUser'])
         ->filter(function ($query) 
             {
                 $search_id = request()->get("search_id");                                         
@@ -483,7 +580,7 @@ class OrdersController extends Controller
                     $query = $query->where('orders.delivery_master_id','LIKE','%'.$search_delivery_user.'%');
                     $searchData['search_delivery_user'] = $search_delivery_user;
                 }
-                if($search_status == "P" || $search_status == "D")
+                if($search_status == "P" || $search_status == "D" || $search_status == "C")
                 {
                     $query = $query->where("orders.order_status", $search_status);
                     $searchData['search_status'] = $search_status;

@@ -15,7 +15,8 @@ Route::get('logout', 'Admin\Auth\LoginController@getLogout')->name("logout");
 Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(){
 	//Dashboard
 	Route::get('/dashboard', 'Admin\DashboardController@dashboard')->name("admin-dashboard");
-	Route::any('/dashboard/data','Admin\DashboardController@orderData')->name('orderData');
+	/*Route::any('/dashboard/data','Admin\DashboardController@orderData')->name('orderData');*/
+	Route::any('/dashboard/data','Admin\OrdersController@data')->name('orderData');
 
 	Route::get('/change-toggle', 'Admin\LoginController@toggleChange')->name('change-toggle');
 
@@ -50,6 +51,7 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::any('orders/assign-delivery-boy/{id}','Admin\OrdersController@assignDeliveryBoy')->name('assign-driver');
 	Route::any('changeQty/{id}','Admin\OrdersController@changeQtyData');
 	Route::any('deleteProduct/{id}','Admin\OrdersController@deleteProduct')->name('deleteProduct');
+	Route::post('orders/add-new-product/{id}','Admin\OrdersController@addProduct');
 	//activity types
 	Route::any('admin-action/data','Admin\AdminActionController@data')->name('admin-action.data');
 	Route::resource('admin-action','Admin\AdminActionController');
