@@ -12,6 +12,10 @@
                 <tr>
                     <th colspan="2" align="center">Delete Following Product From Order</th>
                 </tr>
+                @elseif($detail->activity_type_id == 19)
+                <tr>
+                    <th colspan="2" align="center">Add New Product from Order</th>
+                </tr>
                 @else
                 <tr>
                     <th colspan="2" align="center">Edit Following Product</th>
@@ -33,7 +37,7 @@
         </table>
         <table class="table table-bordered table-striped table-condensed flip-content" id="log_detail" name="log_detail" data-id="{{ $detail->id }}">
             <thead>
-            @if($detail->activity_type_id != 18)
+            @if($detail->activity_type_id == 17)
                 <tr>
                     <th width="20%">Field</th>
                     <th width="40%">Old Value</th>

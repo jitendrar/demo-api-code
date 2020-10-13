@@ -19,7 +19,7 @@
         <link href="{{ asset('themes/admin/assets/global/plugins/datatables/datatables.min.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('themes/admin/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css') }}" rel="stylesheet" type="text/css" />
         <!-- END DATATABLE STYLES -->
-        <link href="{{ asset('css/parsley.css?123') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('css/parsley.css?4556') }}" rel="stylesheet" type="text/css" />
         <!-- BEGIN THEME GLOBAL STYLES -->
         <link href="{{ asset('themes/admin/assets/global/css/components.min.css') }}" rel="stylesheet" id="style_components" type="text/css" />
         <link href="{{ asset('themes/admin/assets/global/css/plugins.min.css') }}" rel="stylesheet" type="text/css" />
