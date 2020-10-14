@@ -38,6 +38,9 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::any('products/data','Admin\ProductsController@data')->name('products.data');
 	Route::resource('products','Admin\ProductsController');
 	Route::any('products/deleteImage/{id}','Admin\ProductsController@deleteImage')->name('products.deleteImage');
+	Route::post('products/getproductlist','Admin\ProductsController@getproductlist');
+	Route::post('products/getproductdetails','Admin\ProductsController@getproductdetails');
+
 	//button status
     Route::get('changestatus/{id}/{status}','Admin\ProductsController@changeStatus')->name('changeStatus');
 	//category  list

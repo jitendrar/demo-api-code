@@ -64,10 +64,15 @@ class Product extends Model implements TranslatableContract
         return $this->hasMany(ProductsImages::class, 'id');
     }
 
-    public static function productList(){
-        return Product::where('status', 1)->leftJoin('product_translations','products.id','=','product_translations.product_id')
-            ->orderBy('product_translations.product_name', 'desc')
-            ->pluck('product_translations.product_name', 'product_translations.product_id')
-            ->all();
+    public static function productList($ArrProductID = array())
+    {
+        $modal =  Product::where('status', 1);
+        if(!empty($ArrProductID)) {
+            $modal = $modal->whereIn('products.id',$ArrProductID);
+        }
+        $modal = $modal->leftJoin('product_translations','products.id','=','product_translations.product_id');
+        $modal = $modal->orderBy('product_translations.product_name', 'desc');
+        $modal = $modal->pluck('product_translations.product_name', 'product_translations.product_id');
+        return $modal->all();
     }
 }

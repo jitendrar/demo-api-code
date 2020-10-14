@@ -412,10 +412,11 @@ class OrdersController extends Controller
         $productId = $request->get("product_id");
         $quantity = $request->get('quantity');
         $product = Product::find($productId);
-        $ProductDetail =  ProductTranslation::where('product_id',$productId)->first();
-        $model = Order::find($orderId);
-        $user = User::find($model->user_id);
-        $wallethistory = WalletHistory::where('order_id',$orderId)->first();
+        $ProductDetail  =  ProductTranslation::where('product_id',$productId)->first();
+        $model          = Order::find($orderId);
+        $user           = User::find($model->user_id);
+        $wallethistory  = WalletHistory::where('order_id',$orderId)->first();
+        
         if ($model) {
             $rules = [
                         'product_id' => 'required',

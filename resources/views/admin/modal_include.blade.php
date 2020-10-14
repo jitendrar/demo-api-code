@@ -45,22 +45,58 @@
                 <div class="col-md-12">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="">Find Product</label>
+                            <label for="">Find Category</label>
                             <div class="row">
                                 <div class="col-md-12">
-                                    {!! Form::select('product',[''=>'Search Product']+$products,null,['class'=>'form-control  select_product search-select','id' => 'product']) !!}                     
-                                </div>                            
-                            </div>                                
+                                    {!! Form::select('category',[''=>'--- Select --- ']+$categories,null,['class'=>'form-control  select_category search-select','id' => 'category']) !!}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="">Find Category</label>
+                            <label for="">Find Product</label>
                             <div class="row">
                                 <div class="col-md-12">
-                                    {!! Form::select('category',[''=>'Search Category']+$categories,null,['class'=>'form-control  select_category search-select','id' => 'category']) !!}                     
-                                </div>                            
-                            </div>                                
+                                    {!! Form::select('product',[''=>'Search Product'],null,['class'=>'form-control  select_product search-select','id' => 'product']) !!}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            Stock Type / Price :: <span id="StockTypePrice" > </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="unity_price" id="unity_price" class="form-control qty-price">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-1" style="margin: 5px -15px 0px 2px;">
+                        <div class="form-group">
+                            <label>Quantity</label>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="col-md-2">
+                            <input id="quantity" type="text" value="0" name="quantity" class="form-control" style="width: 60px;">
+                        </div>
+                        <div class="col-md-2" style="width: 10%;margin: 5px 0px 0px -50px;">
+                            <span class="input-group-btn">
+                                <button class="btn-xs add-product-qnt-cal-btn btn red bootstrap-touchspin-down btn-qty-minus pull-right" type="button" data-type="dec">-</button>
+                            </span>
+                        </div>
+                        <div class="col-md-2" style="width: 10%;margin: 5px 0px 0px -20px;">
+                            <span class="input-group-btn">
+                                <button class="btn-xs add-product-qnt-cal-btn btn blue bootstrap-touchspin-up btn-qty-plus pull-left"  type="button" data-type="inc">+</button>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -69,12 +105,12 @@
                 <div class="col-md-12">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Quantity</label>
-                            {!! Form::number('quantity',null,['class'=>'form-control',"min" => 1,'id' => 'quantity']) !!} 
+                            Total Price :: <span id="TotalPriceOfProduct" > </span>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

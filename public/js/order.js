@@ -20,12 +20,8 @@ jQuery(document).ready(function(){
         $("#assign-delivery-boy").modal();
     });
 
-    $(document).on("click",".add_product",function(){
-        var id = $(this).data("id");
-        $('#add-product #item_id').val(id);
-        $('#add-product').modal();
+ 
 
-    });
     $(document).on("click",".btn-submit-product",function(){
         $order_id = $('#add-product #item_id').val();
         var id = $('#add-product #item_id').val();
@@ -34,41 +30,42 @@ jQuery(document).ready(function(){
         var qty = $('#add-product #quantity').val();
         var url = addNewProductURL + '/' + id;
        // alert(url);
-        $('#AjaxLoaderDiv').fadeIn(100);
-        var currentOBJ = $(this);
-        currentOBJ.attr("disabled", true);    
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: {action: url,id: id,quantity: qty,product_id:product_id,category_id:category_id, _token: $("input[name='_token']").val()},
-            success: function (result)
-            {
-                currentOBJ.attr("disabled", false);
-                $('#AjaxLoaderDiv').fadeOut(100);
-                if (result.status == 1)
+        if(AddProductValidation()){
+            $('#AjaxLoaderDiv').fadeIn(100);
+            var currentOBJ = $(this);
+            currentOBJ.attr("disabled", true);
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {action: url,id: id,quantity: qty,product_id:product_id,category_id:category_id, _token: $("input[name='_token']").val()},
+                success: function (result)
                 {
-                    var url = orderDetailURL + '/'+id;
-                    if($(".open-order-details-cls").is(":visible")){
-                        $('.order_detail_tr').remove();
+                    currentOBJ.attr("disabled", false);
+                    $('#AjaxLoaderDiv').fadeOut(100);
+                    if (result.status == 1)
+                    {
+                        var url = orderDetailURL + '/'+id;
+                        if($(".open-order-details-cls").is(":visible")){
+                            $('.order_detail_tr').remove();
+                        }
+                         getOrderDetails(url,id);
+                        $('#tr-'+id).find('.totalprice_td').html(parseFloat(result.price_del_charge).toFixed(2));
+                        $.bootstrapGrowl(result.msg, {type: 'success', delay: 4000});
+                        $('#add-product').modal('toggle');
                     }
-                     getOrderDetails(url,id);
-                    $('#tr-'+id).find('.totalprice_td').html(parseFloat(result.price_del_charge).toFixed(2));
-                    $.bootstrapGrowl(result.msg, {type: 'success', delay: 4000});
-                    $('#add-product').modal('toggle');
-                }
-                else
+                    else
+                    {
+                        $.bootstrapGrowl(result.msg, {type: 'danger', delay: 4000});
+                    }
+                },
+                error: function (error)
                 {
-                    $.bootstrapGrowl(result.msg, {type: 'danger', delay: 4000});
+                    currentOBJ.attr("disabled", false);
+                    $('#AjaxLoaderDiv').fadeOut(100);
+                    $.bootstrapGrowl("Internal server error !", {type: 'danger', delay: 4000});
                 }
-            },
-            error: function (error)
-            {
-                currentOBJ.attr("disabled", false);
-                $('#AjaxLoaderDiv').fadeOut(100);
-                $.bootstrapGrowl("Internal server error !", {type: 'danger', delay: 4000});
-            }
-        });
-
+            });
+        }
         return false;
     })
     $(document).on("click",".btn-submit-assign-driver",function(){
@@ -166,6 +163,43 @@ jQuery(document).ready(function(){
         }
         return false;
     });
+
+
+    /*
+    add product 
+    */
+    $(document).on("click",".add_product",function(){
+        var id = $(this).data("id");
+        $('#add-product #item_id').val(id);
+        $('#add-product').modal();
+        var id = $("#category").val();
+        var url = 'products/getproductlist';
+        getProductListByCategory(url, id);
+    });
+
+    $(document).on("change","#category",function(){
+        var id = $(this).val();
+        var url = 'products/getproductlist';
+        getProductListByCategory(url, id);
+    });
+    $(document).on("change","#product",function(){
+        var id = $(this).val();
+        var url = 'products/getproductdetails';
+        getProductDetailsByID(url, id);
+    });
+    $(document).on('click','.add-product-qnt-cal-btn',function(e){
+        var data_type = $(this).attr('data-type');
+        var qty = $('#quantity').val();
+        var qty = parseInt(qty);
+        if(data_type == 'dec'){
+            var newQt = (qty - 1);
+        }else{
+            var newQt = (qty + 1);
+        }
+        $('#quantity').val(newQt);
+        DisplayAddProducttotalPrice();
+    });
+
 });
 function deleteFunction(){
     var r = confirm("are you sure want to delete?");
@@ -222,4 +256,92 @@ function qntCalculation(id,qty,data_type,main_order_id)
             }
         });
         return false;
+}
+
+function getProductListByCategory(url,id){
+    $.ajax({
+        headers: {
+            //'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+        },
+        url:url,
+        method:"POST",
+        data:{ 'id': id ,_token: $('input[name="_token"]').val()},
+        dataType:"json",
+        beforeSend: function( xhr ) {
+            let selectStartScan = $('#product');
+            selectStartScan.empty();
+            $("#StockTypePrice").html('');
+            $("#TotalPriceOfProduct").html('');
+            $("#unity_price").val(0);
+            $("#quantity").val(0);
+        },
+        success:function(data){
+            var respdata = data;
+            if(respdata.status == 1) {
+                let selectStartScan = $('#product');
+                selectStartScan.empty();
+                selectStartScan.append('<option selected="true" value=""> --- Select ---</option>');
+                selectStartScan.prop('selectedIndex', 0);
+                $.each(respdata.data, function (key, value) {
+                    selectStartScan.append($('<option></option>').attr('value', key).text(value));
+                });
+            }
+       }
+    });
+}
+
+function getProductDetailsByID(url,id){
+    $.ajax({
+        headers: {
+            //'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+        },
+        url:url,
+        method:"POST",
+        data:{ 'id': id ,_token: $('input[name="_token"]').val()},
+        dataType:"json",
+        beforeSend: function( xhr ) {
+            $("#StockTypePrice").html('');
+            $("#TotalPriceOfProduct").html('');
+            $("#unity_price").val(0);
+            $("#quantity").val(0);
+        },
+        success:function(data){
+            var respdata = data;
+            if(respdata.status == 1) {
+                // var StockTypePrice = respdata.data.units_in_stock+' '+​​respdata.data.units_stock_type+' / '+​​respdata.data.unity_price;
+                var StockTypePrice = respdata.data.units_in_stock+" "+respdata.data.units_stock_type+" / ₹ "+respdata.data.unity_price;
+                $("#StockTypePrice").html(StockTypePrice);
+                $("#TotalPriceOfProduct").html('');
+                $("#unity_price").val(respdata.data.unity_price);
+                $("#quantity").val(0);
+            }
+       }
+    });
+}
+
+function DisplayAddProducttotalPrice() {
+    var quantity = $("#quantity").val();
+    var quantity = parseInt(quantity);
+    var unity_price =  $("#unity_price").val();
+    var total = " ₹ "+(quantity*unity_price).toFixed(2);
+    $("#TotalPriceOfProduct").html(total);
+}
+
+function AddProductValidation() {
+    var product_id = $('#add-product #product').val();
+    var err = '';
+    if(product_id > 0) {
+        var qty = $('#add-product #quantity').val();
+        if(qty <= 0) {
+            err = 'Please add quantity more than one';
+        }
+    } else {
+        err = 'Please select at least one product';
+    }
+    if(err != ''){
+        alert(err)
+        return false;
+    } else {
+        return true;
+    }
 }
