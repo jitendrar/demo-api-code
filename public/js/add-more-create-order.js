@@ -60,16 +60,16 @@ divtest.innerHTML = `
         <label class="col-md-3 control-label">Quantity :<span class="required ">*</span></label>
         <div class="col-md-9">
            <div class="col-md-4">
-            <input id="quantity-`+room+`" readonly="readonly" type="text" value="0" name="quantity[]" data-stockprice="stockprice-`+room+`" class="form-control QuantityForCount" style="width: 60px;" required="required" >
+            <input id="quantity-`+room+`" readonly="readonly" type="text" value="1" name="quantity[]" data-stockprice="stockprice-`+room+`" class="form-control QuantityForCount" style="width: 60px;" required="required" >
           </div>
           <div class="col-md-2" style="width: 10%;margin: 5px 0px 0px -50px;">
             <span class="input-group-btn">
-              <button data-quantity="quantity-`+room+`" class="btn-xs add-product-qnt-cal-btn btn red bootstrap-touchspin-down btn-qty-minus pull-right" type="button" data-type="dec">-</button>
+              <button data-room="`+room+`" data-quantity="quantity-`+room+`" class="btn-xs add-product-qnt-cal-btn btn red bootstrap-touchspin-down btn-qty-minus pull-right" type="button" data-type="dec">-</button>
             </span>
           </div>
           <div class="col-md-2" style="width: 10%;margin: 5px 0px 0px -20px;">
             <span class="input-group-btn">
-              <button data-quantity="quantity-`+room+`" class="btn-xs add-product-qnt-cal-btn btn blue bootstrap-touchspin-up btn-qty-plus pull-left"  type="button" data-type="inc">+</button>
+              <button data-room="`+room+`" data-quantity="quantity-`+room+`" class="btn-xs add-product-qnt-cal-btn btn blue bootstrap-touchspin-up btn-qty-plus pull-left"  type="button" data-type="inc">+</button>
             </span>
           </div>
 

@@ -72,7 +72,10 @@
                     <td width="5%"><button type="button" name="remove_prod" data-id ="{{ $detail->id }}" class="btn btn-danger btn-sm remove_prod" id="remove_prod" main-data-id ="{{  $detail->order_id }}"><i class="fa fa-minus"></i></button></td>
                     @endif
                     <td width="5%">{{ $detail->id }}</td>
-                    <td width="20">{{$detail->product->product_name ?? ''}}<img src="{{ $image }}" border="2" width="50" height="50" class="img-rounded thumbnail zoom" align="center" /></td>
+                    <td width="20">
+                        <?php echo $detail->product->product_name.' ('.$detail->product->units_in_stock.'/'.$detail->product->units_stock_type.') (₹'.$detail->product->unity_price.')'; ?>
+                        <img src="{{ $image }}" border="2" width="50" height="50" class="img-rounded thumbnail zoom" align="center" />
+                    </td>
                     <td width="20%"><input type="number" name="price" value="{{ $detail->price }}" class="form-control total_product_price" id="productPrice_{{ $detail->id }}" disabled="disabled"></td>
                     <td width="25%">
                         <div class="col-md-4">

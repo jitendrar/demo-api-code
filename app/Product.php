@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
-
+use App\Http\Resources\ProductResource;
 
 class Product extends Model implements TranslatableContract
 {
@@ -66,13 +66,21 @@ class Product extends Model implements TranslatableContract
 
     public static function productList($ArrProductID = array())
     {
-        $modal =  Product::where('status', 1);
+        $ProductList = array();
+        $STATUS_ACTIVE = Product::$STATUS_ACTIVE;
+        $modal = Product::selectRaw('products.*');
+        $modal = $modal->join('product_translations','products.id','=','product_translations.product_id');
+        $modal = $modal->where('products.status',$STATUS_ACTIVE);
         if(!empty($ArrProductID)) {
             $modal = $modal->whereIn('products.id',$ArrProductID);
         }
-        $modal = $modal->leftJoin('product_translations','products.id','=','product_translations.product_id');
-        $modal = $modal->orderBy('product_translations.product_name', 'desc');
-        $modal = $modal->pluck('product_translations.product_name', 'product_translations.product_id');
-        return $modal->all();
+        $products = $modal->get();
+        if($products->count()) {
+            $data   = ProductResource::collection($products);
+            foreach ($data as $key => $value) {
+                $ProductList[$value->id] = $value->product_name.' ('.$value->units_in_stock.'/'.$value->units_stock_type.') (₹'.$value->unity_price.')';
+            }
+        }
+        return $ProductList;
     }
 }

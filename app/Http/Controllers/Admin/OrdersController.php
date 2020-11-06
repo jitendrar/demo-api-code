@@ -66,6 +66,8 @@ class OrdersController extends Controller
     public function create()
     {
         $data = array();
+        $data['user_add_url'] = route('users.create');
+        $data['userAddBtnName'] = "Add User";
         $data['formObj'] = $this->modelObj;
         $data['module_title'] = $this->module;
         $data['action_url'] = $this->moduleRouteText.".store";
@@ -106,6 +108,17 @@ class OrdersController extends Controller
         } else {
             $authUser = Auth::guard('admins')->user();
             $request_data   = $request->all();
+            $ArrProductIDs = array();
+            foreach ($request_data['product'] as $K => $Pid) {
+                $P_quantity = $request_data['quantity'][$K];
+                if(isset($ArrProductIDs[$Pid])) {
+                    $request_data['quantity'][$ArrProductIDs[$Pid]] = $request_data['quantity'][$ArrProductIDs[$Pid]]+$P_quantity;
+                    unset($request_data['product'][$K]);
+                    unset($request_data['quantity'][$K]);
+                } else {
+                    $ArrProductIDs[$Pid] = $K;
+                }
+            }
             $user_id        = $request_data['user_id'];
             $ArrUser = User::find($user_id);
             if($ArrUser) {
@@ -114,10 +127,10 @@ class OrdersController extends Controller
                 
                 if(isset($request_data['product']) && !empty($request_data['product'])) {
                     $totalOrderPrice        = 0;
-                    $delivery_charge        = 0;
+                    // $delivery_charge        = Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
+                    $delivery_charge        = $request_data['delivery_charge'];
                     $special_information    = '';
                     $payment_method         = '';
-                    $delivery_charge        = Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
                     $totalOrderPrice        = $totalOrderPrice+$delivery_charge;
                     $user_id                = $request_data['user_id'];
                     $ArrOrder = array();

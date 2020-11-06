@@ -451,6 +451,7 @@ class UserController extends Controller
                         $tmp['address_line_2'] = $ad->address_line_2;
                         $tmp['city'] = $ad->city;
                         $tmp['zipcode'] = $ad->zipcode;
+                        $tmp['primary_address'] = $ad->primary_address;
                         $ArrAddress[] = $tmp;
                     }
                 }
