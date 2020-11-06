@@ -30,6 +30,7 @@ class AdminAction extends Model
     public $EDIT_ORDER = 17;
     public $DELETE_ORDER_PRODUCT = 18;
     public $ADD_ORDER_PRODUCT = 19;
+    public $ADD_ORDER = 20;
 
     public static function activityTypeList()
     {

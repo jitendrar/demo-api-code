@@ -47,7 +47,7 @@ class Category extends Model implements TranslatableContract
     }
     public static function categoryList(){
         return Category::where('status', 1)->leftJoin('category_translations','categories.id','=','category_translations.category_id')
-            ->orderBy('category_translations.category_name', 'desc')
+            ->orderBy('category_translations.id', 'desc')
             ->pluck('category_translations.category_name', 'category_translations.category_id')
             ->all();
     }

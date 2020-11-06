@@ -578,4 +578,40 @@ class ProductsController extends Controller
             })
         ->make(true);
     }
+
+    public function getproductlist(Request $request) {
+        
+        $status = 0;
+        $msg    = "No Products available";
+        $data   = array();
+        $category_id        = $request->get('id');
+        if(!empty($category_id)) {
+            $ArrProductID       = ProductMapping::_GetProductByCategoryID($category_id);
+            if(!empty($ArrProductID)) {
+                $status = 1;
+                $msg    = "Products available";
+                $data  = Product::productList($ArrProductID);
+            }
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        echo json_encode($ArrReturn);
+        exit();
+    }
+
+    public function getproductdetails(Request $request) {
+        
+        $status = 0;
+        $msg    = "No Products available";
+        $data   = array();
+        $product_id        = $request->get('id');
+        if(!empty($product_id)) {
+            // $ArrProduct = Product::find($product_id);
+            $status = 1;
+            $msg    = "Products available";
+            $data   = Product::where('id', $product_id)->first();
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        echo json_encode($ArrReturn);
+        exit();
+    }
 }

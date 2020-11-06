@@ -171,9 +171,9 @@ class AdminActionController extends Controller
     }
     public function data(Request $request){
         $model = AdminAction::query();
-        $model = $model->orderBy('admin_action.created_at','desc');
+        
         return \DataTables::eloquent($model)
-       
+
         ->editColumn('action', function($row) {
             return view("admin.partials.action",
                 [
@@ -188,7 +188,7 @@ class AdminActionController extends Controller
         ->rawcolumns(['action'])
         ->filter(function ($query)
         {
-            $title = request()->get("title");             
+            $title = request()->get("title");
             if(!empty($title))
             {
                 $query = $query->where('admin_action.title','LIKE','%'.$title.'%');

@@ -28,7 +28,12 @@
         <div class="portlet box green">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-list"></i>{{ $module_title }} </div>
+                    <i class="fa fa-list"></i>{{ $module_title }}
+                </div>
+                @if($btnAdd)
+                    <a href="{{ $add_url }}" class="btn btn-default pull-right btn-sm mTop5" style="margin-top: 5px;"><i class="fa fa-plus"></i> {{ $addBtnName }}</a>
+                @endif
+                
             </div>
             <div class="portlet-body">
                 <div class="clearfix">&nbsp;</div>
