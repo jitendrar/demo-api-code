@@ -59,7 +59,7 @@ divtest.innerHTML = `
       <div class="form-group">
         <label class="col-md-3 control-label">Quantity :<span class="required ">*</span></label>
         <div class="col-md-9">
-           <div class="col-md-4">
+           <div class="col-md-4" style="margin-left: -14px;">
             <input id="quantity-`+room+`" readonly="readonly" type="text" value="1" name="quantity[]" data-stockprice="stockprice-`+room+`" class="form-control QuantityForCount" style="width: 60px;" required="required" >
           </div>
           <div class="col-md-2" style="width: 10%;margin: 5px 0px 0px -50px;">
