@@ -417,4 +417,49 @@ class UserController extends Controller
         $html =  view($this->moduleViewName.'.wallet_history', $data)->render();
         return ['status' => $status, 'msg'=>$msg, 'html'=>$html];
     }
+
+
+    public function getusersdetails(Request $request)
+    {
+        $status = 0;
+        $msg    = "No User available";
+        $data   = array();
+        $user_id        = $request->get('id');
+        if(!empty($user_id)) {
+            $users  = User::where('id', $user_id)->first();
+            if($users) {
+                $status = 1;
+                $msg    = "User available";
+                $data   = array();
+                $ArrUsers = array();
+                $ArrUsers['id']         =  $users->id;
+                $ArrUsers['first_name'] =  $users->first_name;
+                $ArrUsers['last_name']  =  $users->last_name;
+                $ArrUsers['phone']      =  $users->phone;
+                $ArrUsers['balance']    =  $users->balance;
+                if($users->balance == null){
+                    $ArrUsers['balance']    =  0;
+                }
+                $data['users']          = $ArrUsers;
+                $address    = Address::where('user_id',$user_id)->where('status', Address::$ACTIVE_STATUS)->get();
+                $ArrAddress = array();
+                if($address) {
+                    foreach ($address as $key => $ad) {
+                        $tmp['id'] = $ad->id;
+                        $tmp['user_id'] = $ad->user_id;
+                        $tmp['address_line_1'] = $ad->address_line_1;
+                        $tmp['address_line_2'] = $ad->address_line_2;
+                        $tmp['city'] = $ad->city;
+                        $tmp['zipcode'] = $ad->zipcode;
+                        $ArrAddress[] = $tmp;
+                    }
+                }
+                $data['address']    = $ArrAddress;
+            }
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        echo json_encode($ArrReturn);
+        exit();
+    }
+
 }

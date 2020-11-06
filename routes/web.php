@@ -29,7 +29,8 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::resource('users','Admin\UserController');
 	Route::post('addmoney/{id}','Admin\UserController@addMoney')->name('addmoney');
 	Route::any('users/wallet_history/{id}','Admin\UserController@wallethistory')->name('wallethistory');
-
+	Route::post('users/getusersdetails','Admin\UserController@getusersdetails');
+	
 	//delivery users
 	Route::any('delivery-users/data','Admin\DeliveryUserController@data')->name('delivery-users.data');
 	Route::resource('delivery-users','Admin\DeliveryUserController');

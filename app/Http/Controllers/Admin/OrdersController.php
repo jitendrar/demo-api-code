@@ -19,6 +19,7 @@ use App\Category;
 use App\Product;
 use App\Address;
 use App\OrderDetail;
+use App\Config;
 
 class OrdersController extends Controller
 {
@@ -27,6 +28,11 @@ class OrdersController extends Controller
         $this->moduleRouteText = "orders";
         $this->moduleViewName = "admin.orders";
         $this->list_url = route($this->moduleRouteText.".index");
+
+        $ORDER_TIME_SLOT_FILE   = env('ORDER_TIME_SLOT_FILE');
+        $JsonFile               = storage_path($ORDER_TIME_SLOT_FILE);
+        $fileContent            = file_get_contents($JsonFile);
+        $this->Delivery_Timeslot = json_decode($fileContent,true);
 
         $module = 'Order';
         $this->module = $module;
@@ -54,18 +60,117 @@ class OrdersController extends Controller
         $data['allDeliveryUser'] = DeliveryMaster::getDeliveryUsers();
         $data['categories'] = Category::categoryList();
         $data['products'] = Product::productList();
-
         return view($this->moduleViewName.'.index', $data);
     }
 
     public function create()
     {
-        //
+        $data = array();
+        $data['formObj'] = $this->modelObj;
+        $data['module_title'] = $this->module;
+        $data['action_url'] = $this->moduleRouteText.".store";
+        $data['action_params'] = 0;
+        $data['buttonText'] = "<i class='fa fa-check'></i>Create";
+        $data["method"] = "POST";
+        $data["address"] = '';
+        $data["isEdit"] = 0;
+        $data['users']      = User::getUserList();
+        $data['categories'] = Category::categoryList();
+        // $data['products']   = Product::productList();
+        $delivery_charge         = 0;
+        $delivery_charge         = Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
+        $data['delivery_charge'] = $delivery_charge;
+
+        $data['timeslot']       = $this->Delivery_Timeslot;
+        return view($this->moduleViewName.'.add', $data);
     }
 
     public function store(Request $request)
     {
-        //
+        $status = 1;
+        $msg    = $this->addMsg;
+        $data   = array();
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|numeric',
+            'address_id' => 'required|numeric',
+            'product' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message){
+                $msg .= $message . "<br />";
+            }
+        } else {
+            $authUser = Auth::guard('admins')->user();
+            $request_data   = $request->all();
+            $user_id        = $request_data['user_id'];
+            $ArrUser = User::find($user_id);
+            if($ArrUser) {
+                $request_data['delivery_date'] = date("Y-m-d", strtotime($request_data['delivery_date']));
+                $request_data['delivery_time'] = isset($this->Delivery_Timeslot[$request_data['delivery_time']])?$this->Delivery_Timeslot[$request_data['delivery_time']]:"";
+                
+                if(isset($request_data['product']) && !empty($request_data['product'])) {
+                    $totalOrderPrice        = 0;
+                    $delivery_charge        = 0;
+                    $special_information    = '';
+                    $payment_method         = '';
+                    $delivery_charge        = Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
+                    $totalOrderPrice        = $totalOrderPrice+$delivery_charge;
+                    $user_id                = $request_data['user_id'];
+                    $ArrOrder = array();
+                    $ArrOrder['user_id']                = $user_id;
+                    $ArrOrder['address_id']             = $request_data['address_id'];
+                    $ArrOrder['delivery_charge']        = $delivery_charge;
+                    $ArrOrder['delivery_date']          = $request_data['delivery_date'];
+                    $ArrOrder['delivery_time']          = $request_data['delivery_time'];
+                    $ArrOrder['special_information']    = $special_information;
+                    $ArrOrder['order_status']           = Order::$ORDER_STATUS_PENDING;
+                    $ArrOrder['total_price']            = $totalOrderPrice;
+                    $ArrOrder['payment_method']         = $payment_method;
+                    $OrderCreate = Order::create($ArrOrder);
+                    if($OrderCreate) {
+                        $order_id       = $OrderCreate->id;
+                        foreach ($request_data['product'] as $K => $Pid) {
+                            $P_quantity = $request_data['quantity'][$K];
+                            $ProductD   = Product::_GetProductByID($Pid);
+                            if($ProductD) {
+                                $P_price         = $ProductD->unity_price*$P_quantity;
+                                $totalOrderPrice = $totalOrderPrice+$P_price;
+
+                                $arrOrderDetails = array();
+                                $arrOrderDetails['order_id']    = $order_id;
+                                $arrOrderDetails['product_id']  = $Pid;
+                                $arrOrderDetails['quantity']    = $P_quantity;
+                                $arrOrderDetails['price']       = $P_price;
+                                OrderDetail::create($arrOrderDetails);
+                            }
+                        }
+                        $AvailableBalance = $ArrUser->balance-$totalOrderPrice;
+                        $order_number   = "ORD".$order_id;
+                        Order::where('id',$order_id)->update(['order_number' => $order_number, 'total_price' => $totalOrderPrice]);
+                        $ArrWallete = array();
+                        $ArrWallete['user_id']              = $user_id;
+                        $ArrWallete['order_id']             = $order_id;
+                        $ArrWallete['user_balance']         = $AvailableBalance;
+                        $ArrWallete['transaction_amount']   = $totalOrderPrice;
+                        $ArrWallete['transaction_type']     = WalletHistory::$TRANSACTION_TYPE_DEBIT;
+                        $ArrWallete['remark']               = "Deduct money for your order";
+                        WalletHistory::create($ArrWallete);
+                        User::where('id',$ArrUser->id)->update(['balance' => $AvailableBalance]);
+                        $params=array();
+                        $params['activity_type_id'] = $this->activityAction->ADD_ORDER;
+                        $params['user_id']          = $authUser->id;
+                        $params['action_id']        = $this->activityAction->ADD_ORDER;
+                        $params['remark']           = 'Create new order for User ID :: '.$ArrUser->id.' , Order ID :: '.$order_id;
+                        ActivityLogs::storeActivityLog($params);
+                    }
+                }
+            }
+        }
+        return ['status' => $status, 'msg' => $msg, 'data' => $data];
     }
 
     public function show($id)
