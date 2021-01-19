@@ -3,6 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\OfferMaster;
+use App\OfferDetail;
+use App\Product;
+use App\User;
+
 
 class CartDetail extends Model
 {
@@ -52,4 +57,57 @@ class CartDetail extends Model
 		}
 	}
 
+	public static function _AddRemoveOfferItemsInCart($cart_id='', $requestData=array())
+	{
+		if(isset($requestData['non_login_token']) && !empty($requestData['non_login_token'])) {
+			$non_login_token = $requestData['non_login_token'];
+			if(!empty($cart_id)) {
+				$cartdata = CartDetail::where('id',$cart_id)->first();
+				if($cartdata){
+					$OfferMaster = OfferMaster::where('status',1)->where('product_id',$cartdata->product_id)->first();
+					if($OfferMaster) {
+						if($cartdata->quantity >= $OfferMaster->quantity) {
+							
+							$OfferDetail = OfferDetail::where('offer_master_id',$OfferMaster->id)->get()->toArray();
+							if(!empty($OfferDetail)) {
+								$ArrCartCreate = array();
+								$ArrCartCreate['non_login_token'] = $non_login_token;
+								$ArrUSer = User::where('non_login_token',$non_login_token)->first();
+								if($ArrUSer) {
+									$ArrCartCreate['user_id'] = $ArrUSer->id;
+								}
+								$updateQ = floor($cartdata->quantity/$OfferMaster->quantity);
+								foreach ($OfferDetail as $k => $V) {
+									$ArrProduct = Product::_GetProductByID($V['product_id']);
+									if($ArrProduct) {
+										$OfferAdded = CartDetail::where('non_login_token', $non_login_token)->where('product_id', $ArrProduct->id)->where('price',0)->first();
+										if($OfferAdded) {
+											$ArrCartCreate['quantity'] 		= $updateQ;
+											$OfferAdded->update($ArrCartCreate);
+										} else {
+											$ArrCartCreate['product_id'] 	= $ArrProduct->id;
+											$ArrCartCreate['quantity'] 		= $updateQ;
+											$ArrCartCreate['price'] 		= 0;
+											$ArrCartCreate['discount'] 		= $ArrProduct->unity_price;
+											CartDetail::create($ArrCartCreate);
+										}
+									}
+								}
+							}
+						} else {
+							$OfferDetail = OfferDetail::where('offer_master_id',$OfferMaster->id)->get()->toArray();
+							if(!empty($OfferDetail)) {
+								$ArrProductID = array();
+								foreach ($OfferDetail as $k => $V){
+									$ArrProductID[] = $V['product_id'];
+								}
+								$ObjCard = CartDetail::where('non_login_token', $non_login_token)->whereIn('product_id', $ArrProductID);
+								$ObjCard->delete();
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
