@@ -169,6 +169,7 @@ class CartDetailController extends Controller
                     $cartdata   = CartDetail::with('product')->where('id',$CartDetail->id)->first();
                     $cartdata->product->isAvailableInCart = 1;
                     $cartdata->product->quantity = $cartdata->quantity;
+                    CartDetail::_AddRemoveOfferItemsInCart($CartDetail->id,$requestData);
                     $StatusCode     = 200;
                     $status         = 1;
                     $msg            = __('words.cart_update');
@@ -186,7 +187,7 @@ class CartDetailController extends Controller
                 }
                 $CartDetail = CartDetail::create($requestData);
                 if($CartDetail) {
-                    
+                    CartDetail::_AddRemoveOfferItemsInCart($CartDetail->id,$requestData);
                     $cartdata   = CartDetail::with('product')->where('id',$CartDetail->id)->first();
                     $cartdata->product->isAvailableInCart = 1;
                     $cartdata->product->quantity = $cartdata->quantity;
@@ -242,6 +243,7 @@ class CartDetailController extends Controller
                     }
                     $requestData['status'] = 1;
                     $CartDetail->update($requestData);
+                    CartDetail::_AddRemoveOfferItemsInCart($CartDetail->id,$requestData);
                     $cartdata   = CartDetail::with('product')->where('id',$CartDetail->id)->first();
                     $cartdata->product->isAvailableInCart = 1;
                     $cartdata->product->quantity = $cartdata->quantity;
