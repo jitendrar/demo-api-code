@@ -8,6 +8,7 @@ use App\User;
 use App\DeviceInfo;
 use App\Config;
 use App\CartDetail;
+use App\WalletHistory;
 use Validator;
 use App\Http\Resources\UserResource;
 
@@ -27,11 +28,22 @@ class AuthController extends Controller
         $accessToken    = "";
 
         $RegisterData = Validator::make($request->all(), [
-            'first_name' => 'required|max:55',
+            'first_name' => 'required|max:55|min:3',
             'last_name' => 'required|max:55',
             'phone' => 'required|numeric|regex:/[6-9]\d{9}/|digits:10|unique:users',
-            'password' => 'required|confirmed'
+            'password' => 'required|confirmed',
+            'referralfrom' => [
+                                function ($attribute, $value, $fail) {
+                                    if(!empty($value)) {
+                                        $usercount = User::query()->where('referralcode','=',$value)->count();
+                                        if($usercount <= 0){
+                                            $fail('The referral code is invalid.');
+                                        }
+                                    }
+                                },
+                            ],
         ]);
+
         if ($RegisterData->fails()) {
             $messages = $RegisterData->messages();
             $status = 0;
@@ -44,8 +56,14 @@ class AuthController extends Controller
         } else {
             $device_type = $request->get("device_type");
             $requestData = $request->all();
+            $statement  = \DB::select("SHOW TABLE STATUS LIKE 'users'");
+            $nextId     = $statement[0]->Auto_increment;
+            $firstname  = substr($requestData['first_name'],0,3);
+            $referralcode = strtoupper($firstname).$nextId;
+
             $requestData['password']    = bcrypt($requestData['password']);
             $requestData['new_phone']   = $requestData['phone'];
+            $requestData['referralcode'] = $referralcode;
             $user = User::create($requestData);
             if($user) {
                 $userID = $user->id;
@@ -111,6 +129,9 @@ class AuthController extends Controller
                         $status = 1;
                         $StatusCode = 200;
                         $user = User::where('id',$user_id)->first();
+                        if(isset($user['referralfrom']) && !empty($user['referralfrom'])) {
+                            WalletHistory::AddReferaalMoney($user);
+                        }
                         $data = new UserResource($user);
                         $accessToken = $user->createToken('authToken')->accessToken;
                         $msg = __('words.verified_otp');

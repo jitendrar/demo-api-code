@@ -19,6 +19,8 @@ class Config extends Model
     public static $ABOUT_US = 4;
 
     public static $CONTACT_US = 5;
+    
+    public static $REFERRAL_MONEY = 6;
 
 
     public static function GetConfigurationList($id)

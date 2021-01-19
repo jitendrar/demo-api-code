@@ -22,6 +22,8 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'new_phone' => $this->new_phone,
             'phone_otp' => $this->phone_otp,
+            'referralcode' => $this->referralcode,
+            'referralfrom' => $this->referralfrom,
             'status' => _GetStatusName($this->status),
             'picture' => self::GetImage(),
             'created_at' => date($API_DATE_FORMAT,strtotime($this->created_at)),
