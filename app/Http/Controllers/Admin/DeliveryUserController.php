@@ -130,7 +130,6 @@ class DeliveryUserController extends Controller
             }
                 /* store log */
                 $params=array();
-                $params['activity_type_id'] = $this->activityAction->ADD_DELIVERY_USER;
                 $params['user_id']  = $authUser->id;
                 $params['action_id']  = $this->activityAction->ADD_DELIVERY_USER;
                 $params['remark']   = 'Add Delivery User';
@@ -245,7 +244,6 @@ class DeliveryUserController extends Controller
             }
                 /* store log */
                 $params=array();
-                $params['activity_type_id'] = $this->activityAction->EDIT_DELIVERY_USER;
                 $params['user_id']  = $authUser->id;
                 $params['action_id']  = $this->activityAction->EDIT_DELIVERY_USER;
                 $params['remark']   = 'Edit Delivery User';

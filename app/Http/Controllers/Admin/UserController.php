@@ -134,7 +134,6 @@ class UserController extends Controller
             $obj->save();
                 /* store log */
                 $params=array();
-                $params['activity_type_id'] = $this->activityAction->ADD_USERS;
                 $params['user_id']  = $authUser->id;
                 $params['action_id']  = $this->activityAction->ADD_USERS;
                 $params['remark']   = 'Add User';
@@ -266,7 +265,6 @@ class UserController extends Controller
             }
             /* store log */
                 $params=array();
-                $params['activity_type_id'] = $this->activityAction->EDIT_USERS;
                 $params['user_id']  = $authUser->id;
                 $params['action_id']  = $this->activityAction->EDIT_USERS;
                 $params['remark']   = 'Edit User';

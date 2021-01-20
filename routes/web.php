@@ -42,6 +42,11 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::post('products/getproductlist','Admin\ProductsController@getproductlist');
 	Route::post('products/getproductdetails','Admin\ProductsController@getproductdetails');
 
+	//Offers List
+	Route::get('change-offer-status/{id}/{status}','Admin\OffersController@changeOfferStatus')->name('changeOfferStatus');
+	Route::any('offers/data','Admin\OffersController@data')->name('offers.data');
+	Route::resource('offers','Admin\OffersController');
+
 	//button status
     Route::get('changestatus/{id}/{status}','Admin\ProductsController@changeStatus')->name('changeStatus');
 	//category  list

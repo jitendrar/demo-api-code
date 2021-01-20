@@ -65,7 +65,6 @@ class LoginController extends Controller
 
                 /* store log */
                 $params=array();
-                $params['activity_type_id'] = $this->activityAction->LOGIN_USER;
                 $params['user_id']  = $user->id;
                 $params['action_id']  = $this->activityAction->LOGIN_USER;
                 $params['remark']   = 'Login Admin User';
@@ -93,7 +92,6 @@ class LoginController extends Controller
         $user = Auth::guard('admins')->user();
         /* store log */
         $params=array();
-        $params['activity_type_id'] = $this->activityAction->LOGOUT;
         $params['user_id']  = $user->id;
         $params['action_id']  = $this->activityAction->LOGOUT;
         $params['remark']   = 'Logout User';
