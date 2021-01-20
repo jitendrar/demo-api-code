@@ -78,19 +78,24 @@ class CartDetail extends Model
 								}
 								$updateQ = floor($cartdata->quantity/$OfferMaster->quantity);
 								foreach ($OfferDetail as $k => $V) {
+									$updateQ 	= $updateQ*$V['quantity'];
 									$ArrProduct = Product::_GetProductByID($V['product_id']);
 									if($ArrProduct) {
 										$OfferAdded = CartDetail::where('non_login_token', $non_login_token)->where('product_id', $ArrProduct->id)->where('price',0)->first();
+										$discount = $ArrProduct->unity_price*$updateQ;
+										
 										if($OfferAdded) {
 											$ArrCartCreate['quantity'] 		= $updateQ;
+											$ArrCartCreate['discount'] 		= $discount;
 											$OfferAdded->update($ArrCartCreate);
 										} else {
 											$ArrCartCreate['product_id'] 	= $ArrProduct->id;
 											$ArrCartCreate['quantity'] 		= $updateQ;
 											$ArrCartCreate['price'] 		= 0;
-											$ArrCartCreate['discount'] 		= $ArrProduct->unity_price;
+											$ArrCartCreate['discount'] 		= $discount;
 											CartDetail::create($ArrCartCreate);
 										}
+										
 									}
 								}
 							}
