@@ -174,7 +174,6 @@ class OrdersController extends Controller
                         WalletHistory::create($ArrWallete);
                         User::where('id',$ArrUser->id)->update(['balance' => $AvailableBalance]);
                         $params=array();
-                        $params['activity_type_id'] = $this->activityAction->ADD_ORDER;
                         $params['user_id']          = $authUser->id;
                         $params['action_id']        = $this->activityAction->ADD_ORDER;
                         $params['remark']           = 'Create new order for User ID :: '.$ArrUser->id.' , Order ID :: '.$order_id;
@@ -273,7 +272,6 @@ class OrdersController extends Controller
                         $model->save();
                         /* store log */
                         $params=array();
-                        $params['activity_type_id'] = $this->activityAction->ORDER_STATUS;
                         $params['user_id']  = $user->id;
                         $params['action_id']  = $this->activityAction->ORDER_STATUS;
                         $params['remark']   = 'Order Status Cancel successfully';
@@ -295,7 +293,6 @@ class OrdersController extends Controller
                         $model->save();
                         /* store log */
                         $params=array();
-                        $params['activity_type_id'] = $this->activityAction->ORDER_STATUS;
                         $params['user_id']  = $user->id;
                         $params['action_id']  = $this->activityAction->ORDER_STATUS;
                         $params['remark']   = 'Order Status Delivered successfully';
@@ -340,7 +337,6 @@ class OrdersController extends Controller
                 $model->save(); 
                  /* store log */
                 $params=array();
-                $params['activity_type_id'] = $this->activityAction->ASSIGN_DELIVERY_USER;
                 $params['user_id']  = $user->id;
                 $params['action_id']  = $this->activityAction->ASSIGN_DELIVERY_USER;
                 $params['remark']   = 'Assign Delivery Boy for  order '.$model->id.' successfully';
@@ -399,7 +395,6 @@ class OrdersController extends Controller
                 $stroeData['old_updated_at'] = isset($orderDetail->updated_at)?$orderDetail->updated_at:'';
                     /* store log */
                 $params=array();
-                $params['activity_type_id'] = $this->activityAction->DELETE_ORDER_PRODUCT;
                 $params['user_id']  = $authUser->id;
                 $params['action_id']  = $this->activityAction->DELETE_ORDER_PRODUCT;
                 $params['remark']   = 'Delete the Product of order '.$orderDetail->order_id;
@@ -454,7 +449,6 @@ class OrdersController extends Controller
                
                 /* store log */
                 $params=array();
-                $params['activity_type_id'] = $this->activityAction->EDIT_ORDER;
                 $params['user_id']  = $authUser->id;
                 $params['action_id']  = $this->activityAction->EDIT_ORDER;
                 $params['remark']   = 'Edit the Order '.$request->order_id;
@@ -499,7 +493,6 @@ class OrdersController extends Controller
                 $stroeData['old_updated_at'] = isset($orderDetail->updated_at)?$orderDetail->updated_at:'';
                   /* store log */
                 $params=array();
-                $params['activity_type_id'] = $this->activityAction->DELETE_ORDER_PRODUCT;
                 $params['user_id']  = $authUser->id;
                 $params['action_id']  = $this->activityAction->DELETE_ORDER_PRODUCT;
                 $params['remark']   = 'Delete the Product of order '.$orderDetail->order_id;
@@ -580,7 +573,6 @@ class OrdersController extends Controller
                 $stroeData['old_updated_at'] = isset($orderDetail->updated_at)?$orderDetail->updated_at:'';
                  /* store log */
                 $params=array();
-                $params['activity_type_id'] = $this->activityAction->ADD_ORDER_PRODUCT;
                 $params['user_id']  = $authUser->id;
                 $params['action_id']  = $this->activityAction->ADD_ORDER_PRODUCT;
                 $params['remark']   = 'Add Product of '.$model->id.' successfully';

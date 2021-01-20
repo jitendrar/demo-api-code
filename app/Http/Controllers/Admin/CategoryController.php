@@ -138,7 +138,6 @@ class CategoryController extends Controller
             }
               /* store log */
                 $params=array();
-                $params['activity_type_id'] = $this->activityAction->ADD_CATEGORY;
                 $params['user_id']  = $user->id;
                 $params['action_id']  = $this->activityAction->ADD_CATEGORY;
                 $params['remark']   = 'Add Category';
@@ -263,7 +262,6 @@ class CategoryController extends Controller
             }
              /* store log */
                 $params=array();
-                $params['activity_type_id'] = $this->activityAction->EDIT_CATEGORY;
                 $params['user_id']  = $user->id;
                 $params['action_id']  = $this->activityAction->EDIT_CATEGORY;
                 $params['remark']   = 'Edit Category';

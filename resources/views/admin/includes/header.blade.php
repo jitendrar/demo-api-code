@@ -107,6 +107,11 @@ if($authUser)
                                 <span class="arrow"></span>
                             </a>
                             </li>
+                            <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
+                            <a href="{{ route('offers.index')}}"> Offers
+                                <span class="arrow"></span>
+                            </a>
+                            </li>
                         </ul>
                     </div>
                     <!-- END MEGA MENU -->

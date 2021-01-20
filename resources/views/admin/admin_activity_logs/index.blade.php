@@ -17,11 +17,10 @@
                     <thead>
                         <tr>
                             <th width="1%">ID</th>
-                            <th width="20%">Activity Type</th>
-                            <th width="15%">Name</th>
-                            <th width="5%">Action Id</th>
+                            <th width="29%">Action</th>
+                            <th width="20%">Name</th>
                             <th width="30%">Remark</th>
-                            <th align="left" width="30%">Date</th>
+                            <th align="left" width="20%">Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -69,7 +68,6 @@
                     {data: 'id', name: 'id'},
                     { data: 'type_name', name: 'admin_action.title' },
                     { data: 'user_name', name: 'users.firstname' },
-                    { data: 'action_id', name: 'action_id' },
                     { data: 'remark', name: 'remark' },
                     { data: 'date', name: 'created_at' },
                 ]
