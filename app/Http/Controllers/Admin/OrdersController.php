@@ -20,6 +20,7 @@ use App\Product;
 use App\Address;
 use App\OrderDetail;
 use App\Config;
+use App\CartDetail;
 
 class OrdersController extends Controller
 {
@@ -357,6 +358,7 @@ class OrdersController extends Controller
         $totalDelPrice = 0;
         $data = 0;
         $message ='';
+        $ProductDiscountPrice = 0;
         $authUser = Auth::guard('admins')->user();
         $orderDetail = OrderDetail::find($request->id);
         $order = Order::find($request->order_id);
@@ -386,13 +388,13 @@ class OrdersController extends Controller
                 $totalDelPrice = $totalDelPrice;
                  //old order value
                 $stroeData = array();
-                $stroeData['id'] = isset($orderDetail->id)?$orderDetail->id:'';
-                $stroeData['order_id'] = isset($orderDetail->order_id)?$orderDetail->order_id:'';
-                $stroeData['product_id'] = isset($orderDetail->product_id)?$orderDetail->product_id:'';
-                $stroeData['old_quantity'] = isset($oldQty)?$oldQty:'';
-                $stroeData['old_price'] = isset($oldPrice)?$oldPrice:'';
-                $stroeData['old_discount'] = isset($orderDetail->discount)?$orderDetail->discount:'';
-                $stroeData['old_updated_at'] = isset($orderDetail->updated_at)?$orderDetail->updated_at:'';
+                $stroeData['id']                = isset($orderDetail->id)?$orderDetail->id:'';
+                $stroeData['order_id']          = isset($orderDetail->order_id)?$orderDetail->order_id:'';
+                $stroeData['product_id']        = isset($orderDetail->product_id)?$orderDetail->product_id:'';
+                $stroeData['old_quantity']      = isset($oldQty)?$oldQty:'';
+                $stroeData['old_price']         = isset($oldPrice)?$oldPrice:'';
+                $stroeData['old_discount']      = isset($orderDetail->discount)?$orderDetail->discount:'';
+                $stroeData['old_updated_at']    = isset($orderDetail->updated_at)?$orderDetail->updated_at:'';
                     /* store log */
                 $params=array();
                 $params['user_id']  = $authUser->id;
@@ -403,33 +405,47 @@ class OrdersController extends Controller
                 $message ="Product has been deleted successfully";
                 $status = 2;
             }else{
-                $oldPrice = $orderDetail->price;
-                $oldQuantity = $orderDetail->quantity;
-                $unitprice = $orderDetail->price / $orderDetail->quantity;
-                $totalPrice = OrderDetail::getProductTotalPrice($request->order_id);
-                $totalPrice = $totalPrice - $orderDetail->price;
-                $new_price = ($unitprice * $req_qtn);
-                $orderDetail->quantity = $req_qtn;
-                $orderDetail->price = $new_price;
-                $orderDetail->save();
-                $totalPrice = $totalPrice +  $new_price;
-                $data= $new_price;
-                $total_price =  $totalPrice;
-                $totalDelPrice = OrderDetail::getOrderTotalPrice($request->order_id);
-                $order->total_price = $totalDelPrice;
-                $order->save();
-                $wallethistory->transaction_amount = $totalDelPrice;
-                if($req_date_type == 'dec'){
-                     $diffPrice = $oldPrice - $new_price;
-                     $wallethistory->user_balance = $user->balance + $diffPrice;
-                }else{
-                     $diffPrice = $new_price - $oldPrice;
-                     $wallethistory->user_balance = $user->balance - $diffPrice;
+                
+                if($orderDetail->is_offer == CartDetail::$IS_OFFER_YES) {
+                    $unitprice      = $orderDetail->discount / $orderDetail->quantity;
+                    $new_price      = ($unitprice * $req_qtn);
+                    $orderDetail->quantity = $req_qtn;
+                    $orderDetail->discount = $new_price;
+                    $orderDetail->save();
+                    $ProductDiscountPrice = $new_price;
+                    $total_price          = $order->total_price;
+                    $totalDelPrice = OrderDetail::getOrderTotalPrice($request->order_id);
+                } else {
+                    $oldPrice       = $orderDetail->price;
+                    $oldQuantity    = $orderDetail->quantity;
+                    $unitprice      = $orderDetail->price / $orderDetail->quantity;
+                    $totalPrice     = OrderDetail::getProductTotalPrice($request->order_id);
+                    $totalPrice     = $totalPrice - $orderDetail->price;
+                    $new_price      = ($unitprice * $req_qtn);
+                    $orderDetail->quantity = $req_qtn;
+                    $orderDetail->price = $new_price;
+                    $orderDetail->save();
+                    if(!empty($orderDetail->discount)){
+                        $ProductDiscountPrice = $orderDetail->discount;
+                    }
+                    $totalPrice = $totalPrice +  $new_price;
+                    $data= $new_price;
+                    $total_price =  $totalPrice;
+                    $totalDelPrice = OrderDetail::getOrderTotalPrice($request->order_id);
+                    $order->total_price = $totalDelPrice;
+                    $order->save();
+                    $wallethistory->transaction_amount = $totalDelPrice;
+                    if($req_date_type == 'dec'){
+                         $diffPrice = $oldPrice - $new_price;
+                         $wallethistory->user_balance = $user->balance + $diffPrice;
+                    }else{
+                         $diffPrice = $new_price - $oldPrice;
+                         $wallethistory->user_balance = $user->balance - $diffPrice;
+                    }
+                    $wallethistory->save();
+                    $user->balance = $wallethistory->user_balance;
+                    $user->save();
                 }
-                $wallethistory->save();
-                $user->balance = $wallethistory->user_balance;
-                $user->save();
-
                 $status = 1;
                 $message = 'Quantity updated successfully';
                 //old order value
@@ -456,10 +472,10 @@ class OrdersController extends Controller
                 ActivityLogs::storeActivityLog($params);
             }
         }
-            return ['status' => $status, 'message' => $message,'data' =>$data,'total_price' => $total_price,'req_qtn'=>$req_qtn,'price_del_charge' => $totalDelPrice];
-       
-
+        return ['status' => $status, 'message' => $message,'data' =>$data,'total_price' => $total_price,'req_qtn'=>$req_qtn,'price_del_charge' => $totalDelPrice, 'ProductDiscountPrice' => $ProductDiscountPrice];
     }
+
+
     public function deleteProduct(Request $request){
         $authUser = Auth::guard('admins')->user();
         $orderDetail = OrderDetail::find($request->id);
@@ -657,10 +673,10 @@ class OrdersController extends Controller
         })->rawcolumns(['created_at','delivery_date','totalPrice','order_status','action','userName','deliveryUser'])
         ->filter(function ($query) 
             {
-                $search_id = request()->get("search_id");                                         
+                $search_id = request()->get("search_id");
                 $search_fnm = request()->get("search_fnm"); 
-                $search_pnm = request()->get("search_pnm");                                         
-                $search_oid = request()->get("search_oid");                                         
+                $search_pnm = request()->get("search_pnm");
+                $search_oid = request()->get("search_oid");
                 $search_status = request()->get("search_status");
                 $search_delivery_user = request()->get("search_delivery_user");
 

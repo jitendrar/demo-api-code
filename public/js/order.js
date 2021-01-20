@@ -234,6 +234,8 @@ function qntCalculation(id,qty,data_type,main_order_id)
             success:function(data){
                 if(data.status == 1){
                      $('#productPrice_'+id).val(parseFloat(data.data).toFixed(2));
+                     $('#ProductDiscountPrice_'+id).html(parseFloat(data.ProductDiscountPrice).toFixed(2));
+
                      $('#total_price').val(parseFloat(data.total_price).toFixed(2));
                      $('#qty_'+id).val(data.req_qtn);
                      $('#tr-'+main_order_id).find('.totalprice_td').html(parseFloat(data.price_del_charge).toFixed(2));

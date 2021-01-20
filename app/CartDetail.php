@@ -16,6 +16,9 @@ class CartDetail extends Model
 
 	protected $guarded = [];
 
+	public static $IS_OFFER_YES = 1;
+
+	public static $IS_OFFER_NO 	= 0;
 
 	public function product() {
 		return $this->belongsTo('App\Product');
@@ -78,24 +81,24 @@ class CartDetail extends Model
 								}
 								$updateQ = floor($cartdata->quantity/$OfferMaster->quantity);
 								foreach ($OfferDetail as $k => $V) {
-									$updateQ 	= $updateQ*$V['quantity'];
+									$OferQuantity 	= $updateQ*$V['quantity'];
 									$ArrProduct = Product::_GetProductByID($V['product_id']);
 									if($ArrProduct) {
-										$OfferAdded = CartDetail::where('non_login_token', $non_login_token)->where('product_id', $ArrProduct->id)->where('price',0)->first();
-										$discount = $ArrProduct->unity_price*$updateQ;
-										
+										$OfferAdded = CartDetail::where('non_login_token', $non_login_token)->where('product_id', $ArrProduct->id)->where('is_offer',CartDetail::$IS_OFFER_YES)->first();
+										$discount = $ArrProduct->unity_price*$OferQuantity;
 										if($OfferAdded) {
-											$ArrCartCreate['quantity'] 		= $updateQ;
+											$ArrCartCreate['quantity'] 		= $OferQuantity;
 											$ArrCartCreate['discount'] 		= $discount;
+											$ArrCartCreate['is_offer'] 		= CartDetail::$IS_OFFER_YES;
 											$OfferAdded->update($ArrCartCreate);
 										} else {
 											$ArrCartCreate['product_id'] 	= $ArrProduct->id;
-											$ArrCartCreate['quantity'] 		= $updateQ;
+											$ArrCartCreate['quantity'] 		= $OferQuantity;
 											$ArrCartCreate['price'] 		= 0;
 											$ArrCartCreate['discount'] 		= $discount;
+											$ArrCartCreate['is_offer'] 		= CartDetail::$IS_OFFER_YES;
 											CartDetail::create($ArrCartCreate);
 										}
-										
 									}
 								}
 							}
@@ -106,7 +109,7 @@ class CartDetail extends Model
 								foreach ($OfferDetail as $k => $V){
 									$ArrProductID[] = $V['product_id'];
 								}
-								$ObjCard = CartDetail::where('non_login_token', $non_login_token)->whereIn('product_id', $ArrProductID);
+								$ObjCard = CartDetail::where('non_login_token', $non_login_token)->whereIn('product_id', $ArrProductID)->where('is_offer',CartDetail::$IS_OFFER_YES);
 								$ObjCard->delete();
 							}
 						}

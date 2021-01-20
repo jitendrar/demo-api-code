@@ -22,6 +22,7 @@ class CartResource extends JsonResource
             'quantity' => $this->quantity,
             'price' => round($this->price,2),
             'discount' => round($this->discount,2),
+            'is_offer' => $this->is_offer,
             'created_at' => strtotime($this->created_at),
             'updated_at' => strtotime($this->updated_at),
             'product' => new ProductResource($this->product),

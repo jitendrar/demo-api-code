@@ -66,3 +66,8 @@ transform: scale(3);
 position:relative;      
 z-index:100;  
 }
+
+.FreeOfferproductClass{
+    background-color: #73ae7c !important;
+    color: #fff;
+}
