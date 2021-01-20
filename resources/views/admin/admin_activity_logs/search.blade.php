@@ -12,7 +12,7 @@
         <form id="search-frm">
             <div class="row">    
                 <div class="col-md-6">
-                    <label class="control-label">Activity Type</label>
+                    <label class="control-label">Action</label>
                     {!! Form::select('activity_type',[''=>'Select']+$activityTypeList,null,['class'=>'form-control search-select']) !!}
                 </div>
 

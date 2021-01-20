@@ -45,6 +45,39 @@
                 oTableCustom.draw();
                 return false;
             });
+
+            $(document).on('click', '.btn-delete-offer', function () {
+
+                $text = 'Are You sure you wish to delete offer ?';
+
+                if (confirm($text))
+                {
+                    $url = $(this).attr('href');
+                    $('#global_delete_form').attr('action', $url);
+                    $('#global_delete_form #delete_id').val($(this).data('id'));
+                    $('#global_delete_form').submit();
+                }
+
+                return false;
+            });
+
+            $(document).on('click', '.change-offer-status', function () {
+                
+                $status = $(this).data('status');
+                if($status == 1){
+                    $text = 'Are You sure you wish to inactive offer ?';
+                }else{
+                    $text = 'Are You sure you wish to active offer ?';
+                }
+
+                if (confirm($text))
+                {
+                    $url = $(this).attr('href');
+                    window.location = $url;
+                }
+
+                return false;
+            });
             
             $.fn.dataTableExt.sErrMode = 'throw';
 

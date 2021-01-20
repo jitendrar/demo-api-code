@@ -11,12 +11,12 @@
 @endif
 
 @if(isset($isDelete) && $isDelete)
-<a data-id="{{ $row->id }}" href="{{ route($currentRoute.'.destroy',['offer' => $row->id]) }}" class="btn btn-xs btn-danger btn-delete-record" title="Delete">
+<a data-id="{{ $row->id }}" href="{{ route($currentRoute.'.destroy',['offer' => $row->id]) }}" class="btn btn-xs btn-danger btn-delete-offer" title="Delete">
     <i class="fa fa-trash-o"></i>
 </a>
 @endif
 @if(isset($isStatus) && $isStatus)
-<a data-id="{{ $row->id }}" href="{{ route('changeOfferStatus',['id' => $row->id,'status'=>$row->status]) }}" class="btn btn-xs  btn-default active" onclick="return confirm('Are you sure ?');" title="status">
+<a data-id="{{ $row->id }}" href="{{ route('changeOfferStatus',['id' => $row->id,'status'=>$row->status]) }}" data-status="{{ $row->status }}" class="btn btn-xs  btn-default active change-offer-status" title="status">
     <i class="fa fa-check-circle"></i>
 </a>
 @endif
