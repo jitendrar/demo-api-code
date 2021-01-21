@@ -67,10 +67,10 @@ class CartDetail extends Model
 			if(!empty($cart_id)) {
 				$cartdata = CartDetail::where('id',$cart_id)->first();
 				if($cartdata){
-					$OfferMaster = OfferMaster::where('status',1)->where('product_id',$cartdata->product_id)->first();
+					$OfferMaster = OfferMaster::where('status',OfferMaster::$STATUS_ACTIVE)
+												->where('product_id',$cartdata->product_id)->first();
 					if($OfferMaster) {
 						if($cartdata->quantity >= $OfferMaster->quantity) {
-							
 							$OfferDetail = OfferDetail::where('offer_master_id',$OfferMaster->id)->get()->toArray();
 							if(!empty($OfferDetail)) {
 								$ArrCartCreate = array();
