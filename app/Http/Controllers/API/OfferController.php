@@ -52,21 +52,7 @@ class OfferController extends Controller
      */
     public function show(Category $category)
     {
-        $StatusCode     = 204;
-        $status         = 0;
-        $ArrReturn      = array();
-        $msg            = __('words.no_data_available');
-        $data           = array();
-        if($category) {
-            $status         = 1;
-            $StatusCode     = 200;
-            $msg            = __('words.retrieved_successfully');
-            $data      = new CategoryResource($category);
-        }
-        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
-        $StatusCode = 200;
-        return response($ArrReturn, $StatusCode);
-
+        //
     }
 
     /**
