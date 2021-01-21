@@ -9,7 +9,15 @@ class OfferMaster extends Model
 
 	protected $table = 'offer_masters';
 
-	protected $guarded = [];
+    protected $guarded = [];
+
+    public static $STATUS_ACTIVE = 1;
+
+    public static $STATUS_INACTIVE = 0;
+
+    public function offerDetail() {
+        return $this->hasMany('App\OfferDetail');
+    }
 
 	public function product() {
 		return $this->belongsTo('App\Product');

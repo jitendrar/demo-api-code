@@ -14,9 +14,5 @@ class OfferDetail extends Model
 	public function product() {
 		return $this->belongsTo('App\Product');
 	}
-
-	public function offerMaster() {
-		return $this->belongsTo('App\OfferMaster');
-	}
-
+	
 }
