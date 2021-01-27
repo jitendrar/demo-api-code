@@ -211,6 +211,7 @@ class OrderController extends Controller
                                 $arrOrderDetails['quantity']    = $value->quantity;
                                 $arrOrderDetails['price']       = $value->price;
                                 $arrOrderDetails['discount']    = $value->discount;
+                                $arrOrderDetails['is_offer']    = $value->is_offer;
                                 if(OrderDetail::create($arrOrderDetails)){
                                     CartDetail::destroy($value->id);
                                 }

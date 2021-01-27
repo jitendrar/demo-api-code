@@ -32,6 +32,10 @@ class AdminAction extends Model
     public $ADD_ORDER_PRODUCT = 19;
     public $ADD_ORDER = 20;
 
+    public $ADD_OFFER = 21;
+    public $EDIT_OFFER = 22;
+    public $DELETE_OFFER = 23;
+
     public static function activityTypeList()
     {
         return AdminAction::select('*')->pluck('title','id')->all();

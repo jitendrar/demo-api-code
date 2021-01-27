@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\ProductResource;
-class CartResource extends JsonResource
+class OfferDetailResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,17 +14,14 @@ class CartResource extends JsonResource
      */
     public function toArray($request)
     {
+        $API_DATE_FORMAT = env('API_DATE_FORMAT');
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
-            'non_login_token' => $this->non_login_token,
+            'offer_master_id' => $this->offer_master_id,
             'product_id' => $this->product_id,
             'quantity' => $this->quantity,
-            'price' => round($this->price,2),
-            'discount' => round($this->discount,2),
-            'is_offer' => $this->is_offer,
-            'created_at' => strtotime($this->created_at),
-            'updated_at' => strtotime($this->updated_at),
+            'created_at' => date($API_DATE_FORMAT,strtotime($this->created_at)),
+            'updated_at' => date($API_DATE_FORMAT,strtotime($this->updated_at)),
             'product' => new ProductResource($this->product),
         ];
 

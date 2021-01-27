@@ -66,8 +66,14 @@
             </thead>
             <tbody>
                 @foreach($orderDetail as $detail)
+                <?php
+                    $FreeOfferproductClass = '';
+                    if($detail->is_offer == 1) {
+                        $FreeOfferproductClass = 'FreeOfferproductClass';
+                    }
+                ?>
                 <?php $image = App\Product::getAttachment($detail->product_id);?>
-                <tr name="order_lines" data-id="{{$detail->id}}" id="order_lines_{{$detail->id}}">
+                <tr name="order_lines" data-id="{{$detail->id}}" id="order_lines_{{$detail->id}}" class="{{$FreeOfferproductClass}}">
                     @if($order->order_status != 'D')
                     <td width="5%"><button type="button" name="remove_prod" data-id ="{{ $detail->id }}" class="btn btn-danger btn-sm remove_prod" id="remove_prod" main-data-id ="{{  $detail->order_id }}"><i class="fa fa-minus"></i></button></td>
                     @endif
@@ -91,7 +97,7 @@
                             <input id="qty_{{ $detail->id }}" data-main-id="{{  $detail->order_id }}" type="text" data-id="{{ $detail->id }}" value="{{ $detail->quantity}}" <?php if ($order->order_status == 'D'){ ?> disabled <?php   } ?> name="qty" class="form-control  qty-input">
                         </div>
                     </td>
-                    <td width="20%">{{number_format(($detail->discount),2)}}</td>
+                    <td width="20%" id="ProductDiscountPrice_{{ $detail->id }}" >{{number_format(($detail->discount),2)}}</td>
                 </tr>
                 @endforeach
                 <tr>

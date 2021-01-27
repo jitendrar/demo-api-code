@@ -24,13 +24,11 @@ class OrderDetail extends Model
 			$productPrice = $detail->price;
 			$productDiscount = $detail->discount;
 			if(!empty($productDiscount)){
-				$productTotalDiscount = $productDiscount;
+				$productTotalDiscount = $productTotalDiscount + $productDiscount;
 			}
 			if(!empty($productPrice)){
-				$totalProductPrice = $productPrice;
+				$totalPrice = $totalPrice + $productPrice;
 			}
-			$totalPrice = $totalPrice + $totalProductPrice; 
-			$productTotalDiscount = $productTotalDiscount + $productTotalDiscount; 
 		}
 		return $totalPrice;
 	}
@@ -40,7 +38,7 @@ class OrderDetail extends Model
 		$total = self::getProductTotalPrice($order_id);
 		if($order){
 			if(!empty($order->delivery_charge)){
-				$total = $total + $order->delivery_charge;		
+				$total = $total + $order->delivery_charge;
 			}
 		}
 		return $total;

@@ -121,7 +121,7 @@ class AdminActivityLogsController extends Controller
 
     public function data(){
         $model = ActivityLogs::select('activity_logs.*','admin_action.title as type_name','admin_user.first_name as user_name','activity_logs.data as log_data')
-                    ->leftJoin('admin_action','activity_logs.activity_type_id','admin_action.id')
+                    ->leftJoin('admin_action','activity_logs.action_id','admin_action.id')
                     ->leftJoin('admin_user','activity_logs.user_id','admin_user.id');
         $model = $model->orderBy('activity_logs.created_at','desc');
         return \DataTables::eloquent($model)

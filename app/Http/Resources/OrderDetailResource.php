@@ -21,6 +21,7 @@ class OrderDetailResource extends JsonResource
             'quantity' => $this->quantity,
             'price' => $this->price,
             'discount' => $this->discount,
+            'is_offer' => $this->is_offer,
             'created_at' => strtotime($this->created_at),
             'updated_at' => strtotime($this->updated_at),
             'product' => new ProductResource($this->product),
