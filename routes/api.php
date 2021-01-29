@@ -39,6 +39,7 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 	Route::post('addcart', 'API\CartDetailController@addcartitem');
 	Route::post('updateaddcart', 'API\CartDetailController@updatecartitem');
 	Route::post('listcart', 'API\CartDetailController@listcartitem');
+	Route::post('cartitemcount', 'API\CartDetailController@cartitemcount');
 	Route::post('generatetimeslot', 'API\CartDetailController@generatetimeslot');
 
 	Route::apiResource('listoffers', 'API\OfferController');
