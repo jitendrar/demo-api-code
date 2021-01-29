@@ -10,6 +10,7 @@ use App\User;
 use App\WalletHistory;
 use App\Config;
 use App\Address;
+use App\OfferDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\OrderResource;
@@ -382,12 +383,18 @@ class OrderController extends Controller
                     $ArrUser = User::find($user_id);
                     foreach ($OrderdataArr['order_detail'] as $K => $V) {
                         if(Product::_CheckProductIsActve($V['product_id'])) {
+                            if($V['is_offer'] == 1) {
+                                if(!OfferDetail::_CheckProductIsInOfferOrNot($V['product_id'])) {
+                                    continue;
+                                }
+                            }
                             $arrOrderDetails = array();
                             $arrOrderDetails['user_id']             = $Orderdata['user_id'];
                             $arrOrderDetails['non_login_token']     = $ArrUser->non_login_token;
                             $arrOrderDetails['product_id']          = $V['product_id'];
                             $arrOrderDetails['quantity']            = $V['quantity'];
                             $arrOrderDetails['price']               = $V['price'];
+                            $arrOrderDetails['is_offer']            = $V['is_offer'];
                             CartDetail::_AddUpdateCartItems($arrOrderDetails);
                         }
                     }

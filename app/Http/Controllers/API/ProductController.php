@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Product;
 use App\ProductMapping;
+use App\CartDetail;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\ProductResource;
@@ -123,12 +125,14 @@ class ProductController extends Controller
             $ArrProductID  = ProductMapping::_GetProductByCategoryID($category_id);
             if(!empty($ArrProductID)) {
                 // \DB::enableQueryLog();
+                $IS_OFFER_NO = CartDetail::$IS_OFFER_NO;
                 $STATUS_ACTIVE = Product::$STATUS_ACTIVE;
                 $modal = Product::selectRaw('products.*, cart_details.quantity, IF(cart_details.id, 1, 0) AS isAvailableInCart');
-                    $modal = $modal->leftJoin('cart_details', function($join) use ($non_login_token)
+                    $modal = $modal->leftJoin('cart_details', function($join) use ($non_login_token, $IS_OFFER_NO)
                     {
                         $join->on('cart_details.product_id', '=', 'products.id');
                         $join->where('cart_details.non_login_token', '=', $non_login_token);
+                        $join->where('cart_details.is_offer', '=', $IS_OFFER_NO);
                     });
                     $modal = $modal->join('product_translations','products.id','=','product_translations.product_id');
                     $modal = $modal->where('products.status',$STATUS_ACTIVE);

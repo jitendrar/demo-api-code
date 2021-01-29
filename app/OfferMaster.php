@@ -23,6 +23,16 @@ class OfferMaster extends Model
 		return $this->belongsTo('App\Product');
 	}
 
+    public static function _CheckOfferIsActve($offer_id=0) {
+        if(!empty($offer_id)) {
+            $OfferMaster = OfferMaster::where('id',$offer_id)->first();
+            if($OfferMaster->status == OfferMaster::$STATUS_ACTIVE) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 	public static function getAttachment($offer_id = 0)
     {
         $img = '';
