@@ -234,6 +234,7 @@ class CartDetailController extends Controller
             $requestData = $request->all();
             $CartDetail  = CartDetail::where('non_login_token',$requestData['non_login_token'])
                                      ->where('product_id',$requestData['product_id'])
+                                     ->where('is_offer',CartDetail::$IS_OFFER_NO)
                                      ->first();
             if($CartDetail) {
                 if(isset($requestData['quantity']) && $requestData['quantity'] > 0) {
