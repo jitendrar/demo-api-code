@@ -301,4 +301,39 @@ class CartDetailController extends Controller
         exit();
     }
 
+    public function cartitemcount(Request $request) {
+        $StatusCode     = 204;
+        $status         = 0;
+        $ArrReturn      = array();
+        $msg            = __('words.no_data_available');
+        $data           = array();
+        $RegisterData = Validator::make($request->all(), [ 'non_login_token' => 'required', ]);
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $non_login_token = $request->get('non_login_token');
+            if(!empty($non_login_token)) {
+                $gst_charge         = 0;
+                $delivery_charge    = 0;
+                $gst_charge         = (int)Config::GetConfigurationList(Config::$GST_CHARGE);
+                $delivery_charge    = (int)Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
+                $cartdata           = CartDetail::where('non_login_token',$non_login_token)->count();
+                $status         = 1;
+                $StatusCode     = 200;
+                $msg            = __('words.retrieved_successfully');
+                $data['cartcount'] = $cartdata;
+            }
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
+        return response($ArrReturn, $StatusCode);
+    }
+
 }
