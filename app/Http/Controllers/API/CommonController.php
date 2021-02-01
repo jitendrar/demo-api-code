@@ -54,4 +54,24 @@ class CommonController extends Controller
         return response($ArrReturn, $StatusCode);
     }
 
+    public function referraldesc()
+    {
+        $StatusCode     = 204;
+        $status         = 0;
+        $ArrReturn      = array();
+        $msg            = __('words.no_data_available');
+        $data           = array();
+        $referral_m    = Config::GetConfigurationList(Config::$REFERRAL_MONEY);
+        if(!empty($referral_m)) {
+            $status         = 1;
+            $StatusCode     = 200;
+            $msg            = __('words.retrieved_successfully');
+            $get_msg        = __('words.referral_text');
+            $data['referal_text'] = str_replace("[MONEYTEXT]",$referral_m,$get_msg);;
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
+        return response($ArrReturn, $StatusCode);
+    }
+
 }
