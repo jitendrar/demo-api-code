@@ -74,4 +74,27 @@ class CommonController extends Controller
         return response($ArrReturn, $StatusCode);
     }
 
+    public function paymentoptions()
+    {
+        $StatusCode     = 204;
+        $status         = 0;
+        $ArrReturn      = array();
+        $msg            = __('words.no_data_available');
+        $data           = array();
+        $get_data    = Config::GetConfigurationList(Config::$PAYMENT_OPTIONS);
+        if(!empty($get_data)) {
+            $status         = 1;
+            $StatusCode     = 200;
+            $msg            = __('words.retrieved_successfully');
+            foreach ($get_data as $k => $value) {
+                $value = (array)$value;
+                $data[$k] = $value;
+                $data[$k]['logo'] = GetImageFromUpload($value['logo']);
+            }
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
+        return response($ArrReturn, $StatusCode);
+    }
+
 }

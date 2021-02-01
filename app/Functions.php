@@ -101,3 +101,15 @@ function _ReturnImageForAPI($picturepath='') {
   }
   return $picture;
 }
+
+
+function GetImageFromUpload($Newpicture = '') {
+    $picture = url("/images/no_image.jpeg");
+    if(!empty($Newpicture)) {
+        $filename = public_path().$Newpicture;
+        if (file_exists($filename)) {
+            $picture = url($Newpicture);
+        }
+    }
+    return $picture;
+}
