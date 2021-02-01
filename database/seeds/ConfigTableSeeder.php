@@ -74,6 +74,32 @@ class ConfigTableSeeder extends Seeder
                 'value' => 50,
                 'created_at' => date('Y-m-d h:i:s'),
                 'updated_at' => date('Y-m-d h:i:s'),
+            ],
+            [
+                'id' => 7,
+                'name' => 'PAYMENT_OPTIONS',
+                'value' => '{
+                                "1": {
+                                    "payment_type": "Google Pay",
+                                    "payment_number": 9825096687,
+                                    "description": "After payment send screenshot on 9825096687 whatsapp number",
+                                    "logo": "/images/paymentoption/Google-Pay.jpg"
+                                },
+                                "2": {
+                                    "payment_type": "Paytm",
+                                    "payment_number": 9825096687,
+                                    "description": "After payment send screenshot on 9825096687 whatsapp number",
+                                    "logo": "/images/paymentoption/Paytm-Logo.png"
+                                },
+                                "3": {
+                                    "payment_type": "UPI ID",
+                                    "payment_number": "jitendrarathod@test.ok",
+                                    "description": "After payment send screenshot on 9825096687 whatsapp number",
+                                    "logo": "/images/paymentoption/Upi-id.png"
+                                }
+                            }',
+                'created_at' => date('Y-m-d h:i:s'),
+                'updated_at' => date('Y-m-d h:i:s'),
             ]
         );
         foreach($ArrConfig as $config) {
