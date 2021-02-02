@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="250" height="250" viewBox="0 0 250 250">
+  <g id="bhim-upi-icon" transform="translate(1486 -3905)">
+    <g id="paytm-icon" transform="translate(280)">
+      <g id="Group_16291" data-name="Group 16291" transform="translate(280)">
+        <g id="logo-large" transform="translate(-1000 -111)">
+          <g id="Rectangle_1524" data-name="Rectangle 1524" transform="translate(-1046 4016)" fill="#fff" stroke="#707070" stroke-width="1">
+            <rect width="250" height="250" stroke="none"/>
+            <rect x="0.5" y="0.5" width="249" height="249" fill="none"/>
+          </g>
+        </g>
+      </g>
+      <g id="upi-ar21" transform="translate(-1766.001 3981.801)">
+        <path id="Path_2269" data-name="Path 2269" d="M95.678,77.489l32.959-30.066-15.612-31.1Z" transform="translate(111.487 0.156)" fill="#097939" fill-rule="evenodd"/>
+        <path id="Path_2270" data-name="Path 2270" d="M90.854,77.489l32.959-30.066L108.2,16.319Z" transform="translate(105.21 0.156)" fill="#ed752e" fill-rule="evenodd"/>
+        <path id="Path_2271" data-name="Path 2271" d="M38.557,16.823,24.681,66.242l49.263.345L87.475,16.823H99.964L83.74,74.676a5.8,5.8,0,0,1-5.281,4H15.314c-3.829,0-6.1-2.992-5.063-6.674L25.725,16.823Zm152.3-.345h12.489L186,78.68H173.16Zm-89.5,25.917,62.447-.345,4.165-13.133H104.474l3.815-12.1,67.657-.621c4.211-.039,6.72,3.222,5.61,7.288l-6.374,23.3a10.552,10.552,0,0,1-9.642,7.357H109.68l-6.586,25.574H90.943Z" transform="translate(0 0)" fill="#747474" fill-rule="evenodd"/>
+      </g>
+    </g>
+  </g>
+</svg>
