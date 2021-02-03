@@ -76,6 +76,7 @@ class CommonController extends Controller
 
     public function paymentoptions()
     {
+        $language  = \Request::header('language');
         $StatusCode     = 204;
         $status         = 0;
         $ArrReturn      = array();
@@ -86,10 +87,17 @@ class CommonController extends Controller
             $status         = 1;
             $StatusCode     = 200;
             $msg            = __('words.retrieved_successfully');
+            $i = 0;
             foreach ($get_data as $k => $value) {
                 $value = (array)$value;
-                $data[$k] = $value;
-                $data[$k]['logo'] = GetImageFromUpload($value['logo']);
+                $data[$i]['payment_type']   = $value['payment_type'];
+                $data[$i]['payment_number'] = $value['payment_number'];
+                $data[$i]['description']    = $value['description_eng'];
+                if(strtolower($language) == 'guj') {
+                    $data[$i]['description'] = $value['description_guj'];
+                }
+                $data[$i]['logo'] = GetImageFromUpload($value['logo']);
+                $i++;
             }
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
