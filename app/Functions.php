@@ -119,7 +119,7 @@ function EmailSendForAdmin($emailTemplate='', $EmailSubject = '', $EmailContent=
   if($DISABLE_EMAIL_FOR_STAGING) {
     if(!empty($emailTemplate)) {
       Mail::send($emailTemplate, $EmailContent, function($message)   use ($EmailSubject) {
-             $message->from('bopaldaily@gmail.com','bopaldaily');
+             $message->from('bopaldaily@gmail.com','Bopal Daily');
              $message->to('jitendra.rathod@phpdots.com', 'Jitendra Rathod');
              // $message->to('ashok.sadhu@phpdots.com', 'Jitendra Rathod');
              $message->cc('ashok.sadhu@phpdots.com','Ashok Sadhu');
