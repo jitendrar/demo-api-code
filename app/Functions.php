@@ -1,5 +1,4 @@
 <?php
-
 function pr($arr){
   echo "<pre>";
   print_r($arr);
@@ -112,4 +111,21 @@ function GetImageFromUpload($Newpicture = '') {
         }
     }
     return $picture;
+}
+
+function EmailSendForAdmin($emailTemplate='', $EmailSubject = '', $EmailContent=array())
+{
+  $DISABLE_EMAIL_FOR_STAGING = env('DISABLE_EMAIL_FOR_STAGING', 1);
+  if($DISABLE_EMAIL_FOR_STAGING) {
+    if(!empty($emailTemplate)) {
+      Mail::send($emailTemplate, $EmailContent, function($message)   use ($EmailSubject) {
+             $message->from('bopaldaily@gmail.com','bopaldaily');
+             $message->to('jitendra.rathod@phpdots.com', 'Jitendra Rathod');
+             // $message->to('ashok.sadhu@phpdots.com', 'Jitendra Rathod');
+             $message->cc('ashok.sadhu@phpdots.com','Ashok Sadhu');
+             $message->subject($EmailSubject);
+      });
+    }
+  }
+
 }

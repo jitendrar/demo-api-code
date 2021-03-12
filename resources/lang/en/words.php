@@ -5,6 +5,7 @@ return [
 	'user_created_successfully' => 'User successfully created.',
 	'otp_not_sent' => 'Unable to send OTP. Please try again.',
 	'user_not_found' => 'Your mobile number is not registered.',
+	'incorrect_password' => 'Entered password is wrong, please try with valid password.',
 	'invalid_otp' => 'Invalid OTP. Please enter the correct OTP',
 	'already_verified_otp' => 'You have already verified OTP.',
 	'verified_otp' => 'OTP verification is successful.',

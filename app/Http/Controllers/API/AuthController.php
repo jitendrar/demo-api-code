@@ -66,6 +66,7 @@ class AuthController extends Controller
             $requestData['referralcode'] = $referralcode;
             $user = User::create($requestData);
             if($user) {
+
                 $userID = $user->id;
                 CartDetail::_UpdateUserIDByLoginToke($userID,$user->non_login_token);
                 $ArrDeviceInfo = array();
@@ -82,6 +83,8 @@ class AuthController extends Controller
                     $status         = 1;
                     $msg = __('words.user_created_successfully');
                     $data = new UserResource($user);
+                    $content = ['content' => $user->toArray()];
+                    EmailSendForAdmin('admin.emails.new_user_created', 'New User Onboarded On BopalDaily', $content);
                 } else {
                     $msg = $arrOtp['msg'];
                 }
@@ -209,9 +212,9 @@ class AuthController extends Controller
         $data = [];
         $data = array();
         $loginData = Validator::make($request->all(), [
-            'phone' => 'required|numeric|regex:/[6-9]\d{9}/|digits:10',
+            'phone' => 'required|numeric|regex:/[6-9]\d{9}/|digits:10|exists:users',
             'password' => 'required'
-        ]);
+        ], ['phone.exists' => $msg]);
 
         // check validations
         if ($loginData->fails()) {
@@ -224,10 +227,12 @@ class AuthController extends Controller
                 break;
             }
         } else {
+            $msg = __('words.incorrect_password');
             $loginData = [
                 'phone' => $request->get("phone"),
                 'password' => $request->get("password"),
             ];
+            
             $device_type        = $request->get("device_type");
             $notification_token = $request->get("notification_token");
             $non_login_token    = $request->get("non_login_token");

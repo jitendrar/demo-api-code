@@ -199,6 +199,8 @@ class OrderController extends Controller
                         $ArrOrder['payment_method']         = $payment_method;
                         $OrderCreate = Order::create($ArrOrder);
                         if($OrderCreate) {
+                            $EmailData = array();
+                            
                             $order_id       = $OrderCreate->id;
                             $order_number   = "ORD".$order_id;
                             Order::where('id',$order_id)->update(['order_number' => $order_number]);
@@ -229,6 +231,15 @@ class OrderController extends Controller
                             $Orderdata  = Order::with('orderDetail')->where('id',$order_id)->get();
                             $data       = $Orderdata;
                             Address::where('user_id',"=",$user_id)->update(['is_select' => 0]);
+                            
+                            $EmailData['order_id']  = $order_id;
+                            $EmailData['user_id']   = $user_id;
+                            $EmailData['phone']     = $ArrUser->phone;
+                            $EmailData['first_name'] = $ArrUser->first_name;
+                            $EmailData['last_name']  = $ArrUser->last_name;
+                            $EmailData['totalOrderPrice']  = $totalOrderPrice;
+                            $content = ['content' => $EmailData];
+                            EmailSendForAdmin('admin.emails.new_order_created', 'New Order Created On BopalDaily', $content);
                         }
                         // if($totalOrderPrice <= $ArrUser->balance) {
                         // } else {
