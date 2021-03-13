@@ -83,8 +83,13 @@ class AuthController extends Controller
                     $status         = 1;
                     $msg = __('words.user_created_successfully');
                     $data = new UserResource($user);
-                    $content = ['content' => $user->toArray()];
-                    EmailSendForAdmin('admin.emails.new_user_created', 'New User Onboarded On BopalDaily', $content);
+                    $OtpMsg = "New User Onboarded On BopalDaily,";
+                    $OtpMsg.="\r\nUser ID :: ".$userID;
+                    $OtpMsg.="\r\nUser Name :: ".$user->first_name.' '.$user->last_name;
+                    $OtpMsg = urlencode($OtpMsg);
+                    SendSMSForAdmin($OtpMsg);
+                    // $content = ['content' => $user->toArray()];
+                    // EmailSendForAdmin('admin.emails.new_user_created', 'New User Onboarded On BopalDaily', $content);
                 } else {
                     $msg = $arrOtp['msg'];
                 }

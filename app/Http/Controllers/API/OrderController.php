@@ -231,15 +231,21 @@ class OrderController extends Controller
                             $Orderdata  = Order::with('orderDetail')->where('id',$order_id)->get();
                             $data       = $Orderdata;
                             Address::where('user_id',"=",$user_id)->update(['is_select' => 0]);
-                            
-                            $EmailData['order_id']  = $order_id;
-                            $EmailData['user_id']   = $user_id;
-                            $EmailData['phone']     = $ArrUser->phone;
-                            $EmailData['first_name'] = $ArrUser->first_name;
-                            $EmailData['last_name']  = $ArrUser->last_name;
-                            $EmailData['totalOrderPrice']  = $totalOrderPrice;
-                            $content = ['content' => $EmailData];
-                            EmailSendForAdmin('admin.emails.new_order_created', 'New Order Created On BopalDaily', $content);
+                            $OtpMsg = "New Order Created On BopalDaily,";
+                            $OtpMsg.="\r\nUser ID :: ".$user_id;
+                            $OtpMsg.="\r\nUser Name :: ".$ArrUser->first_name.' '.$ArrUser->last_name;
+                            $OtpMsg.="\r\nOrder ID :: ".$order_id;
+                            $OtpMsg.="\r\nOrder Price :: ".$totalOrderPrice;
+                            $OtpMsg = urlencode($OtpMsg);
+                            SendSMSForAdmin($OtpMsg);
+                            // $EmailData['order_id']  = $order_id;
+                            // $EmailData['user_id']   = $user_id;
+                            // $EmailData['phone']     = $ArrUser->phone;
+                            // $EmailData['first_name'] = $ArrUser->first_name;
+                            // $EmailData['last_name']  = $ArrUser->last_name;
+                            // $EmailData['totalOrderPrice']  = $totalOrderPrice;
+                            // $content = ['content' => $EmailData];
+                            // EmailSendForAdmin('admin.emails.new_order_created', 'New Order Created On BopalDaily', $content);
                         }
                         // if($totalOrderPrice <= $ArrUser->balance) {
                         // } else {
