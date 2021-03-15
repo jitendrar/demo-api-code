@@ -303,6 +303,9 @@ class UserController extends Controller
         $model = User::query();
         $model = $model->orderBy('users.created_at','desc');
         return DataTables::eloquent($model)
+        ->editColumn('first_name', function($row) {
+                return $row->first_name.' '.$row->last_name;
+            })
         ->editColumn('status', function($row) {
                 if($row->status == 1)
                     return '<a class="btn btn-xs btn-success">Active</a>';                

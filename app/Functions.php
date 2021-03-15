@@ -132,18 +132,26 @@ function EmailSendForAdmin($emailTemplate='', $EmailSubject = '', $EmailContent=
 
 function SendSMSForAdmin($OtpMsg='')
 {
+
+  $users_phone    = 9978141560;
+  $SMS_URL        = env('SMS_URL');
+  $SMS_MOBILE     = env('SMS_MOBILE');
+  $SMS_PASSWORD   = env('SMS_PASSWORD');
+  $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGLEEO&to=".$users_phone."&msg=".$OtpMsg;
+  _CURLGeneralForAll($sURLL);
+
+  $users_phone    = 9601282614;
+  $SMS_URL        = env('SMS_URL');
+  $SMS_MOBILE     = env('SMS_MOBILE');
+  $SMS_PASSWORD   = env('SMS_PASSWORD');
+  $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGLEEO&to=".$users_phone."&msg=".$OtpMsg;
+  _CURLGeneralForAll($sURLL);
+
   $users_phone    =  9825096687;
   $SMS_URL        = env('SMS_URL');
   $SMS_MOBILE     = env('SMS_MOBILE');
   $SMS_PASSWORD   = env('SMS_PASSWORD');
   $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGLEEO&to=".$users_phone."&msg=".$OtpMsg;
   _CURLGeneralForAll($sURLL);
-
-  $users_phone    = 9067121123;
-  $SMS_URL        = env('SMS_URL');
-  $SMS_MOBILE     = env('SMS_MOBILE');
-  $SMS_PASSWORD   = env('SMS_PASSWORD');
-  $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGLEEO&to=".$users_phone."&msg=".$OtpMsg;
-  _CURLGeneralForAll($sURLL);
-
+  
 }

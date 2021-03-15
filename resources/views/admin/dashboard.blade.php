@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
-        <a class="dashboard-stat dashboard-stat-v2 green" href="#">
+        <a class="dashboard-stat dashboard-stat-v2 green" href="{!! route('users.index') !!}">
             <div class="visual">
                 <i class="fa fa-comments"></i>
             </div>
@@ -19,7 +19,7 @@
         </a>
     </div>
     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
-        <a class="dashboard-stat dashboard-stat-v2 yellow" href="#">
+        <a class="dashboard-stat dashboard-stat-v2 yellow" href="{!! route('products.index') !!}">
             <div class="visual">
                 <i class="fa fa-comments"></i>
             </div>
@@ -32,7 +32,7 @@
         </a>
     </div>
     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
-        <a class="dashboard-stat dashboard-stat-v2 red" href="#">
+        <a class="dashboard-stat dashboard-stat-v2 red" href="{!! route('categories.index') !!}">
             <div class="visual">
                 <i class="fa fa-comments"></i>
             </div>
@@ -45,7 +45,7 @@
         </a>
     </div>
     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
-        <a class="dashboard-stat dashboard-stat-v2 green" href="#">
+        <a class="dashboard-stat dashboard-stat-v2 green" href="{!! route('orders.index') !!}">
             <div class="visual">
                 <i class="fa fa-shopping-cart"></i>
             </div>
@@ -58,7 +58,7 @@
         </a>
     </div>
     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
-        <a class="dashboard-stat dashboard-stat-v2 yellow" href="#">
+        <a class="dashboard-stat dashboard-stat-v2 yellow" href="{!! route('orders.index') !!}">
             <div class="visual">
                 <i class="fa fa-bar-chart-o"></i>
             </div>
@@ -71,7 +71,7 @@
         </a>
     </div>
     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
-        <a class="dashboard-stat dashboard-stat-v2 red" href="#">
+        <a class="dashboard-stat dashboard-stat-v2 red" href="{!! route('products.index') !!}">
             <div class="visual">
                 <i class="fa fa-bar-chart-o"></i>
             </div>
