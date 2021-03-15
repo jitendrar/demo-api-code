@@ -734,7 +734,7 @@ class OrdersController extends Controller
                         product_translations.`units_stock_type`
                     FROM orders
                     LEFT JOIN order_details ON order_details.`order_id` = orders.`id`
-                    INNER JOIN product_translations ON product_translations.`locale` = 'guj' AND product_translations.`product_id` = order_details.`product_id`
+                    INNER JOIN product_translations ON product_translations.`locale` = 'en' AND product_translations.`product_id` = order_details.`product_id`
                     WHERE orders.`order_status` = 'P'
                     GROUP BY product_translations.`product_name`
                 ) AS tt
