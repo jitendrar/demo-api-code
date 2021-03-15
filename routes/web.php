@@ -54,6 +54,7 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::resource('categories','Admin\CategoryController');
 	//orders  list
 	Route::any('orders/data','Admin\OrdersController@data')->name('orders.data');
+	Route::any('orders/summary','Admin\OrdersController@summary')->name('orders.summary');
 	Route::resource('orders','Admin\OrdersController');
 	Route::any('orders/detail/{id}','Admin\OrdersController@orderDetail')->name('orders.detail');
 	Route::post('orders/changeStatus/{id}','Admin\OrdersController@changeOrderStatus');
@@ -61,6 +62,7 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::any('changeQty/{id}','Admin\OrdersController@changeQtyData');
 	Route::any('deleteProduct/{id}','Admin\OrdersController@deleteProduct')->name('deleteProduct');
 	Route::post('orders/add-new-product/{id}','Admin\OrdersController@addProduct');
+
 	//activity types
 	Route::any('admin-action/data','Admin\AdminActionController@data')->name('admin-action.data');
 	Route::resource('admin-action','Admin\AdminActionController');
