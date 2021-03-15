@@ -33,7 +33,10 @@
                 @if($btnAdd)
                     <a href="{{ $add_url }}" class="btn btn-default pull-right btn-sm mTop5" style="margin-top: 5px;"><i class="fa fa-plus"></i> {{ $addBtnName }}</a>
                 @endif
-                
+
+                @if($summary)
+                    <a href="{{ $summary }}" class="btn btn-default pull-right btn-sm mTop5" style="margin-top: 5px;margin-right: 5px;"><i class="fa fa-plus"></i> {{ $summaryBtnName }}</a>
+                @endif
             </div>
             <div class="portlet-body">
                 <div class="clearfix">&nbsp;</div>

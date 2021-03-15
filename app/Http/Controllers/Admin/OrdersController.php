@@ -55,6 +55,10 @@ class OrdersController extends Controller
         $data['module_title'] ='Orders'; 
         $data['add_url'] = route($this->moduleRouteText.'.create');
         $data['addBtnName'] = $this->module;
+
+        $data['summary'] = route($this->moduleRouteText.'.summary');
+        $data['summaryBtnName'] = "Pending Order Summary";
+
         $data['btnAdd'] = 1;
         $data['users'] = User::getUserList();
         $data['deliveryUsers'] = DeliveryMaster::getActiveDeliveryUsers();
@@ -716,5 +720,46 @@ class OrdersController extends Controller
                     \session()->put($this->moduleRouteText.'_goto',$goto);
             })
         ->make(true);
-    } 
+    }
+
+    public function summary() {
+
+        $orders = \DB::select("SELECT product_name AS ProductName,
+                    CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN CONCAT(ROUND(TotalStock/1000,3), '') ELSE CONCAT(TotalStock, '') END AS Quantity,
+                    CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN 'KG' ELSE StokType END AS StokType
+                FROM (
+                    SELECT  product_translations.`product_name`, 
+                        SUM(product_translations.`units_in_stock`) AS TotalStock,
+                        IF(product_translations.`units_stock_type` = 'ગ્રામ', 'G', IF(product_translations.`units_stock_type` = 'G', 'G', product_translations.`units_stock_type`)) AS StokType,
+                        product_translations.`units_stock_type`
+                    FROM orders
+                    LEFT JOIN order_details ON order_details.`order_id` = orders.`id`
+                    INNER JOIN product_translations ON product_translations.`locale` = 'en' AND product_translations.`product_id` = order_details.`product_id`
+                    WHERE orders.`order_status` = 'P'
+                    GROUP BY product_translations.`product_name`
+                ) AS tt
+                ;");
+        $date = date('Y-m-d');
+        $fileName = 'orders_Summary_'.$date.'.csv';
+        $headers = array(
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        );
+        $columns = array('Product Name', 'Quantity', 'Type');
+        $callback = function() use($orders, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($orders as $task) {
+                $row['ProductName']  = $task->ProductName;
+                $row['Quantity']    = $task->Quantity;
+                $row['StokType']    = $task->StokType;
+                fputcsv($file, array($row['ProductName'], $row['Quantity'], $row['StokType']));
+            }
+            fclose($file);
+        };
+        return response()->stream($callback, 200, $headers);
+    }
 }
