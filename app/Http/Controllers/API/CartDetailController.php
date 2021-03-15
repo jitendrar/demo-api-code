@@ -324,11 +324,16 @@ class CartDetailController extends Controller
                 $delivery_charge    = 0;
                 $gst_charge         = (int)Config::GetConfigurationList(Config::$GST_CHARGE);
                 $delivery_charge    = (int)Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
+                $carttotalprice     = CartDetail::selectRaw('SUM(price) as Tprice')->where('non_login_token',$non_login_token)->first();
                 $cartdata           = CartDetail::where('non_login_token',$non_login_token)->count();
                 $status         = 1;
                 $StatusCode     = 200;
                 $msg            = __('words.retrieved_successfully');
-                $data['cartcount'] = $cartdata;
+                $data['cartcount']      = $cartdata;
+                $data['carttotalprice'] = 0;
+                if($carttotalprice->Tprice) {
+                    $data['carttotalprice'] = $carttotalprice->Tprice;
+                }
             }
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
