@@ -734,7 +734,7 @@ class OrdersController extends Controller
                         product_translations.`units_stock_type`
                     FROM orders
                     LEFT JOIN order_details ON order_details.`order_id` = orders.`id`
-                    INNER JOIN product_translations ON product_translations.`locale` = 'en' AND product_translations.`product_id` = order_details.`product_id`
+                    INNER JOIN product_translations ON product_translations.`locale` = 'guj' AND product_translations.`product_id` = order_details.`product_id`
                     WHERE orders.`order_status` = 'P'
                     GROUP BY product_translations.`product_name`
                 ) AS tt
@@ -742,18 +742,20 @@ class OrdersController extends Controller
         $date = date('Y-m-d');
         $fileName = 'orders_Summary_'.$date.'.csv';
         $headers = array(
-            "Content-type"        => "text/csv",
+            "Content-type"        => "text/csv; charset=utf-8",
             "Content-Disposition" => "attachment; filename=$fileName",
             "Pragma"              => "no-cache",
             "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
             "Expires"             => "0"
         );
+
         $columns = array('Product Name', 'Quantity', 'Type');
         $callback = function() use($orders, $columns) {
             $file = fopen('php://output', 'w');
+            fputs($file, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
             fputcsv($file, $columns);
             foreach ($orders as $task) {
-                $row['ProductName']  = $task->ProductName;
+                $row['ProductName'] = $task->ProductName;
                 $row['Quantity']    = $task->Quantity;
                 $row['StokType']    = $task->StokType;
                 fputcsv($file, array($row['ProductName'], $row['Quantity'], $row['StokType']));
