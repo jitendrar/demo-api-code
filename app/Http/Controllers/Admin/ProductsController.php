@@ -153,15 +153,15 @@ class ProductsController extends Controller
                 } 
                 if(is_array($units_stock_type) && !empty($units_stock_type))
                 {
-                    $obj->units_stock_type = $units_stock_type[$val];
+                    $obj->units_stock_type = $units_stock_type['en'];
                 } 
                 if(is_array($units_in_stock) && !empty($units_in_stock))
                 {
-                    $obj->units_in_stock = $units_in_stock[$val];
+                    $obj->units_in_stock = $units_in_stock['en'];
                 }  
                 if(is_array($unity_price) && !empty($unity_price))
                 {
-                    $obj->unity_price = $unity_price[$val];
+                    $obj->unity_price = $unity_price['en'];
                 }
                 $obj->locale = $val;
                 $obj->product_id = $model->id;
@@ -228,9 +228,7 @@ class ProductsController extends Controller
     public function edit($id)
     {
         $formObj  = $this->modelObj->find($id);
-
-        if(!$formObj)
-        {
+        if(!$formObj) {
             return abort(404);
         }
         $data = array();
@@ -345,20 +343,19 @@ class ProductsController extends Controller
                 if(is_array($description) && !empty($description))
                 {
                     $obj->description = $description[$val];
-                } 
+                }
                 if(is_array($units_stock_type) && !empty($units_stock_type))
                 {
-                    $obj->units_stock_type = $units_stock_type[$val];
+                    $obj->units_stock_type = $units_stock_type['en'];
                 } 
                 if(is_array($units_in_stock) && !empty($units_in_stock))
                 {
-                    $obj->units_in_stock = $units_in_stock[$val];
+                    $obj->units_in_stock = $units_in_stock['en'];
                 }  
                 if(is_array($unity_price) && !empty($unity_price))
                 {
-                    $obj->unity_price = $unity_price[$val];
+                    $obj->unity_price = $unity_price['en'];
                 }
-                
                 $obj->save();
             }
             if($request->file('multi_img')){
