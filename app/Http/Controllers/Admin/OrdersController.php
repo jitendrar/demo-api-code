@@ -729,7 +729,7 @@ class OrdersController extends Controller
                     CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN 'KG' ELSE StokType END AS StokType
                 FROM (
                     SELECT  product_translations.`product_name`, 
-                        SUM(product_translations.`units_in_stock`) AS TotalStock,
+                        SUM(product_translations.`units_in_stock`*order_details.`quantity`) AS TotalStock,
                         IF(product_translations.`units_stock_type` = 'ગ્રામ', 'G', IF(product_translations.`units_stock_type` = 'G', 'G', product_translations.`units_stock_type`)) AS StokType,
                         product_translations.`units_stock_type`
                     FROM orders
@@ -756,7 +756,7 @@ class OrdersController extends Controller
             fputcsv($file, $columns);
             foreach ($orders as $task) {
                 $row['ProductName'] = $task->ProductName;
-                $row['Quantity']    = $task->Quantity;
+                $row['Quantity']    = ' '.(string)$task->Quantity." \r\n";
                 $row['StokType']    = $task->StokType;
                 fputcsv($file, array($row['ProductName'], $row['Quantity'], $row['StokType']));
             }
