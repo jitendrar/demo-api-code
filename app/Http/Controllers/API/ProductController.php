@@ -147,8 +147,7 @@ class ProductController extends Controller
                     });
                 }
                 $modal = $modal->groupBy('products.id');
-                $modal = $modal->orderBy('product_translations.product_name');
-                $modal = $modal->orderBy('product_translations.units_in_stock');
+                $modal = $modal->orderBy('products.display_order');
                 $products = $modal->paginate($PAGINATION_VALUE);
                 // prd(\DB::getQueryLog());
                 // prd($products->toArray());

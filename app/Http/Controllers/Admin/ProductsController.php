@@ -612,4 +612,125 @@ class ProductsController extends Controller
         echo json_encode($ArrReturn);
         exit();
     }
+
+    public function sorting() {
+        $data = array();
+        $data['module_title'] ='Products Ordering'; 
+        $data['add_url'] = route($this->moduleRouteText.'.create');
+        $data['addBtnName'] = $this->module;
+        $data['btnAdd'] = 1;
+        $data['categories'] = category::categoryList();
+        return view($this->moduleViewName.'.sorting', $data);
+    }
+
+    public function getsortdata(Request $request)
+    {
+        $model = Product::select('products.*','product_translations.product_id')
+                ->join('product_translations','products.id','=','product_translations.product_id')
+                ->join('product_mappings','product_mappings.product_id','=','product_translations.product_id')
+                ->where('product_translations.locale','=','en')
+                ->groupBy('products.id');
+        
+        $model = $model->orderBy('products.display_order','ASC');
+        return DataTables::eloquent($model)
+        //  ->orderColumn('name', function ($query, $order) {
+        //     $query->orderBy('status', $order);\
+        // })
+        ->addColumn('display_order', function($row) {
+            // return $row->display_order;
+            return '<td class="pl-3"><i class="fa fa-sort"></i> '.$row->display_order.' </td>';
+        })
+        ->editColumn('picture', function ($row) {
+            $profileImg = Product::getAttachment($row->id);
+            if(isset($row->id) && $row->id != 0)
+            {
+               return '<img src="'.$profileImg.'" border="2" width="50" height="50" class="img-rounded" align="center" />';
+            }else{
+                return '<img src="{{ asset("images/coming_soon.png")}}" border="0" width="40" class="img-rounded" align="center" />';
+            }
+        })
+        ->editColumn('status', function($row) {
+                if($row->status == 1)
+                    return '<a class="btn btn-xs btn-success">Active</a>';
+                else
+                    return '<a class="btn btn-xs btn-danger">Inactive</a>';
+            })
+        ->editColumn('catName', function($row) {
+                $cat = Category::getCategories($row->id);
+                foreach ($cat as $cat) {
+                    $category_name[] = $cat;
+                }
+                return $category_name;
+            })
+        ->editColumn('action', function($row) {
+            return view("admin.products.action",
+                [
+                    'currentRoute' => $this->moduleRouteText,
+                    'row' => $row, 
+                    'isEdit' =>1,
+                    'isDelete' =>0,
+                    'isView' =>1,
+                    'isStatus' => 1,
+                ]
+            )->render();
+        })->rawcolumns(['display_order', 'picture','action','status'])
+        ->filter(function ($query) 
+            {
+                $search_id = request()->get("search_id");
+                $search_pnm = request()->get("search_pnm");
+                $search_ut = request()->get("search_ut");
+                $category = request()->get("category");
+                $search_status = request()->get("search_status");
+                $searchData = array();
+                if(!empty($search_id)){
+                    $idArr = explode(',', $search_id);
+                    $idArr = array_filter($idArr);
+                    if(count($idArr)>0)
+                    {
+                        $query = $query->whereIn("products.id",$idArr);
+                        $searchData['search_id'] = $search_id;
+                    } 
+                }
+
+                if(!empty($search_pnm)) {
+                    $query = $query->where("product_translations.product_name", 'LIKE', '%'.$search_pnm.'%');
+                    $searchData['search_pnm'] = $search_pnm;
+                }
+
+                if(!empty($search_ut)) {
+                    $query = $query->where("product_translations.units_stock_type", 'LIKE', '%'.$search_ut.'%');
+                    $searchData['search_ut'] = $search_ut;
+                }
+
+                if(!empty($category)) {
+                    $query = $query->where("product_mappings.category_id", 'LIKE', '%'.$category.'%');
+                    $searchData['category'] = $category;
+                }
+
+                if($search_status == "1" || $search_status == "0" ) {
+                    $query = $query->where("products.status", $search_status);
+                    $searchData['search_status'] = $search_status;
+                }
+                $goto = \URL::route($this->moduleRouteText.'.index', $searchData);
+                \session()->put($this->moduleRouteText.'_goto',$goto);
+            })
+        ->make(true);
+    }
+
+    public function sortingupdate(Request $request) {
+        $Products = Product::all();
+        foreach ($Products as $Product) {
+            foreach ($request->productorderarr as $order) {
+                if ($order['id'] == $Product->id) {
+                    $Product->update(['display_order' => $order['position']]);
+                }
+            }
+        }
+        $status = 1;
+        $msg = "Update Successfully!";
+        return ['status' => $status, 'msg' => $msg];
+        // return response()->json(['success'=>'Update Successfully']);
+        // return response('Update Successfully.', 200);
+    }
+
 }
