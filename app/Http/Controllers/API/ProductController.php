@@ -128,25 +128,27 @@ class ProductController extends Controller
                 $IS_OFFER_NO = CartDetail::$IS_OFFER_NO;
                 $STATUS_ACTIVE = Product::$STATUS_ACTIVE;
                 $modal = Product::selectRaw('products.*, cart_details.quantity, IF(cart_details.id, 1, 0) AS isAvailableInCart');
-                    $modal = $modal->leftJoin('cart_details', function($join) use ($non_login_token, $IS_OFFER_NO)
-                    {
-                        $join->on('cart_details.product_id', '=', 'products.id');
-                        $join->where('cart_details.non_login_token', '=', $non_login_token);
-                        $join->where('cart_details.is_offer', '=', $IS_OFFER_NO);
+                $modal = $modal->leftJoin('cart_details', function($join) use ($non_login_token, $IS_OFFER_NO)
+                {
+                    $join->on('cart_details.product_id', '=', 'products.id');
+                    $join->where('cart_details.non_login_token', '=', $non_login_token);
+                    $join->where('cart_details.is_offer', '=', $IS_OFFER_NO);
+                });
+                $modal = $modal->join('product_translations','products.id','=','product_translations.product_id');
+                $modal = $modal->where('products.status',$STATUS_ACTIVE);
+                $modal = $modal->whereIn('products.id',$ArrProductID);
+                if(isset($requestData['search_para']) && !empty(trim($requestData['search_para'])))
+                {
+                    $search_para   = trim($requestData['search_para']);
+                    // $modal          = $modal->where("product_translations.product_name", 'LIKE', '%'.$product_name.'%');
+                    $modal  = $modal->where(function ($query) use ($search_para){
+                            $query->where("product_translations.product_name", 'LIKE', '%'.$search_para.'%')
+                                ->orWhere("product_translations.description", 'LIKE', '%'.$search_para.'%');
                     });
-                    $modal = $modal->join('product_translations','products.id','=','product_translations.product_id');
-                    $modal = $modal->where('products.status',$STATUS_ACTIVE);
-                    $modal = $modal->whereIn('products.id',$ArrProductID);
-                    if(isset($requestData['search_para']) && !empty(trim($requestData['search_para'])))
-                    {
-                        $search_para   = trim($requestData['search_para']);
-                        // $modal          = $modal->where("product_translations.product_name", 'LIKE', '%'.$product_name.'%');
-                        $modal  = $modal->where(function ($query) use ($search_para){
-                                $query->where("product_translations.product_name", 'LIKE', '%'.$search_para.'%')
-                                    ->orWhere("product_translations.description", 'LIKE', '%'.$search_para.'%');
-                        });
-                    }
-                    $modal = $modal->groupBy('products.id');
+                }
+                $modal = $modal->groupBy('products.id');
+                $modal = $modal->orderBy('product_translations.product_name');
+                $modal = $modal->orderBy('product_translations.units_in_stock');
                 $products = $modal->paginate($PAGINATION_VALUE);
                 // prd(\DB::getQueryLog());
                 // prd($products->toArray());
