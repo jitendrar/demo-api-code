@@ -743,7 +743,7 @@ class OrdersController extends Controller
             CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN CONCAT(ROUND(TotalStock/1000,3), '') ELSE CONCAT(TotalStock, '') END AS Quantity,
             CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN 'KG' ELSE StokType END AS StokType
         FROM (
-            SELECT product_id, product_name, units_in_stock, units_stock_type, SUM(units_in_stock) AS TotalStock, units_stock_type AS StokType
+            SELECT product_id, product_name, units_in_stock, units_stock_type, SUM(TotalStock) AS TotalStock, units_stock_type AS StokType
             FROM (
                 SELECT product_id, product_name, units_in_stock, units_stock_type, SUM(units_in_stock*quantity) AS TotalStock, units_stock_type AS StokType
                 FROM (
@@ -765,7 +765,7 @@ class OrdersController extends Controller
         $orders = \DB::select($SQR);
 
         $date = date('Y-m-d');
-        $fileName = 'orders_Summary_'.$date.'.csv';
+        $fileName = 'Orders_Summary_'.$date.'.csv';
         $headers = array(
             "Content-type"        => "text/csv; charset=utf-8",
             "Content-Disposition" => "attachment; filename=$fileName",
