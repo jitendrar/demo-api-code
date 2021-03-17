@@ -23,6 +23,8 @@ class Config extends Model
     public static $REFERRAL_MONEY = 6;
 
     public static $PAYMENT_OPTIONS = 7;
+    
+    public static $REFERRAL_ORDER_MINUMUM_AMMOUNT = 8;
 
     public static function GetConfigurationList($id)
     {

@@ -288,7 +288,17 @@ class OrdersController extends Controller
                     }
                 }
                 else if($inputStatusName == "delivered"){
-                    if ($status = "Pending"){
+                    
+                    if ($status = "Pending") {
+                        $REFERRAL_ORDER_MINUMUM_AMMOUNT = Config::GetConfigurationList(Config::$REFERRAL_ORDER_MINUMUM_AMMOUNT);
+                        if($model->total_price >= $REFERRAL_ORDER_MINUMUM_AMMOUNT) {
+                            $Clientuser = User::where('id',$model->user_id)->first();
+                            if(isset($Clientuser['referralfrom']) && !empty($Clientuser['referralfrom'])) {
+                                if($Clientuser['is_referral_done'] == 0) {
+                                    WalletHistory::AddReferaalMoney($Clientuser);
+                                }
+                            }
+                        }
                         $data = 'delivered';
                         $model->order_status = 'D';
                         $model->delivery_date = date('Y-m-d');
@@ -304,7 +314,6 @@ class OrdersController extends Controller
                         ActivityLogs::storeActivityLog($params);
                         return response()->json(['status' => true, 'message' => "Order status updated successfully.", 'html' => $button_html,'data' => $data]);
                     }else{
-
                         return response()->json(['status' => true, 'message' => "Order status is not updated, please try again!", 'html' => $button_html]);
                     }
                 }
