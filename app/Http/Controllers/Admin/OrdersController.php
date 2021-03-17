@@ -724,21 +724,46 @@ class OrdersController extends Controller
 
     public function summary() {
 
-        $orders = \DB::select("SELECT product_name AS ProductName,
-                    CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN CONCAT(ROUND(TotalStock/1000,3), '') ELSE CONCAT(TotalStock, '') END AS Quantity,
-                    CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN 'KG' ELSE StokType END AS StokType
+        // $orders = \DB::select("SELECT product_name AS ProductName,
+        //             CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN CONCAT(ROUND(TotalStock/1000,3), '') ELSE CONCAT(TotalStock, '') END AS Quantity,
+        //             CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN 'KG' ELSE StokType END AS StokType
+        //         FROM (
+        //             SELECT  product_translations.`product_name`, 
+        //                 SUM(product_translations.`units_in_stock`*order_details.`quantity`) AS TotalStock,
+        //                 IF(product_translations.`units_stock_type` = 'ગ્રામ', 'G', IF(product_translations.`units_stock_type` = 'G', 'G', product_translations.`units_stock_type`)) AS StokType,
+        //                 product_translations.`units_stock_type`
+        //             FROM orders
+        //             LEFT JOIN order_details ON order_details.`order_id` = orders.`id`
+        //             INNER JOIN product_translations ON product_translations.`locale` = 'guj' AND product_translations.`product_id` = order_details.`product_id`
+        //             WHERE orders.`order_status` = 'P'
+        //             GROUP BY product_translations.`product_id`
+        //         ) AS tt
+        //         ;");
+        $SQR = "SELECT product_name AS ProductName,
+            CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN CONCAT(ROUND(TotalStock/1000,3), '') ELSE CONCAT(TotalStock, '') END AS Quantity,
+            CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN 'KG' ELSE StokType END AS StokType
+        FROM (
+            SELECT product_id, product_name, units_in_stock, units_stock_type, SUM(units_in_stock) AS TotalStock, units_stock_type AS StokType
+            FROM (
+                SELECT product_id, product_name, units_in_stock, units_stock_type, SUM(units_in_stock*quantity) AS TotalStock, units_stock_type AS StokType
                 FROM (
-                    SELECT  product_translations.`product_name`, 
-                        SUM(product_translations.`units_in_stock`*order_details.`quantity`) AS TotalStock,
-                        IF(product_translations.`units_stock_type` = 'ગ્રામ', 'G', IF(product_translations.`units_stock_type` = 'G', 'G', product_translations.`units_stock_type`)) AS StokType,
-                        product_translations.`units_stock_type`
+                    SELECT  product_translations.`product_id`, product_translations.`product_name`, 
+                        product_translations.`units_in_stock` AS unitsinstock,
+                        IF(product_translations.`units_stock_type`= 'KG', product_translations.`units_in_stock`*1000, product_translations.`units_in_stock`) AS units_in_stock,
+                        product_translations.`units_stock_type` AS unitsstocktype, 
+                        IF(product_translations.`units_stock_type`= 'KG', 'G', product_translations.`units_stock_type`) AS units_stock_type,
+                        order_details.`quantity`
                     FROM orders
                     LEFT JOIN order_details ON order_details.`order_id` = orders.`id`
                     INNER JOIN product_translations ON product_translations.`locale` = 'guj' AND product_translations.`product_id` = order_details.`product_id`
                     WHERE orders.`order_status` = 'P'
-                    GROUP BY product_translations.`product_name`
-                ) AS tt
-                ;");
+                ) AS orderdetails
+                GROUP BY orderdetails.`product_id`
+            ) AS F
+            GROUP BY product_name
+        ) AS FF";
+        $orders = \DB::select($SQR);
+
         $date = date('Y-m-d');
         $fileName = 'orders_Summary_'.$date.'.csv';
         $headers = array(
