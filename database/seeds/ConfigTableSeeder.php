@@ -100,6 +100,13 @@ class ConfigTableSeeder extends Seeder
                             }',
                 'created_at' => date('Y-m-d h:i:s'),
                 'updated_at' => date('Y-m-d h:i:s'),
+            ],
+            [
+                'id' => 8,
+                'name' => 'REFERRAL_ORDER_MINUMUM_AMMOUNT',
+                'value' => 100,
+                'created_at' => date('Y-m-d h:i:s'),
+                'updated_at' => date('Y-m-d h:i:s'),
             ]
         );
         foreach($ArrConfig as $config) {

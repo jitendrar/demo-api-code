@@ -138,7 +138,7 @@ class AuthController extends Controller
                         $StatusCode = 200;
                         $user = User::where('id',$user_id)->first();
                         if(isset($user['referralfrom']) && !empty($user['referralfrom'])) {
-                            WalletHistory::AddReferaalMoney($user);
+                            // WalletHistory::AddReferaalMoney($user);
                         }
                         $data = new UserResource($user);
                         $accessToken = $user->createToken('authToken')->accessToken;

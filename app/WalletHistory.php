@@ -27,6 +27,10 @@ class WalletHistory extends Model
 				$REFERRAL_MONEY         = Config::GetConfigurationList(Config::$REFERRAL_MONEY);
 				$user->balance +=$REFERRAL_MONEY;
 				$user->save();
+				
+				$newuser->is_referral_done = 1;
+				$newuser->save();
+				
 				$obj = new WalletHistory();
 				$obj->order_id = -1; 
 				$obj->user_id = $user->id;
