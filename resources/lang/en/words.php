@@ -28,6 +28,6 @@ return [
 	'order_status_delivered' => 'Delivered',
 	'order_status_cancel' => 'Cancel',
 	'profile_image_changed' => 'Your profile photo has been successfully changed.',
-	'referral_text' => 'Share your referral code with friends you will get Rs. [MONEYTEXT]/ - when your friend doing first order',
+	'referral_text' => 'Share Your Referral Code with friends you will get Rs. [MONEYTEXT]/ - when your friend place first order of minimum Rs.100/-',
 ];
 ?>
