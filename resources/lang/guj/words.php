@@ -29,6 +29,6 @@ return [
 	'order_status_cancel' => 'વિતરણ રદ',
 	'profile_image_changed' => 'તમારો પ્રોફાઈલ ફોટો સફળતાપૂર્વક બદલવામાં આવ્યો છે.',
 	'referral_text' => 'તમારો રેફરલ કોડ મિત્રો સાથે શેર કરો, જયારે તમારો મિત્ર  ઓછા માં ઓછા 100રૂ નો પહેલો ઓર્ડર કરશે ત્યારે તમને રૂ. [MONEYTEXT]/- મળશે.',
-	'referral_msg_text' => "https://play.google.com/store/apps/details?id=com.phpdots.bopaldaily \r\n [USER_REFERRAL_CODE] આ રેફરલ કોડનો ઉપયોગ કરીને બોપલ ડેઇલી એપ્લિકેશનમાં નોંધણી કરો, તમને તમારા પ્રથમ ઓર્ડર પર રિવોર્ડ મળશે.",
+	'referral_msg_text' => "https://play.google.com/store/apps/details?id=com.phpdots.bopaldaily \r\n \r\n <b> [USER_REFERRAL_CODE] <b> આ રેફરલ કોડનો ઉપયોગ કરીને બોપલ ડેઇલી એપ્લિકેશનમાં નોંધણી કરો, તમને તમારા પ્રથમ ઓર્ડર પર રિવોર્ડ મળશે.",
 ];
 ?>
