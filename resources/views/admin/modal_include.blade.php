@@ -122,3 +122,59 @@
       
     </div>
 </div>
+
+
+<div class="modal fade bs-modal-lg" id="add-money-from-order" role="dialog" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add Money In User</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label>Add Money<span class="required">*</span></label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="amount" id="amount" placeholder="Enter Amount" data-required="true"/>
+                            <span class="input-group-addon"><span class="fa fa-money"></span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label>Description<span class="required">*</span></label>
+                        <div class="input-group">
+                             {!! Form::textarea('description',null,['class'=>'form-control', 'id' =>'description', 'cols' =>100,'rows' =>5,'maxlength' => "400",'placeholder' =>'Description']) !!}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            {!! csrf_field() !!}
+            <input type="hidden" name="order_id" id="order_id" />
+            <button data-href="" type="button" class="btn btn-primary btn-submit-add-money">Assign</button>
+        </div>
+      </div>
+      
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+

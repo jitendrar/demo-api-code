@@ -1,8 +1,8 @@
 <div class="custom-flexBox">
 @if(isset($isView) && $isView)
-<a data-id="{{ $row->id }}" href="{{ route($currentRoute.'.show',['order' => $row->id]) }}" class="btn btn-xs btn-success" title="View">
+<!-- <a data-id="{{ $row->id }}" href="{{ route($currentRoute.'.show',['order' => $row->id]) }}" class="btn btn-xs btn-success" title="View">
     <i class="fa fa-eye"></i>
-</a>
+</a> -->
 @endif
 
 @if(isset($isDelete) && $isDelete)
@@ -32,9 +32,10 @@
 		</li>
 	</ul>
 </div>
-<a data-id="{{ $row->id }}" class="btn btn-xs btn-primary assign-delivery-boy" title="Assign Delivery Boy" data-row ="{{$row->delivery_master_id }}">
-    <i class="fa fa-plus"></i>
+@endif
+@if($row->order_status != 'C')
+<a data-id="{{ $row->id }}" class="btn btn-xs btn-primary add-money-from-order" title="Add Money into User">
+	<i class="fa fa-plus"> Add Money</i>
 </a>
-
 @endif
 </div>

@@ -225,7 +225,7 @@ class OrderController extends Controller
                             $ArrWallete['user_balance']         = $AvailableBalance;
                             $ArrWallete['transaction_amount']   = $totalOrderPrice;
                             $ArrWallete['transaction_type']= WalletHistory::$TRANSACTION_TYPE_DEBIT;
-                            $ArrWallete['remark'] = "Deduct money for your order";
+                            $ArrWallete['remark'] = "Deduct money for your order #".$order_number;
                             WalletHistory::create($ArrWallete);
                             User::where('id',$ArrUser->id)->update(['balance' => $AvailableBalance]);
                             $Orderdata  = Order::with('orderDetail')->where('id',$order_id)->get();

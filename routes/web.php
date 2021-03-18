@@ -65,6 +65,7 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::any('changeQty/{id}','Admin\OrdersController@changeQtyData');
 	Route::any('deleteProduct/{id}','Admin\OrdersController@deleteProduct')->name('deleteProduct');
 	Route::post('orders/add-new-product/{id}','Admin\OrdersController@addProduct');
+	Route::any('orders/add-money-from-order/{id}','Admin\OrdersController@addmoneyfromorder')->name('add-money-from-order');
 
 	//activity types
 	Route::any('admin-action/data','Admin\AdminActionController@data')->name('admin-action.data');
