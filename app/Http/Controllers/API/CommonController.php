@@ -8,6 +8,7 @@ use App\OrderDetail;
 use App\Order;
 use App\Config;
 use App\Address;
+use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\CartResource;
@@ -99,6 +100,35 @@ class CommonController extends Controller
                 $data[$i]['logo'] = GetImageFromUpload($value['logo']);
                 $i++;
             }
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
+        return response($ArrReturn, $StatusCode);
+    }
+
+    public function referralinfo(Request $request) {
+        $StatusCode     = 204;
+        $status         = 0;
+        $ArrReturn      = array();
+        $msg            = __('words.no_data_available');
+        $data           = array();
+        $requestData = $request->all();
+        $user_id = 0;
+        if(isset($requestData['id']) && !empty($requestData['id'])) {
+            $user_id = trim($requestData['id']);
+        }
+        $status         = 1;
+        $StatusCode     = 200;
+        $msg            = __('words.retrieved_successfully');
+        $get_msg        = __('words.referral_text');
+        $referral_m    = Config::GetConfigurationList(Config::$REFERRAL_MONEY);
+        if(!empty($referral_m)) {
+            $data['referral_text'] = str_replace("[MONEYTEXT]",$referral_m,$get_msg);;
+        }
+        $referral_msg_text        = __('words.referral_msg_text');
+        if(!empty($user_id)) {
+            $user = User::where('id',$user_id)->first();
+            $data['referral_msg_text'] = str_replace("[USER_REFERRAL_CODE]",$user->referralcode,$referral_msg_text);
         }
         $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
         $StatusCode = 200;

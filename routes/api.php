@@ -46,6 +46,9 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 	
 	Route::get('referraldesc', 'API\CommonController@referraldesc');
 	Route::get('paymentoptions', 'API\CommonController@paymentoptions');
+	Route::post('referralinfo', 'API\CommonController@referralinfo');
+
+	Route::post('changeuserlng', 'API\AuthController@changeuserlng');
 
 	Route::group(['middleware' => ['auth:api']], function () {
 		Route::post('sendnewphoneotp', 'API\AuthController@sendnewphoneotp');
