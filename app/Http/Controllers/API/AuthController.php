@@ -515,4 +515,48 @@ class AuthController extends Controller
         $StatusCode = 200;
         return response($arrReturn, $StatusCode);
     }
+
+    public function changeuserlng(Request $request) {
+
+        $StatusCode = 403;
+        $status = 0;
+        $msg = "Please enter valid user id";
+        $data           = array();
+        $accessToken = "";
+        $arrReturn = array();
+        $RegisterData = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+            'lang' => 'required'
+        ]);
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $requestData = $request->all();
+            $user_id = trim($requestData['id']);
+            $users = User::where('id',$user_id)->first();
+            if($users) {
+                $arrUpdate = array();
+                $arrUpdate['lang'] = $requestData['lang'];
+                User::where('id', $users->id)->update($arrUpdate);
+                $status     = 1;
+                $StatusCode = 200;
+                $user = User::where('id',$users->id)->first();
+                $data = new UserResource($user);
+                $msg = __('words.retrieved_successfully');
+            } else {
+                $StatusCode = 401;
+                $msg = __('words.user_not_found');
+            }
+        }
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
+        $StatusCode = 200;
+        return response($arrReturn, $StatusCode);
+    }
 }
