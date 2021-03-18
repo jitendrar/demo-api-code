@@ -29,6 +29,6 @@ return [
 	'order_status_cancel' => 'Cancel',
 	'profile_image_changed' => 'Your profile photo has been successfully changed.',
 	'referral_text' => 'Share Your Referral Code with friends you will get Rs. [MONEYTEXT]/ - when your friend place first order of minimum Rs.100/-',
-	'referral_msg_text' => "https://play.google.com/store/apps/details?id=com.phpdots.bopaldaily \r\n \r\n Register into Bopal Daily App using this Referral code : <b> [USER_REFERRAL_CODE] <b> and you will get reward on your first order.",
+	'referral_msg_text' => "https://play.google.com/store/apps/details?id=com.phpdots.bopaldaily \r\n \r\n Register into Bopal Daily App using this Referral code : [USER_REFERRAL_CODE] and you will get reward on your first order.",
 ];
 ?>

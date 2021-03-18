@@ -20,7 +20,12 @@ jQuery(document).ready(function(){
         $("#assign-delivery-boy").modal();
     });
 
- 
+    $(document).on("click",".add-money-from-order",function(){
+        var id = $(this).data("id");
+        var row = $(this).data("row");
+        $("#add-money-from-order #order_id").val(id);
+        $("#add-money-from-order").modal();
+    }); 
 
     $(document).on("click",".btn-submit-product",function(){
         $order_id = $('#add-product #item_id').val();
@@ -128,7 +133,6 @@ jQuery(document).ready(function(){
             qntCalculation(date_id,qty,data_type,main_order_id );
           }
     });
-     
 
     $(document).on('click','.remove_prod',function(){
         var confirm = deleteFunction();
@@ -161,6 +165,45 @@ jQuery(document).ready(function(){
         });
 
         }
+        return false;
+    });
+
+
+    $(document).on("click",".btn-submit-add-money",function(){
+
+        $amount         = $("#add-money-from-order #amount").val();
+        $description    = $("#add-money-from-order #description").val();
+        var id          = $("#add-money-from-order #order_id").val();
+        var url         = addmoneyfromorder + '/'+id;
+        $('#AjaxLoaderDiv').fadeIn(100);
+        var currentOBJ = $(this);
+        currentOBJ.attr("disabled", true);
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {action:url, id: id, amount: $amount, description: $description, _token: $("input[name='_token']").val()},
+            success: function (result)
+            {
+                currentOBJ.attr("disabled", false);
+                $('#AjaxLoaderDiv').fadeOut(100);
+                if (result.status == 1)
+                {
+                    $.bootstrapGrowl(result.msg, {type: 'success', delay: 4000});
+                    window.location = result.redirect_url;
+                }
+                else
+                {
+                    $.bootstrapGrowl(result.msg, {type: 'danger', delay: 4000});
+                }
+            },
+            error: function (error)
+            {
+                currentOBJ.attr("disabled", false);
+                $('#AjaxLoaderDiv').fadeOut(100);
+                $.bootstrapGrowl("Internal server error !", {type: 'danger', delay: 4000});
+            }
+        });
+
         return false;
     });
 
@@ -201,6 +244,7 @@ jQuery(document).ready(function(){
     });
 
 });
+
 function deleteFunction(){
     var r = confirm("are you sure want to delete?");
     return r;

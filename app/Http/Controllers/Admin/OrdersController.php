@@ -264,17 +264,30 @@ class OrdersController extends Controller
         $button_html = '';
         $data= '';
         if ($request->get('_token') != '') {
-
             $model = Order::find($id);
             if (!$model){
                 return response()->json(['status' => "", 'message' => "Order not found!"]);
             } else {
                 $status =  _GetOrderStatus($model->order_status);
-                if($inputStatusName == "cancel"){
-                     if ($status = "Pending"){
+                if($inputStatusName == "cancel") {
+                     if ($model->order_status == "P") {
                         $data = 'cancel';
                         $model->order_status = 'C';
                         $model->save();
+                        $Clientuser = User::where('id',$model->user_id)->first();
+                        if($Clientuser){
+                            $balance = $Clientuser->balance+$model->total_price;
+                            $Clientuser->balance = $balance;
+                            $Clientuser->save();
+                            $ArrWallete = array();
+                            $ArrWallete['user_id']              = $model->user_id;
+                            $ArrWallete['order_id']             = $model->id;
+                            $ArrWallete['user_balance']         = $Clientuser->balance;
+                            $ArrWallete['transaction_amount']   = $model->total_price;
+                            $ArrWallete['remark']               = "Credited money from your cancelled order #".$model->order_number;
+                            $ArrWallete['transaction_type']     = WalletHistory::$TRANSACTION_TYPE_CREDIT;
+                            WalletHistory::create($ArrWallete);
+                        }
                         /* store log */
                         $params=array();
                         $params['user_id']  = $user->id;
@@ -282,9 +295,8 @@ class OrdersController extends Controller
                         $params['remark']   = 'Order Status Cancel successfully';
                         ActivityLogs::storeActivityLog($params);
                         return response()->json(['status' => true, 'message' => "Order status updated successfully.", 'html' => $button_html,'data' =>$data]);
-                    }else{
-
-                        return response()->json(['status' => true, 'message' => "Order status is not updated, please try again!", 'html' => $button_html]);
+                    } else {
+                        return response()->json(['status' => true, 'message' => "Order Already cancelled!", 'html' => $button_html]);
                     }
                 }
                 else if($inputStatusName == "delivered"){
@@ -644,11 +656,14 @@ class OrdersController extends Controller
             $path = url("admin/delivery-users/".$row->delivery_master_id);
             if(isset($row->id) && $row->id != 0)
             {
-               return ''.$row->deliveryUser.'<a href="'.$path.'"><img src="'.$deliveryUserImg.'" border="2" width="50" height="50" class="img-rounded thumbnail zoom" align="center" /></a>';
-            }else{
-                return '<img src="{{ asset("images/coming_soon.png")}}" border="0" width="40" class="img-rounded thumbnail zoom" align="center" />'.$row->deliveryUser.'';
+                $CSS = 'float: right;margin-top: -73px;';
+                if($row->delivery_master_id >0) {
+                    $CSS = 'float: right;margin-top: -90px;';
+                }
+                return ''.$row->deliveryUser.'<a href="'.$path.'"><img src="'.$deliveryUserImg.'" border="2" width="50" height="50" class="img-rounded thumbnail zoom" align="center" /></a>'.' <a data-id="'.$row->id.'" class="btn btn-xs btn-primary assign-delivery-boy" title="Assign Delivery Boy" data-row ="'.$row->delivery_master_id.'" style="'.$CSS.'"> <i class="fa fa-plus"></i></a> ';
+            } else {
+                return '<img src="{{ asset("images/coming_soon.png")}}" border="0" width="40" class="img-rounded thumbnail zoom" align="center" />'.$row->deliveryUser.''.'<a data-id="'.$row->id.'" class="btn btn-xs btn-primary assign-delivery-boy" title="Assign Delivery Boy" data-row ="'.$row->delivery_master_id.'" style=""> <i class="fa fa-plus"></i> </a>';
             }
-
         })
         ->editColumn('totalPrice',function($row){
             return number_format((OrderDetail::getOrderTotalPrice($row->id)),2);
@@ -798,4 +813,54 @@ class OrdersController extends Controller
         };
         return response()->stream($callback, 200, $headers);
     }
+
+    public function addmoneyfromorder(Request $request,$id){
+        $authUser = Auth::guard('admins')->user();
+        $status = 1;
+        $msg = "Add Money successfully";
+        $redirectUrl = $this->list_url;
+        $rules = [ 'amount' => 'required|numeric',];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg .= $message . "<br />";
+            }
+        } else {
+            $id     = $request->get("id");
+            $model  = Order::find($id);
+            if ($model) {
+                    $balance        = $request->get("amount");
+                    $description    = trim($request->get('description'));
+                    $description    = $description.' ,  Add Money for Order #'.$model->order_number;
+                    $user_id        = $model->user_id;
+                    $Clientuser = User::where('id',$user_id)->first();
+                    if($Clientuser){
+                        $Clientuser->balance = $Clientuser->balance+$balance;
+                        $Clientuser->save();
+                        $obj            = new WalletHistory();
+                        $obj->order_id  = $model->id; 
+                        $obj->user_id   = $Clientuser->id;
+                        $obj->user_balance = $Clientuser->balance;
+                        $obj->transaction_amount = $balance;
+                        $obj->transaction_type = WalletHistory::$TRANSACTION_TYPE_CREDIT;;
+                        $obj->remark = $description;
+                        $obj->save();
+                         /* store log */
+                        $params=array();
+                        $params['user_id']      = $authUser->id;
+                        $params['action_id']    = $this->activityAction->ADD_AMOUNT;
+                        $params['remark']       = "Added Money from Order listing, User ID :: ".$Clientuser->id.' '.$description;
+                        ActivityLogs::storeActivityLog($params);
+                    }
+            }else {
+                $status = 0;
+                $msg = "Order not found!";
+            }
+        }
+        return ['status' => $status, 'msg' => $msg,'redirect_url' => $redirectUrl];
+    }
+
 }
