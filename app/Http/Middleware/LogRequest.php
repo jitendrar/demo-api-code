@@ -40,13 +40,20 @@ class LogRequest
 
     public function terminate($request, $response)
     {
-    	$this->Log = new Logger('RQ_LOG');
-        $this->Log->pushHandler(new StreamHandler(storage_path('logs/RQ_LOG-'.date('Y-m-d').'.log')), Logger::INFO,false);
+        $output = "[%datetime%] : %message% \n";
+        $formatter = new LineFormatter($output);
+        $streamHandler = new StreamHandler(storage_path('logs/RQ_LOG-'.date('Y-m-d').'.log'));
+        $streamHandler->setFormatter($formatter);
+        $this->Log = new Logger('RQ_LOG');
+        $this->Log->pushHandler($streamHandler);
+        
+    	// $this->Log = new Logger('RQ_LOG');
+     //    $this->Log->pushHandler(new StreamHandler(storage_path('logs/RQ_LOG-'.date('Y-m-d').'.log')));
 
         $ip=$request->ip();
         $url=$request->fullUrl();
         $Rdata = json_encode($request->all());
         $log = "IP : ". $ip . " URL : " . $url . " Data ==> " .$Rdata . " Response : ".$response;
-		// $this->Log->info($log);
+		$this->Log->info($log);
     }
 }

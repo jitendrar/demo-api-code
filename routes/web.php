@@ -74,5 +74,9 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::any('admin-activity-logs/data','Admin\AdminActivityLogsController@data')->name('admin-activity-logs.data');
 	Route::any('admin-activity-logs/logDetail/{id}','Admin\AdminActivityLogsController@logDetail')->name('log.detail');
 	Route::resource('admin-activity-logs','Admin\AdminActivityLogsController');
+
+	Route::any('billings/data','Admin\BillingController@data')->name('billings.data');
+	Route::resource('billings','Admin\BillingController');
+
 });
 

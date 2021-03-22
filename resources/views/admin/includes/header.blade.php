@@ -111,9 +111,15 @@ if($authUser)
                                 <a href="{{ route('products.sorting')}}"> Products Ordering <span class="arrow"></span> </a>
                             </li>
                             <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
-                            <a href="{{ route('offers.index')}}"> Offers
-                                <span class="arrow"></span>
-                            </a>
+                                <a href="{{ route('offers.index')}}"> Offers
+                                    <span class="arrow"></span>
+                                </a>
+                            </li>
+
+                            <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
+                                <a href="{{ route('billings.index')}}"> Billings
+                                    <span class="arrow"></span>
+                                </a>
                             </li>
                         </ul>
                     </div>
