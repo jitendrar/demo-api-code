@@ -95,13 +95,12 @@
                 <table class="table table-bordered table-striped table-condensed flip-content" id="server-side-datatables" width="100%">
                     <thead>
                         <tr>
-                            <th width="1%">Id</th>
                             <th width="5%">Order No</th>
+                            <th width="25%">Action</th>
                             <th align="left" width="20%">Name</th>
                             <th align="left" width="15%">Total + Delivery Charge</th>
                             <th align="left">Delivery User</th>
                             <th width="5%" id="status-id">status</th>
-                            <th width="25%">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -182,18 +181,17 @@ $(document).ready(function(){
             },
             lengthMenu:
             [
-            [25,50,100,150,200],
-            [25,50,100,150,200]
+            [100,150,200],
+            [100,150,200]
             ],
             "order": [[ 0, "desc" ]],
             columns: [
-                {data: 'id', name: 'id'},
                 {data: 'order_number', name: 'order_number'},
+                { data: 'action', orderable: false, searchable: false,className:'detail-td'},
                 { data: 'userName', name: 'userName'},
                 { data: 'totalPrice' , name: 'totalPrice',className:'totalprice_td',orderable: false},
                 { data: 'deliveryUser' , name: 'deliveryUser',orderable: false},
                 { data: 'order_status', name: 'order_status',className:'order_status_td'},
-                { data: 'action', orderable: false, searchable: false,className:'detail-td'},
             ]
     });
 });
