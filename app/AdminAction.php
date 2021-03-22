@@ -35,6 +35,8 @@ class AdminAction extends Model
     public $ADD_OFFER = 21;
     public $EDIT_OFFER = 22;
     public $DELETE_OFFER = 23;
+    
+    public $CREATE_NEW_BILL_DETAILS = 24;
 
     public static function activityTypeList()
     {

@@ -31,7 +31,7 @@ class AuthController extends Controller
             'first_name' => 'required|max:55|min:3',
             'last_name' => 'required|max:55',
             'phone' => 'required|numeric|regex:/[6-9]\d{9}/|digits:10|unique:users',
-            'password' => 'required|confirmed',
+            // 'password' => 'required|confirmed',
             'referralfrom' => [
                                 function ($attribute, $value, $fail) {
                                     if(!empty($value)) {
@@ -60,8 +60,11 @@ class AuthController extends Controller
             $nextId     = $statement[0]->Auto_increment;
             $firstname  = substr($requestData['first_name'],0,3);
             $referralcode = strtoupper($firstname).$nextId;
+            
+            if(isset($requestData['password']) && !empty($requestData['password'])) {
+                $requestData['password']    = bcrypt($requestData['password']);
+            }
 
-            $requestData['password']    = bcrypt($requestData['password']);
             $requestData['new_phone']   = $requestData['phone'];
             $requestData['referralcode'] = $referralcode;
             $user = User::create($requestData);
@@ -218,7 +221,7 @@ class AuthController extends Controller
         $data = array();
         $loginData = Validator::make($request->all(), [
             'phone' => 'required|numeric|regex:/[6-9]\d{9}/|digits:10|exists:users',
-            'password' => 'required'
+            // 'password' => 'required'
         ], ['phone.exists' => $msg]);
 
         // check validations
@@ -233,16 +236,38 @@ class AuthController extends Controller
             }
         } else {
             $msg = __('words.incorrect_password');
-            $loginData = [
-                'phone' => $request->get("phone"),
-                'password' => $request->get("password"),
-            ];
-            
+            $requestData = $request->all();
             $device_type        = $request->get("device_type");
             $notification_token = $request->get("notification_token");
             $non_login_token    = $request->get("non_login_token");
-            if (auth()->attempt($loginData)) {
-                $user = auth()->user();
+
+            if(isset($requestData["password"]) && !empty($requestData["password"])) {
+                $loginData = [
+                    'phone' => $request->get("phone"),
+                    'password' => $request->get("password"),
+                ];
+                if (auth()->attempt($loginData)) {
+                    $user = auth()->user();
+                    $status = 0;
+                    $msg = __('words.mobile_not_verified');
+                    if($user->status == 1) {
+                        User::where('id',$user->id)->update(['non_login_token' => $non_login_token]);
+                        CartDetail::_UpdateUserIDByLoginToke($user->id,$non_login_token);
+                        CartDetail::_DeleteOtherCartByUserIDByLoginToke($user->id,$non_login_token);
+                        User::where('id',$user->id)->update(['notification_token' => $notification_token]);
+                        $ArrDeviceInfo = array();
+                        $ArrDeviceInfo['user_id'] = $user->id;
+                        $ArrDeviceInfo['device_type'] = $device_type;
+                        DeviceInfo::_CreateOrUpdate($ArrDeviceInfo);
+                        $StatusCode     = 200;
+                        $status         = 1;
+                        $msg = __('words.login');
+                        $data           = new UserResource($user);
+                        $accessToken = auth()->user()->createToken('authToken')->accessToken;
+                    }
+                }
+            } else {
+                $user = User::where('phone',$requestData["phone"])->first();
                 $status = 0;
                 $msg = __('words.mobile_not_verified');
                 if($user->status == 1) {
@@ -254,11 +279,18 @@ class AuthController extends Controller
                     $ArrDeviceInfo['user_id'] = $user->id;
                     $ArrDeviceInfo['device_type'] = $device_type;
                     DeviceInfo::_CreateOrUpdate($ArrDeviceInfo);
-                    $StatusCode     = 200;
-                    $status         = 1;
-                    $msg = __('words.login');
-                    $data           = new UserResource($user);
-                    $accessToken = auth()->user()->createToken('authToken')->accessToken;
+                    $userID = $user->id;
+                    $arrOtp = User::_SendOtp($userID);
+                    if($arrOtp['status'] == 1) {
+                        $StatusCode     = 200;
+                        $status = 1;
+                        $msg = __('words.otp_sent');
+                        $user = User::where('id',$userID)->first();
+                        $data = new UserResource($user);
+                    } else {
+                        $StatusCode     = 409;
+                        $msg = $arrOtp['msg'];
+                    }
                 }
             }
         }
@@ -353,7 +385,7 @@ class AuthController extends Controller
                         $msg = __('words.phone_change_sucsses');
                     }
                     $users  = User::where('id',$userID)->first();
-                    $data       = new UserResource($users);
+                    $data   = new UserResource($users);
                     $accessToken = $users->createToken('authToken')->accessToken;
                 } else {
                     $StatusCode = 401;

@@ -123,8 +123,10 @@
         <script src="{{ asset('js/pages/admin/jquery.inputmask.bundle.min.js') }}" type="text/javascript"></script>
 
         <script type="text/javascript" src="{{ asset('js/formSubmitJs.js?498') }}"></script>
-
-
+        
+        <script type="text/javascript" src="{{ asset('js/jquery-ui.js?786') }}" ></script>
+        <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" id="style_components" type="text/css" />
+        
         @yield('scripts')
 
     </body>

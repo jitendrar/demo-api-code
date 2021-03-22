@@ -43,13 +43,12 @@
                 <table class="table table-bordered table-striped table-condensed flip-content" id="server-side-datatables">
                     <thead>
                         <tr>
-                            <th width="1%">Id</th>
-                            <th width="5%">Order No</th>
-                            <th align="left" width="20%">Name</th>
+                            <th width="6%">Order No</th>
+                            <th width="20%">Action</th>
+                            <th align="left" width="22%">Name</th>
                             <th align="left" width="15%">Total + Delivery Charge</th>
                             <th align="left">Delivery User</th>
                             <th width="5%">status</th>
-                            <th width="25%">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -77,7 +76,7 @@
     $(document).ready(function(){
         $('body').on('click', '.change-status', function(event){
             var target_id       = $(this).attr('data-id');
-            var status_name       = $(this).attr('id');
+            var status_name     = $(this).attr('id');
             if(confirm($(this).data('msg'))){ 
                 var _token          = $('input[name="_token"]').val();
                 var target_path     = $('#change_status_url').val();
@@ -87,13 +86,13 @@
                     "type": "POST",
                     data: { '_token':_token , 'id' : target_id , 'status_name' : status_name},
                     success: function(result){
-                        if(result.status == true)
-                        {   
+                        if(result.status == true) {
+                            $.bootstrapGrowl(result.message, {type: 'success', delay: 4000});
                             if(result.html == ''){
                                 if(result.data == 'delivered'){
                                     if($("#status"+target_id).html() == 'Pending'){
                                         $("#status"+target_id).html('Delivered');
-                                        $("#status"+target_id).addClass('btn-success');    
+                                        $("#status"+target_id).addClass('btn-success');
                                         $("#status"+target_id).removeClass('btn-info');
                                     }
                                 }else{
@@ -146,13 +145,12 @@
                 ],
                 "order": [[ 0, "desc" ]],
                 columns: [
-                    {data: 'id', name: 'id'},
                     {data: 'order_number', name: 'order_number'},
+                    { data: 'action', orderable: false, searchable: false,className:'detail-td'},
                     { data: 'userName', name: 'userName'},
                     { data: 'totalPrice' , name: 'totalPrice',className:'totalprice_td',orderable: false},
                     { data: 'deliveryUser' , name: 'deliveryUser',orderable: false},
                     { data: 'order_status', name: 'order_status',className:'order_status_td'},
-                    { data: 'action', orderable: false, searchable: false,className:'detail-td'},
                 ]
         });
     });

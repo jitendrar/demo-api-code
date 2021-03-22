@@ -250,6 +250,24 @@ class OrdersController extends Controller
             return ['status' => 0, 'msg'=>$msg, 'html'=>$html];
         }
         $data["address"] = Address::where('id',$order->address_id)->first();
+        
+        foreach ($orderDetail as $key => $value) {
+            $units_in_stock_in_GM           = $value->product->units_in_stock;
+            $details_units_in_stock_total   = $units_in_stock_in_GM*$value->quantity;
+            $details_units_stock_type       = $value->product->units_stock_type;
+            if(strtoupper($details_units_stock_type) == 'G') {
+                if($details_units_in_stock_total >= 1000) {
+                    $details_units_stock_type = 'KG';
+                    $details_units_in_stock_total = $details_units_in_stock_total/1000;
+                }
+            }
+            $orderDetail[$key]['details_units_stock_type']      = $details_units_stock_type;
+            $orderDetail[$key]['details_units_in_stock_total']  = $details_units_in_stock_total;
+            // if(strtoupper($value->product->units_stock_type) == 'KG') {
+            // }
+            // pr($orderDetail[$key]);
+            // prd($value->quantity);
+        }
         $data['orderDetail'] = $orderDetail;
         $data['totalPrice'] = $totalPrice;
         $data['deliveryUser'] = $deliveryUser;
@@ -328,6 +346,57 @@ class OrdersController extends Controller
                     }else{
                         return response()->json(['status' => true, 'message' => "Order status is not updated, please try again!", 'html' => $button_html]);
                     }
+                }else if($inputStatusName == "DeliveredWithPayment"){
+                    
+                    if ($status = "Pending") {
+                        $REFERRAL_ORDER_MINUMUM_AMMOUNT = Config::GetConfigurationList(Config::$REFERRAL_ORDER_MINUMUM_AMMOUNT);
+                        if($model->total_price >= $REFERRAL_ORDER_MINUMUM_AMMOUNT) {
+                            $Clientuser = User::where('id',$model->user_id)->first();
+                            if(isset($Clientuser['referralfrom']) && !empty($Clientuser['referralfrom'])) {
+                                if($Clientuser['is_referral_done'] == 0) {
+                                    WalletHistory::AddReferaalMoney($Clientuser);
+                                }
+                            }
+                        }
+                        $data = 'delivered';
+                        $model->order_status = 'D';
+                        $model->delivery_date = date('Y-m-d');
+                        $model->delivery_time = date('H:i:s');
+                        $model->actual_delivery_date = date('Y-m-d');
+                        $model->actual_delivery_time = date('Y-m-d H:i:s');
+                        $model->save();
+                        /* store log */
+                        $params=array();
+                        $params['user_id']  = $user->id;
+                        $params['action_id']  = $this->activityAction->ORDER_STATUS;
+                        $params['remark']   = 'Order Status Delivered successfully';
+                        ActivityLogs::storeActivityLog($params);
+                        $balance        = $model->total_price;
+                        $description    = 'Add Money for Order #'.$model->order_number;
+                        $user_id        = $model->user_id;
+                        $Clientuser = User::where('id',$user_id)->first();
+                        if($Clientuser){
+                            $Clientuser->balance = $Clientuser->balance+$balance;
+                            $Clientuser->save();
+                            $obj            = new WalletHistory();
+                            $obj->order_id  = $model->id; 
+                            $obj->user_id   = $Clientuser->id;
+                            $obj->user_balance = $Clientuser->balance;
+                            $obj->transaction_amount = $balance;
+                            $obj->transaction_type = WalletHistory::$TRANSACTION_TYPE_CREDIT;;
+                            $obj->remark = $description;
+                            $obj->save();
+                             /* store log */
+                            $params=array();
+                            $params['user_id']      = $user->id;
+                            $params['action_id']    = $this->activityAction->ADD_AMOUNT;
+                            $params['remark']       = "Added Money from Order listing, User ID :: ".$Clientuser->id.' '.$description;
+                            ActivityLogs::storeActivityLog($params);
+                        }
+                        return response()->json(['status' => true, 'message' => "Order status updated successfully.", 'html' => $button_html,'data' => $data]);
+                    } else {
+                        return response()->json(['status' => true, 'message' => "Order status is not updated, please try again!", 'html' => $button_html]);
+                    }
                 }
             }
         } else
@@ -372,9 +441,7 @@ class OrdersController extends Controller
                 $status = 0;
                 $msg = "Order not found!";
             }
-
-            return ['status' => $status, 'msg' => $msg,'redirect_url' => $redirectUrl];                             
-
+        return ['status' => $status, 'msg' => $msg,'redirect_url' => $redirectUrl];
     }
     public function changeQtyData(Request $request){
         $status = 0;
