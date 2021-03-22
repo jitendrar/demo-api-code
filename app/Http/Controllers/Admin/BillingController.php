@@ -142,7 +142,7 @@ class BillingController extends Controller
         return \DataTables::eloquent($modal)
         ->editColumn('picture', function ($row) {
         	$profileImg = Billing::getAttachment($row->picture);
-            return '<img src="'.$profileImg.'" border="2" width="50" height="50" class="img-rounded" align="center" />';
+            return '<img src="'.$profileImg.'" border="2" width="50" height="50" class="img-rounded zoomimage" align="center" />';
         })
         ->editColumn('total',function($row){
             return number_format($row->total,2);

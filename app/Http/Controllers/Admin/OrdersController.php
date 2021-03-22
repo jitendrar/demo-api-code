@@ -699,7 +699,7 @@ class OrdersController extends Controller
     public function Data(Request $request)
     {
         $authUser = Auth::guard('admins')->user();
-        $modal = Order::select('orders.*','users.phone','addresses.address_line_1',\DB::raw('CONCAT(delivery_master.first_name," ",delivery_master.last_name) as deliveryUser'),\DB::raw('CONCAT(users.first_name," ",users.last_name) as userName'),'delivery_master.picture as deliveryUserImage')
+        $modal = Order::select('orders.*','users.phone', 'users.balance','addresses.address_line_1',\DB::raw('CONCAT(delivery_master.first_name," ",delivery_master.last_name) as deliveryUser'),\DB::raw('CONCAT(users.first_name," ",users.last_name) as userName'),'delivery_master.picture as deliveryUserImage')
             ->leftJoin('users','orders.user_id','=','users.id')
             ->leftJoin('addresses','orders.address_id','=','addresses.id')
             ->leftJoin('delivery_master','delivery_master.id','=','orders.delivery_master_id')
@@ -716,7 +716,7 @@ class OrdersController extends Controller
                 return '';
         })
         ->editColumn('userName',function($row){
-           return $row->userName.'<br/>'.$row->phone;
+           return $row->userName.' ('.$row->balance.') '.'<br/>'.$row->phone;
         })
         ->editColumn('deliveryUser',function($row){
             $deliveryUserImg = DeliveryMaster::getAttachment($row->delivery_master_id); 
