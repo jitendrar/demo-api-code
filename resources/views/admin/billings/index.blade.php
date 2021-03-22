@@ -53,12 +53,38 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade bs-modal-lg" id="view-billing-images" role="dialog" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">View Bill</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="modalimages">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            {!! csrf_field() !!}
+        </div>
+      </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
 <script type="text/javascript">
     var oTableCustom = oTableCustom;
-    $(document).ready(function(){
+    $(document).ready(function()
+    {
         $(".search_date_picker").datepicker({
             numberOfMonths: 1,
             dateFormat: 'yy-mm-dd'
@@ -95,6 +121,12 @@
                         { data: 'picture', name: 'picture'},
                         { data: 'description' , name: 'description',orderable: false},
                 ]
+        });
+        $(document).on('click','.zoomimage',function(e){
+            var images = $(this).attr('src');
+            var img='<img  src="'+images+'" class="img-rounded zoomimage" width="100%" height="100%" border="2" align="middle">';
+            $("#modalimages").html(img);
+            $("#view-billing-images").modal();
         });
     });
 </script>
