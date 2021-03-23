@@ -243,25 +243,27 @@ class UserController extends Controller
             }
             $model->status = $status_val;
             $model->save();
-            $obj = Address::where('user_id',$model->id)->first();
-            if($obj){
-                $obj->address_line_1 = $address_line_1;
-                $obj->address_line_2 = $address_line_2;
-                $obj->city = $city;
-                $obj->zipcode = $zipcode;
-                $obj->status = $address_status;
-                $obj->primary_address = $prim_address;
-                $obj->save();
-            }else{
-                $obj = new Address();
-                $obj->address_line_1 = $address_line_1;
-                $obj->address_line_2 = $address_line_2;
-                $obj->city = $city;
-                $obj->zipcode = $zipcode;
-                $obj->status = $address_status;
-                $obj->primary_address = $prim_address;
-                $obj->user_id = $model->id;
-                $obj->save();
+            if (!empty(trim($address_line_1))) {
+                $obj = Address::where('user_id',$model->id)->first();
+                if($obj) {
+                    $obj->address_line_1 = $address_line_1;
+                    $obj->address_line_2 = $address_line_2;
+                    $obj->city = $city;
+                    $obj->zipcode = $zipcode;
+                    $obj->status = $address_status;
+                    $obj->primary_address = $prim_address;
+                    $obj->save();
+                } else {
+                    $obj = new Address();
+                    $obj->address_line_1 = $address_line_1;
+                    $obj->address_line_2 = $address_line_2;
+                    $obj->city = $city;
+                    $obj->zipcode = $zipcode;
+                    $obj->status = $address_status;
+                    $obj->primary_address = $prim_address;
+                    $obj->user_id = $model->id;
+                    $obj->save();
+                }
             }
             /* store log */
                 $params=array();

@@ -316,8 +316,7 @@ class OrdersController extends Controller
                     } else {
                         return response()->json(['status' => true, 'message' => "Order Already cancelled!", 'html' => $button_html]);
                     }
-                }
-                else if($inputStatusName == "delivered"){
+                } else if($inputStatusName == "delivered") {
                     
                     if ($status = "Pending") {
                         $REFERRAL_ORDER_MINUMUM_AMMOUNT = Config::GetConfigurationList(Config::$REFERRAL_ORDER_MINUMUM_AMMOUNT);
@@ -331,8 +330,6 @@ class OrdersController extends Controller
                         }
                         $data = 'delivered';
                         $model->order_status = 'D';
-                        $model->delivery_date = date('Y-m-d');
-                        $model->delivery_time = date('H:i:s');
                         $model->actual_delivery_date = date('Y-m-d');
                         $model->actual_delivery_time = date('Y-m-d H:i:s');
                         $model->save();
@@ -346,7 +343,7 @@ class OrdersController extends Controller
                     }else{
                         return response()->json(['status' => true, 'message' => "Order status is not updated, please try again!", 'html' => $button_html]);
                     }
-                }else if($inputStatusName == "DeliveredWithPayment"){
+                } else if($inputStatusName == "DeliveredWithPayment"){
                     
                     if ($status = "Pending") {
                         $REFERRAL_ORDER_MINUMUM_AMMOUNT = Config::GetConfigurationList(Config::$REFERRAL_ORDER_MINUMUM_AMMOUNT);
@@ -360,8 +357,6 @@ class OrdersController extends Controller
                         }
                         $data = 'delivered';
                         $model->order_status = 'D';
-                        $model->delivery_date = date('Y-m-d');
-                        $model->delivery_time = date('H:i:s');
                         $model->actual_delivery_date = date('Y-m-d');
                         $model->actual_delivery_time = date('Y-m-d H:i:s');
                         $model->save();
