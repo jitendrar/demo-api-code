@@ -22,19 +22,31 @@
             </tr>
             <tr>
                 <th>Delivery Date:</th>
-                <td>{{ date('Y-m-d',strtotime($order->delivery_date)) }}</td>
+                <td>{{ date('d-m-Y',strtotime($order->delivery_date)) }}</td>
                 <th>Delivery Time:</th>
                 <td> {{ $order->delivery_time }}</td>
             </tr>
             <tr>
                 <th>Actual Delivery Date:</th>
-                <td>{{ date('Y-m-d',strtotime($order->actual_delivery_date)) }}</td>
+                <td>
+                    <?php
+                        if(!empty($order->actual_delivery_date)){
+                            echo date('d-m-Y',strtotime($order->actual_delivery_date));
+                        } else {
+                            echo "-";
+                        }
+                    ?>
+                </td>
                 <th>Actual Delivery Time:</th>
                 <td>
                     <?php
-                    $time = $order->actual_delivery_date.' '.$order->actual_delivery_time;
+                        if(!empty($order->actual_delivery_time)){
+                            $time = $order->actual_delivery_date.' '.$order->actual_delivery_time;
+                            echo date('h:i:s A',strtotime($time));
+                        } else {
+                            echo "-";
+                        }
                     ?>
-                    {{ date('h:i:s A',strtotime($time)) }}
                 </td>
             </tr>
         </table>
