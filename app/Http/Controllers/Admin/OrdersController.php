@@ -367,7 +367,7 @@ class OrdersController extends Controller
                         $params['remark']   = 'Order Status Delivered successfully';
                         ActivityLogs::storeActivityLog($params);
                         $balance        = $model->total_price;
-                        $description    = 'Add Money for Order #'.$model->order_number;
+                        $description    = 'Add Money When Change Status to Delivered With Payment. for Order No. #'.$model->order_number;
                         $user_id        = $model->user_id;
                         $Clientuser = User::where('id',$user_id)->first();
                         if($Clientuser){
@@ -896,7 +896,10 @@ class OrdersController extends Controller
             if ($model) {
                     $balance        = $request->get("amount");
                     $description    = trim($request->get('description'));
-                    $description    = $description.' ,  Add Money for Order #'.$model->order_number;
+                    if(!empty($description)){
+                        $description = $description.', ';
+                    }
+                    $description    = $description.' Add Money from Order Listing, for Order No. #'.$model->order_number;
                     $user_id        = $model->user_id;
                     $Clientuser = User::where('id',$user_id)->first();
                     if($Clientuser){
