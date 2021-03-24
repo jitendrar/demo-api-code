@@ -118,4 +118,34 @@ class CartDetail extends Model
 			}
 		}
 	}
+	public static function getCartProductTotalPrice($user_id){
+		$totalPrice = 0;
+		$productTotalDiscount = 0;
+		$order = User::find($user_id);
+		$orderDetail = CartDetail::where('user_id',$user_id)->get();
+		foreach ($orderDetail as $detail) {
+			$productPrice = $detail->price;
+			$productDiscount = $detail->discount;
+			if(!empty($productDiscount)){
+				$productTotalDiscount = $productTotalDiscount + $productDiscount;
+			}
+			if(!empty($productPrice)){
+				$totalPrice = $totalPrice + $productPrice;
+			}
+		}
+		return $totalPrice;
+	}
+
+	public static function getCartTotalPrice($user_id){
+		$order = User::find($user_id);
+		$total = self::getCartProductTotalPrice($user_id);
+		if($total){
+			$dcharge =  Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
+			if(!empty($dcharge)){
+				
+				$total = $total + $dcharge;
+			}
+		}
+		return $total;
+	}
 }

@@ -24,6 +24,7 @@
                             <th align="left" width="10%">Phone No</th>
                             <th align="left" width="10%">Balance</th>
                             <th width="3%">Status</th>
+                            <th width="3%">Created Date</th>
                             <th align="left" width="20%">Action</th>
                         </tr>
                     </thead>
@@ -198,6 +199,7 @@
                     { data: 'phone' , name: 'phone'},
                     { data: 'balance' , name: 'balance',orderable: false, searchable: false },
                     { data: 'status', name: 'status' },
+                    { data: 'created_at', name: 'created_at' },
                     { data: 'action', orderable: false, searchable: false},
                 ]
         });
