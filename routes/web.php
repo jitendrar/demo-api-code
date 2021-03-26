@@ -78,5 +78,13 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 	Route::any('billings/data','Admin\BillingController@data')->name('billings.data');
 	Route::resource('billings','Admin\BillingController');
 
+	//List Cart Details
+	Route::any('cart/data','Admin\CartController@data')->name('cart.data');
+	Route::resource('cart','Admin\CartController');
+	Route::any('cart/summary','Admin\CartController@summary')->name('cart.summary');
+	Route::any('cart/detail/{id}','Admin\CartController@cartDetail')->name('cart.detail');
+
+
+
 });
 

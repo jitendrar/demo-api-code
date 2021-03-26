@@ -1,8 +1,6 @@
 <div class="custom-flexBox">
 @if(isset($isView) && $isView)
-<!-- <a data-id="{{ $row->id }}" href="{{ route($currentRoute.'.show',['order' => $row->id]) }}" class="btn btn-xs btn-success" title="View">
-    <i class="fa fa-eye"></i>
-</a> -->
+
 @endif
 
 @if(isset($isDelete) && $isDelete)
@@ -13,14 +11,9 @@
 @endif
 
 @if(isset($isProductDetail) && $isProductDetail)
-@php $classspecial = ''; @endphp
-	@if(!empty($row->special_information))
-	@php $classspecial = 'special-info'; @endphp
-	@endif
-	<a data-id="{{ $row->id }}" class="btn btn-xs btn-primary show-order-detail {{ $classspecial }} " title="Order Detail">
-		<i class="fa fa-eye"></i>
-	</a>
-	
+<a data-id="{{ $row->user_id }}" class="btn btn-xs btn-primary show-order-detail" title="Order Detail">
+    <i class="fa fa-eye"></i>
+</a>
 @endif
 
 @if(isset($isStatus) && $isStatus)
@@ -41,9 +34,5 @@
 	</ul>
 </div>
 @endif
-@if($row->order_status != 'C')
-<a data-id="{{ $row->id }}" class="btn btn-xs btn-primary add-money-from-order" title="Add Money into User">
-	<i class="fa fa-plus"> Add Money</i>
-</a>
-@endif
+
 </div>

@@ -82,10 +82,21 @@ if($authUser)
                                     </li>
                                 </ul>
                             </li>
-                            <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
-                            <a href="{{ route('users.index')}}"> Users
-                                <span class="arrow"></span>
-                            </a>
+                              <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
+                                <a href="javascript:;"> Users
+                                    <span class="arrow"></span>
+                                </a>
+                                <ul class="dropdown-menu pull-left">
+                                    <li aria-haspopup="true" class=" ">
+                                        <a href="{{ route('users.index')}}" class="nav-link  ">
+                                            Users List
+                                        </a>
+                                    </li>
+                                    <li aria-haspopup="true" class=" ">
+                                        <a href="{{route('cart.index')}}" class="nav-link  ">
+                                            Users Cart List </a>
+                                    </li>
+                                </ul>
                             </li>
                             <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
                             <a href="{{ route('delivery-users.index')}}"> Delivery Users
@@ -96,7 +107,7 @@ if($authUser)
                             <a href="{{ route('orders.index')}}"> Orders
                                 <span class="arrow"></span>
                             </a>
-                            </li> 
+                            </li>                           
                             <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
                             <a href="{{ route('categories.index')}}"> Category
                                 <span class="arrow"></span>

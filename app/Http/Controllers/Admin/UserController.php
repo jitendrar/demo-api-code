@@ -308,6 +308,9 @@ class UserController extends Controller
         ->editColumn('first_name', function($row) {
                 return $row->first_name.' '.$row->last_name;
             })
+        ->editColumn('created_at', function($row) {
+                return date('d-m-Y', strtotime($row->created_at));
+            })
         ->editColumn('status', function($row) {
                 if($row->status == 1)
                     return '<a class="btn btn-xs btn-success">Active</a>';                
