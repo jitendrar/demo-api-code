@@ -341,4 +341,82 @@ class CartDetailController extends Controller
         return response($ArrReturn, $StatusCode);
     }
 
+    public function addtocartitem(Request $request)
+    {
+        $StatusCode     = 403;
+        $status         = 0;
+        $msg            = __('words.no_data_available');
+        $data           = array();
+        $RegisterData = Validator::make($request->all(), [
+            'product_id' => 'required|numeric',
+            'quantity' => 'required|numeric',
+            'user_id' => 'required|numeric',
+        ]);
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $requestData = $request->all();
+            $CartDetail  = CartDetail::where('user_id',$requestData['user_id'])
+                                     ->where('product_id',$requestData['product_id'])
+                                     ->where('is_offer',CartDetail::$IS_OFFER_NO)
+                                     ->first();
+            if($CartDetail) {
+                $requestData['quantity'] = $requestData['quantity']+$CartDetail->quantity;
+                if(isset($requestData['quantity']) && $requestData['quantity'] > 0) {
+                    $ArrProduct = Product::_GetProductByID($requestData['product_id']);
+                    if($ArrProduct) {
+                        $unity_price            = $ArrProduct->unity_price;
+                        $requestData['price']   = $unity_price*$requestData['quantity'];
+                    }
+                    $requestData['status'] = 1;
+                    $CartDetail->update($requestData);
+                    $cartdata   = CartDetail::with('product')->where('id',$CartDetail->id)->first();
+                    $cartdata->product->isAvailableInCart = 1;
+                    $cartdata->product->quantity = $cartdata->quantity;
+                    CartDetail::_AddRemoveOfferItemsInCart($CartDetail->id,$requestData);
+                    $StatusCode     = 200;
+                    $status         = 1;
+                    $msg            = __('words.cart_update');
+                    $data           = new CartResource($cartdata);
+                } else {
+                    $StatusCode     = 403;
+                    $status         = 0;
+                    $msg            = "Something wrong. Please try again.";
+                }
+            } else {
+                $ArrProduct = Product::_GetProductByID($requestData['product_id']);
+                if($ArrProduct) {
+                    $unity_price            = $ArrProduct->unity_price;
+                    $requestData['price']   = $unity_price*$requestData['quantity'];
+                }
+                $CartDetail = CartDetail::create($requestData);
+                if($CartDetail) {
+                    CartDetail::_AddRemoveOfferItemsInCart($CartDetail->id,$requestData);
+                    $cartdata   = CartDetail::with('product')->where('id',$CartDetail->id)->first();
+                    $cartdata->product->isAvailableInCart = 1;
+                    $cartdata->product->quantity = $cartdata->quantity;
+                    $StatusCode     = 200;
+                    $status         = 1;
+                    $msg            = __('words.cart_added');
+                    $data           = new CartResource($cartdata);
+                } else {
+                    $StatusCode     = 403;
+                    $status         = 0;
+                    $msg            = "Something wrong. Please try again.";
+                }
+            }
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
+        return response($ArrReturn, $StatusCode);
+    }
+
+
 }

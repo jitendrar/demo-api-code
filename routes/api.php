@@ -21,13 +21,16 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 
 	Route::post('register', 'API\AuthController@register');
 	Route::post('login', 'API\AuthController@login');
+	Route::post('userlogin', 'API\AuthController@userlogin');
 	Route::post('userverify', 'API\AuthController@userverifyotp');
 	Route::post('resendotp', 'API\AuthController@otpresend');
 	Route::post('otpverify', 'API\AuthController@verifyotp');
+	Route::post('usersotpverify', 'API\AuthController@verifyotpusers');
 	Route::post('resetpassword', 'API\AuthController@passwordreset');
 	
 	Route::apiResource('category', 'API\CategoryController');
 	Route::post('listproducts', 'API\ProductController@listproductsbycategory');
+	Route::post('productslist', 'API\ProductController@productslistbycategory');
 	Route::get('products/{id}', 'API\ProductController@productdetails');
 
 	Route::get('listtimeslot', 'API\OrderController@listoftimeslot');
@@ -51,6 +54,7 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 	Route::post('changeuserlng', 'API\AuthController@changeuserlng');
 
 	Route::group(['middleware' => ['auth:api']], function () {
+		Route::post('addtocart', 'API\CartDetailController@addtocartitem');
 		Route::post('sendnewphoneotp', 'API\AuthController@sendnewphoneotp');
 		Route::apiResource('address', 'API\AddressController');
 		Route::post('addressbyuser', 'API\AddressController@listaddressbyuser');
@@ -62,6 +66,7 @@ Route::group(['middleware' => ['api_language_switcher']], function(){
 		Route::post('mywalletbalance', 'API\OrderController@mywalletbalance');
 		Route::post('repeatorder', 'API\OrderController@repeatorder');
 		Route::post('profileupdate', 'API\AuthController@updateProfile');
+		Route::post('updateuserprofile', 'API\AuthController@updateuserprofile');
 	});
 });
 
