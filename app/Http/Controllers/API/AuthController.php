@@ -322,26 +322,27 @@ class AuthController extends Controller
                 break;
             }
         } else {
-            $device_type = $request->get("device_type");
-            $notification_token = $request->get("notification_token");
+
             $requestData = $request->all();
             $statement  = \DB::select("SHOW TABLE STATUS LIKE 'users'");
             $nextId     = $statement[0]->Auto_increment;
             $firstname  =  env('REFERRELNAME');
             $referralcode = strtoupper($firstname).$nextId;
             $requestData['new_phone']   = $requestData['phone'];
-
             $user = User::where('phone',$requestData["phone"])->first();
-            if($user){
-
+            if($user) {
                 $status = 0;
                 $msg = __('words.mobile_not_verified');
                 if($user->status == 1) {
-                    User::where('id',$user->id)->update(['notification_token' => $notification_token]);
-                    $ArrDeviceInfo = array();
-                    $ArrDeviceInfo['user_id'] = $user->id;
-                    $ArrDeviceInfo['device_type'] = $device_type;
-                    DeviceInfo::_CreateOrUpdate($ArrDeviceInfo);
+                    if(isset($requestData["notification_token"]) && !empty(trim($requestData["notification_token"]))) {
+                        User::where('id',$user->id)->update(['notification_token' => $requestData["notification_token"]]);
+                    }
+                    if(isset($requestData["device_type"]) && !empty(trim($requestData["device_type"]))) {
+                        $ArrDeviceInfo = array();
+                        $ArrDeviceInfo['user_id'] = $user->id;
+                        $ArrDeviceInfo['device_type'] = $requestData["device_type"];
+                        DeviceInfo::_CreateOrUpdate($ArrDeviceInfo);
+                    }
                     $userID = $user->id;
                     $arrOtp = User::_SendOtp($userID);
                     if($arrOtp['status'] == 1) {
@@ -355,25 +356,29 @@ class AuthController extends Controller
                         $msg = $arrOtp['msg'];
                     }
                 }
-            }else{
+            } else {
                 $isreferralvalid = 'true';
-                if (!empty($request->get("referralfrom"))) {
-                        $usercount = User::query()->where('referralcode','=',$request->get("referralfrom"))->count();
-                        if($usercount <= 0){
-                            $isreferralvalid = 'false';
-                            $msg ='The referral code is invalid.';
-                        }
+                if (isset($requestData['referralfrom']) && !empty(trim($requestData['referralfrom']))) {
+                    $usercount = User::query()->where('referralcode','=',$request->get("referralfrom"))->count();
+                    if($usercount <= 0) {
+                        $isreferralvalid = 'false';
+                        $msg ='The referral code is invalid.';
+                    }
                 }
-                if($isreferralvalid == 'true'){
+
+                if($isreferralvalid == 'true') {
                     $requestData['referralcode'] = $referralcode;
                     $requestData['status'] = 1;
                     $user = User::create($requestData);
                     if($user) {
                         $userID = $user->id;
-                        $ArrDeviceInfo = array();
-                        $ArrDeviceInfo['user_id'] = $user->id;
-                        $ArrDeviceInfo['device_type'] = $device_type;
-                        DeviceInfo::_CreateOrUpdate($ArrDeviceInfo);
+                        if(isset($requestData["device_type"]) && !empty(trim($requestData["device_type"]))) {
+                            $ArrDeviceInfo = array();
+                            $ArrDeviceInfo['user_id'] = $user->id;
+                            $ArrDeviceInfo['device_type'] = $requestData["device_type"];
+                            DeviceInfo::_CreateOrUpdate($ArrDeviceInfo);
+                        }
+
                         $arrOtp['status'] = 1;
                         $arrOtp = User::_SendOtp($userID);
                         if($arrOtp['status'] == 1) {
