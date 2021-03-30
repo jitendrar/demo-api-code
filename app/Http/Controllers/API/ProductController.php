@@ -185,4 +185,75 @@ class ProductController extends Controller
         return response($ArrReturn, $StatusCode);
     }
 
+      public function productslistbycategory(Request $request)
+    {
+        $StatusCode     = 204;
+        $status         = 0;
+        $ArrReturn      = array();
+        $msg            = __('words.no_data_available');
+        $data           = array();
+
+        $RegisterData = Validator::make($request->all(), [
+            'category_id' => 'required|numeric',
+        ]);
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $PAGINATION_VALUE = env('PAGINATION_VALUE');
+            $requestData = $request->all();
+            $category_id        = $requestData['category_id'];
+            $user_id = 0;
+            if(isset($requestData['user_id']) && !empty($requestData['user_id'])) {
+                $user_id = $requestData['user_id'];
+            }
+            $ArrProductID  = ProductMapping::_GetProductByCategoryID($category_id);
+            if(!empty($ArrProductID)) {
+                // \DB::enableQueryLog();
+                $IS_OFFER_NO    = CartDetail::$IS_OFFER_NO;
+                $STATUS_ACTIVE  = Product::$STATUS_ACTIVE;
+                $modal = Product::selectRaw('products.*, cart_details.quantity, IF(cart_details.id, 1, 0) AS isAvailableInCart');
+                $modal = $modal->leftJoin('cart_details', function($join) use ($IS_OFFER_NO, $user_id)
+                {
+                    $join->on('cart_details.product_id', '=', 'products.id');
+                    $join->where('cart_details.user_id', '=', $user_id);
+                    $join->where('cart_details.is_offer', '=', $IS_OFFER_NO);
+                });
+                $modal = $modal->join('product_translations','products.id','=','product_translations.product_id');
+                $modal = $modal->where('products.status',$STATUS_ACTIVE);
+                $modal = $modal->whereIn('products.id',$ArrProductID);
+                if(isset($requestData['search_para']) && !empty(trim($requestData['search_para']))) {
+                    $search_para   = trim($requestData['search_para']);
+                    $modal  = $modal->where(function ($query) use ($search_para){
+                            $query->where("product_translations.product_name", 'LIKE', '%'.$search_para.'%')
+                                ->orWhere("product_translations.description", 'LIKE', '%'.$search_para.'%');
+                    });
+                }
+                $modal = $modal->groupBy('products.id');
+                $modal = $modal->orderBy('products.display_order');
+                $products = $modal->paginate($PAGINATION_VALUE);
+                if($products->count()) {
+                    $status         = 1;
+                    $StatusCode     = 200;
+                    $msg            = __('words.retrieved_successfully');
+                    foreach ($products as $K => $V) {
+                        $products[$K]   = new ProductResource($V);
+                    }
+                    $data   = $products;
+                    // $data   = ProductResource::collection($products);
+                }
+            }
+        }
+        $ArrReturn = array("status" => $status,'message' => $msg, 'data' =>$data);
+        $StatusCode = 200;
+        return response($ArrReturn, $StatusCode);
+    }
+
+
 }

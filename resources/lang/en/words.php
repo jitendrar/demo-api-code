@@ -3,6 +3,7 @@ return [
 
 	'retrieved_successfully' => 'Retrieved successfully.',
 	'user_created_successfully' => 'User successfully created.',
+	'user_updated_successfully' => 'User successfully updated.',
 	'otp_not_sent' => 'Unable to send OTP. Please try again.',
 	'user_not_found' => 'Your mobile number is not registered.',
 	'incorrect_password' => 'Entered password is wrong, please try with valid password.',

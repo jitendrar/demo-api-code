@@ -300,6 +300,111 @@ class AuthController extends Controller
         return response($arrReturn, $StatusCode);
     }
 
+    public function userlogin(Request $request)
+    {
+        $StatusCode     = 403;
+        $status         = 0;
+        $msg            = "";
+        $data           = array();
+        $accessToken    = "";
+
+        $RegisterData = Validator::make($request->all(), [
+            'phone' => 'required|numeric|regex:/[6-9]\d{9}/|digits:10',
+        ]);
+
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+
+            $requestData = $request->all();
+            $statement  = \DB::select("SHOW TABLE STATUS LIKE 'users'");
+            $nextId     = $statement[0]->Auto_increment;
+            $firstname  =  env('REFERRELNAME');
+            $referralcode = strtoupper($firstname).$nextId;
+            $requestData['new_phone']   = $requestData['phone'];
+            $user = User::where('phone',$requestData["phone"])->first();
+            if($user) {
+                $status = 0;
+                $msg = __('words.mobile_not_verified');
+                if($user->status == 1) {
+                    if(isset($requestData["notification_token"]) && !empty(trim($requestData["notification_token"]))) {
+                        User::where('id',$user->id)->update(['notification_token' => $requestData["notification_token"]]);
+                    }
+                    if(isset($requestData["device_type"]) && !empty(trim($requestData["device_type"]))) {
+                        $ArrDeviceInfo = array();
+                        $ArrDeviceInfo['user_id'] = $user->id;
+                        $ArrDeviceInfo['device_type'] = $requestData["device_type"];
+                        DeviceInfo::_CreateOrUpdate($ArrDeviceInfo);
+                    }
+                    $userID = $user->id;
+                    $arrOtp = User::_SendOtp($userID);
+                    if($arrOtp['status'] == 1) {
+                        $StatusCode     = 200;
+                        $status = 1;
+                        $msg = __('words.otp_sent');
+                        $user = User::where('id',$userID)->first();
+                        $data = new UserResource($user);
+                    } else {
+                        $StatusCode     = 409;
+                        $msg = $arrOtp['msg'];
+                    }
+                }
+            } else {
+                $isreferralvalid = 'true';
+                if (isset($requestData['referralfrom']) && !empty(trim($requestData['referralfrom']))) {
+                    $usercount = User::query()->where('referralcode','=',$request->get("referralfrom"))->count();
+                    if($usercount <= 0) {
+                        $isreferralvalid = 'false';
+                        $msg ='The referral code is invalid.';
+                    }
+                }
+
+                if($isreferralvalid == 'true') {
+                    $requestData['referralcode'] = $referralcode;
+                    $requestData['status'] = 1;
+                    $user = User::create($requestData);
+                    if($user) {
+                        $userID = $user->id;
+                        if(isset($requestData["device_type"]) && !empty(trim($requestData["device_type"]))) {
+                            $ArrDeviceInfo = array();
+                            $ArrDeviceInfo['user_id'] = $user->id;
+                            $ArrDeviceInfo['device_type'] = $requestData["device_type"];
+                            DeviceInfo::_CreateOrUpdate($ArrDeviceInfo);
+                        }
+
+                        $arrOtp['status'] = 1;
+                        $arrOtp = User::_SendOtp($userID);
+                        if($arrOtp['status'] == 1) {
+                            $user = User::where('id',$userID)->first();
+                            $data = new UserResource($user);
+                            $StatusCode     = 200;
+                            $status         = 1;
+                            $msg = __('words.user_created_successfully');
+                            $data = new UserResource($user);
+                            $OtpMsg = "New User Onboarded On BopalDaily,";
+                            $OtpMsg.="\r\nUser ID :: ".$userID;
+                            $OtpMsg.="\r\nUser Name :: ".$user->first_name.' '.$user->last_name;
+                            $OtpMsg = urlencode($OtpMsg);
+                            SendSMSForAdmin($OtpMsg);
+                        } else {
+                            $msg = $arrOtp['msg'];
+                        }
+                    }
+                }
+            }
+        }
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        $StatusCode = 200;
+        return response($arrReturn,$StatusCode);
+    }
+
     public function passwordreset(Request $request) {
 
         $StatusCode     = 403;
@@ -384,6 +489,55 @@ class AuthController extends Controller
                         User::where('id', $userID)->update(['phone' => $new_phone]);
                         $msg = __('words.phone_change_sucsses');
                     }
+                    $users  = User::where('id',$userID)->first();
+                    $data   = new UserResource($users);
+                    $accessToken = $users->createToken('authToken')->accessToken;
+                } else {
+                    $StatusCode = 401;
+                    $msg = __('words.invalid_otp');
+                }
+            } else {
+                $StatusCode = 401;
+                $msg = __('words.user_not_found');
+            }
+        }
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+        $StatusCode = 200;
+        return response($arrReturn, $StatusCode);
+    }
+
+        public function verifyotpusers(Request $request) {
+        
+        $StatusCode = 403;
+        $status = 0;
+        $msg = "Please enter valid user id";
+        $data           = array();
+        $accessToken = "";
+        $arrReturn = array();
+        $RegisterData = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+            'phone_otp' => 'required|numeric'
+        ]);
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                $StatusCode     = 409;
+                break;
+            }
+        } else {
+            $requestData = $request->all();
+            $user_id = trim($requestData['id']);
+            $userotp = trim($requestData['phone_otp']);
+            $users  = User::where('id',$user_id)->first();
+            if($users) {
+                $userID = $users->id;
+                if($userotp == $users->phone_otp) {
+                    $status     = 1;
+                    $StatusCode = 200;
+                    $msg = __('words.verified_otp');
                     $users  = User::where('id',$userID)->first();
                     $data   = new UserResource($users);
                     $accessToken = $users->createToken('authToken')->accessToken;
@@ -591,4 +745,50 @@ class AuthController extends Controller
         $StatusCode = 200;
         return response($arrReturn, $StatusCode);
     }
+
+    public function updateuserprofile(Request $request)
+    {
+        $StatusCode     = 403;
+        $status         = 0;
+        $msg            = "";
+        $data           = array();
+        $accessToken    = "";
+        $usersdata = Validator::make($request->all(), [
+            'user_id' => 'required|max:55|min:1',
+            'first_name' => 'nullable|max:55|min:3',
+            'last_name' => 'nullable|max:55',
+            'phone' => 'nullable|numeric|regex:/[6-9]\d{9}/|digits:10|min:8|unique:users,phone,'.trim($request->get("user_id")),
+        ]);
+            if ($usersdata->fails()) {
+                $messages = $usersdata->messages();
+                $status = 0;
+                $msg = "";
+                foreach ($messages->all() as $message) {
+                    $msg = $message;
+                    $StatusCode     = 409;
+                    break;
+                }
+            } else {
+                $requestData = $request->all();
+                $user_id = trim($requestData['user_id']);
+                $UserDetail = User::where('id',$user_id)->first();
+                if($UserDetail) {
+                        $UserDetail->update($requestData);
+                        $accessToken    = $UserDetail->createToken('authToken')->accessToken;
+                        $StatusCode     = 200;
+                        $status         = 1;
+                        $msg = __('words.user_updated_successfully');
+                        $data = new UserResource($UserDetail);
+               
+                }else{
+                      $StatusCode     = 204;
+                    $status         = 0;
+                    $msg            = 'No User Found.';
+                }
+        }
+         $arrReturn = array("status" => $status,'message' => $msg, "data" => $data, 'access_token' => $accessToken);
+            $StatusCode = 200;
+            return response($arrReturn,$StatusCode);
+    }
+
 }
