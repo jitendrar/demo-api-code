@@ -33,10 +33,10 @@
 			<a data-row="{{ $row->id }}" class="btn btn-info btn-xs change-status" data-id=" {{ $row->id }}" title="Make Delivered" href="javascipt:;" data-msg="Are you sure want to change status as delivered?" id="delivered">Delivered</a>
 		</li>
 		<li>
-			<a data-row="{{ $row->id }}" class="btn btn-info btn-xs change-status" data-id=" {{ $row->id }}" title="Make Delivered" href="javascipt:;" data-msg="Are you sure want to change status as delivered with payment?" id="DeliveredWithPayment">Delivered With Payment</a>
+		 	<a data-row="{{ $row->id }}" class="btn btn-default btn-xs change-status" data-id="{{ $row->id }} " title="Make Cancel" href="javascipt:;" data-msg = "Are you sure want to change status as cancel?" id="cancel">Cancel</a>
 		</li>
 		<li>
-		 	<a data-row="{{ $row->id }}" class="btn btn-default btn-xs change-status" data-id="{{ $row->id }} " title="Make Cancel" href="javascipt:;" data-msg = "Are you sure want to change status as cancel?" id="cancel">Cancel</a>
+			<a data-row="{{ $row->id }}" class="btn btn-warning btn-xs change-status" data-id=" {{ $row->id }}" title="Make Delivered" href="javascipt:;" data-msg="Are you sure want to change status as delivered with payment?" id="DeliveredWithPayment">Delivered With Payment</a>
 		</li>
 	</ul>
 </div>
