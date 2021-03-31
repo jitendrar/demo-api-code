@@ -350,7 +350,7 @@ class UserController extends Controller
                 } 
                 if(!empty($search_fnm))
                 {
-                    $query = $query->where("users.id", 'LIKE', '%'.$search_fnm.'%');
+                    $query = $query->where("users.id", '=', $search_fnm);
                     $searchData['search_fnm'] = $search_fnm;
                 }
                 if(!empty($search_pno))
