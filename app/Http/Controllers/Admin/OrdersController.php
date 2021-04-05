@@ -371,7 +371,15 @@ class OrdersController extends Controller
                         $user_id        = $model->user_id;
                         $Clientuser = User::where('id',$user_id)->first();
                         if($Clientuser){
-                            $Clientuser->balance = $Clientuser->balance+$balance;
+                            if($Clientuser->balance >= 0) {
+                                $Clientuser->balance = $Clientuser->balance+$balance;
+                            } else {
+                                if($balance >= abs($Clientuser->balance)) {
+                                    $Clientuser->balance = ($Clientuser->balance)+(abs($Clientuser->balance));
+                                } else {
+                                    $Clientuser->balance = $Clientuser->balance+$balance;
+                                }
+                            }
                             $Clientuser->save();
                             $obj            = new WalletHistory();
                             $obj->order_id  = $model->id; 
