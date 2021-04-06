@@ -44,6 +44,7 @@
                             <th width="10%">Bill Price</th>
                             <th width="30%">Bill Image</th>
                             <th align="left" width="50%">Description</th>
+                            <th align="left" width="20%">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -120,6 +121,7 @@
                         { data: 'total', className:'detail-td'},
                         { data: 'picture', name: 'picture'},
                         { data: 'description' , name: 'description',orderable: false},
+                        { data: 'action', orderable: false, searchable: false},
                 ]
         });
         $(document).on('click','.zoomimage',function(e){
@@ -127,6 +129,21 @@
             var img='<img  src="'+images+'" class="img-rounded zoomimage" width="100%" height="100%" border="2" align="middle">';
             $("#modalimages").html(img);
             $("#view-billing-images").modal();
+        });
+
+        $(document).on('click', '.btn-delete-bill', function () {
+
+            $text = 'Are You sure you wish to delete this bill ?';
+
+            if (confirm($text))
+            {
+                $url = $(this).attr('href');
+                $('#global_delete_form').attr('action', $url);
+                $('#global_delete_form #delete_id').val($(this).data('id'));
+                $('#global_delete_form').submit();
+            }
+
+            return false;
         });
     });
 </script>

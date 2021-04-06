@@ -130,10 +130,47 @@ class BillingController extends Controller
         //
     }
 
-    public function destroy($id) {
-        // /
-    }
+    public function destroy($id)
+    {
+        $user = \Auth::guard('admins')->user();
+        $modelObj = $this->modelObj->find($id);
 
+        if($modelObj) 
+        {
+            try 
+            {
+                $backUrl = Request()->server('HTTP_REFERER');
+                $url = public_path().$modelObj->picture;
+                if(file_exists($url)){
+                    @unlink($url);
+                }
+                // Billing::where('id',$id)->delete();
+                $modelObj->delete();
+
+                 /* store log */
+                $params=array();
+                $params['user_id']  = $user->id;
+                $params['action_id']  = $this->activityAction->DELETE_BILLS;
+                $params['remark']   = 'Delete Billing, Bill ID :: '.$id;
+
+                ActivityLogs::storeActivityLog($params);
+
+                session()->flash('success_message', $this->deleteMsg);
+                return redirect($this->list_url);
+            }
+            catch (Exception $e) 
+            {
+                session()->flash('error_message', $this->deleteErrorMsg);
+                return redirect($this->list_url);
+            }
+        } 
+        else 
+        {
+            session()->flash('error_message','Record Does Not Exists');
+            return redirect($this->list_url);
+        }
+    }
+    
     public function Data(Request $request)
     {
         $authUser = Auth::guard('admins')->user();
@@ -152,7 +189,16 @@ class BillingController extends Controller
                 return date('Y-m-d h:i',strtotime($row->created_at));
             else
                 return '';
-        })->rawcolumns(['picture'])
+        })
+        ->editColumn('action', function($row) {
+            return view("admin.billings.action",
+                [
+                    'currentRoute' => $this->moduleRouteText,
+                    'row' => $row, 
+                    'isDelete' =>1,
+                ]
+            )->render();
+        })->rawcolumns(['picture','action'])
         ->filter(function ($query) 
             {
                 $search_start_date 	= request()->get("search_start_date");
