@@ -34,6 +34,12 @@ class AdminActionTableSeeder extends Seeder
             ['id' => 17, 'title' => 'Edit Order', 'remark' => 'Edit Order','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
             ['id' => 18, 'title' => 'Delete Order Product', 'remark' => 'Delete Order Product','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')], 
             ['id' => 19, 'title' => 'Add New Product Of Order', 'remark' => 'Add New Product Of Order','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
+            ['id' => 20, 'title' => 'Add New Order', 'remark' => 'Add New Order','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
+            ['id' => 21, 'title' => 'Add Offer', 'remark' => 'Add Offer','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
+            ['id' => 22, 'title' => 'Edit Offer', 'remark' => 'Edit Offer','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
+            ['id' => 23, 'title' => 'Delete offer', 'remark' => 'Delete offer','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
+            ['id' => 24, 'title' => 'Create new bill details', 'remark' => 'Create new bill details','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
+            ['id' => 25, 'title' => 'Delete Bills', 'remark' => 'Delete Bills','created_at' => date('Y-m-d h:i:s'),'updated_at' => date('Y-m-d h:i:s')],
  		];
         foreach($actions as $action) {
             $isexist = AdminAction::find($action['id']);
