@@ -311,6 +311,9 @@ class UserController extends Controller
         ->editColumn('created_at', function($row) {
                 return date('d-m-Y', strtotime($row->created_at));
             })
+        ->editColumn('phone', function($row) {
+                return '<a href="tel:'.$row->phone.'">'.$row->phone.'</a>';
+            })
         ->editColumn('status', function($row) {
                 if($row->status == 1)
                     return '<a class="btn btn-xs btn-success">Active</a>';                
@@ -329,7 +332,7 @@ class UserController extends Controller
                     'isshowhistory' => 1,
                 ]
             )->render();
-        })->rawcolumns(['action','status'])
+        })->rawcolumns(['action','status','phone'])
            ->filter(function ($query) 
             {
                 $search_id = request()->get("search_id");                                         

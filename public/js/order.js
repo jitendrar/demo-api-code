@@ -391,3 +391,12 @@ function AddProductValidation() {
         return true;
     }
 }
+
+$(document).ready(function() {
+    $(".search_date_picker").datepicker({
+        numberOfMonths: 1,
+         changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    });
+});

@@ -2,3 +2,12 @@
 	background-color: #f0ad4e;
 	border: 2px solid #ff9b03;
 }
+.caption.pull-right {
+    margin-right: 5px;
+}
+.caption.pull-right.date-picker{
+    margin-top: 5px;
+}
+.todayspendingorder{
+	background-color: #f3d1d7  !important;
+}

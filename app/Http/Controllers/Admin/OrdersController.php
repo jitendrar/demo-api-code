@@ -58,6 +58,7 @@ class OrdersController extends Controller
 
         $data['summary'] = route($this->moduleRouteText.'.summary');
         $data['summaryBtnName'] = "Pending Order Summary";
+        $data['todaysummaryBtnName'] = "Today Pending Order Summary";
 
         $data['btnAdd'] = 1;
         $data['users'] = User::getUserList();
@@ -777,6 +778,8 @@ class OrdersController extends Controller
                 $search_oid = request()->get("search_oid");
                 $search_status = request()->get("search_status");
                 $search_delivery_user = request()->get("search_delivery_user");
+                $search_start_date = request()->get("search_start_date");
+                $search_end_date = request()->get("search_end_date");
 
                 $searchData = array();
 
@@ -805,19 +808,32 @@ class OrdersController extends Controller
                     $query = $query->where('orders.delivery_master_id','LIKE','%'.$search_delivery_user.'%');
                     $searchData['search_delivery_user'] = $search_delivery_user;
                 }
-                if($search_status == "P" || $search_status == "D" || $search_status == "C")
-                {
-                    $query = $query->where("orders.order_status", $search_status);
+                if(!in_array('all', $search_status) && !empty($search_status)){
+                    $query = $query->whereIn("orders.order_status",$search_status);
                     $searchData['search_status'] = $search_status;
                 }
-                    $goto = \URL::route($this->moduleRouteText.'.index', $searchData);
-                    \session()->put($this->moduleRouteText.'_goto',$goto);
+                if(!empty($search_start_date)) {
+                    $query = $query->where('orders.delivery_date', '>=', $search_start_date);
+                }
+                if(!empty($search_end_date)) {
+                    $query = $query->where('orders.delivery_date', '<=', $search_end_date);
+                }
+                $goto = \URL::route($this->moduleRouteText.'.index', $searchData);
+                \session()->put($this->moduleRouteText.'_goto',$goto);
+
             })
+        ->setRowClass(function ($row) {
+            $row->delivery_date = \Carbon\Carbon::parse($row->delivery_date);
+            if($row->order_status == 'P' && $row->delivery_date->format('Y-m-d') != date('Y-m-d')){
+                return 'todayspendingorder';
+            }
+            
+        })
         ->make(true);
     }
 
-    public function summary() {
-
+    public function summary(Request $request) {
+        $RequestData = $request->all();
         // $orders = \DB::select("SELECT product_name AS ProductName,
         //             CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN CONCAT(ROUND(TotalStock/1000,3), '') ELSE CONCAT(TotalStock, '') END AS Quantity,
         //             CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN 'KG' ELSE StokType END AS StokType
@@ -850,14 +866,24 @@ class OrdersController extends Controller
                     FROM orders
                     LEFT JOIN order_details ON order_details.`order_id` = orders.`id`
                     INNER JOIN product_translations ON product_translations.`locale` = 'guj' AND product_translations.`product_id` = order_details.`product_id`
-                    WHERE orders.`order_status` = 'P'
-                ) AS orderdetails
+                    WHERE orders.`order_status` = 'P'";
+                    if(isset($RequestData['hdaction']) && $RequestData['hdaction'] == 'TodayData') {
+                        $SQR .= "AND DATE(orders.`delivery_date`) = '".date('Y-m-d')."'";
+                    } else {
+                        if(isset($RequestData['search_start_date_a']) && !empty($RequestData['search_start_date_a'])) {
+                            $SQR .= "AND DATE(orders.`delivery_date`) >= '".$RequestData['search_start_date_a']."'";
+                        }
+                        if(isset($RequestData['search_end_date_a']) && !empty($RequestData['search_end_date_a'])) {
+                            $SQR .= "AND DATE(orders.`delivery_date`) <= '".$RequestData['search_end_date_a']."'";
+                        }
+                    }
+        $SQR .= ") AS orderdetails
                 GROUP BY orderdetails.`product_id`
             ) AS F
             GROUP BY product_name
         ) AS FF";
-        $orders = \DB::select($SQR);
 
+        $orders = \DB::select($SQR);
         $date = date('Y-m-d');
         $fileName = 'Orders_Summary_'.$date.'.csv';
         $headers = array(

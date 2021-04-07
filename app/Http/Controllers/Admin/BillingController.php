@@ -21,6 +21,7 @@ use App\OrderDetail;
 use App\Config;
 use App\CartDetail;
 
+
 class BillingController extends Controller
 {
     public function __construct() {
@@ -46,6 +47,9 @@ class BillingController extends Controller
         $data['add_url'] 		= route($this->moduleRouteText.'.create');
         $data['addBtnName'] 	= $this->module;
         $data['btnAdd'] 		= 1;
+        $total_billing_amount = Billing::sum('total');
+        $data['total_billing_amount'] = $total_billing_amount;
+
         return view($this->moduleViewName.'.index', $data);
     }
 
@@ -92,8 +96,8 @@ class BillingController extends Controller
             if($request->file('picture')) {
             	$val = $request->file('picture');
             	$imgSize = $val->getSize();
-            	if($imgSize > 4000000 || $imgSize == 0){
-            		$msg = 'The image may not be greater than 4 MB';
+            	if($imgSize > 10000000 || $imgSize == 0){
+            		$msg = 'The image may not be greater than 10 MB';
             		return ['status' => 0, 'msg' => $msg, 'data' => $data];
             	}
             	$destinationPath = public_path().DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'bills';

@@ -33,6 +33,11 @@
                 @if($btnAdd)
                     <a href="{{ $add_url }}" class="btn btn-default pull-right btn-sm mTop5" style="margin-top: 5px;"><i class="fa fa-plus"></i> {{ $addBtnName }}</a>
                 @endif
+                &nbsp;
+                 <div class="caption pull-right " >
+                        <i class="fa fa-bookmark"></i>
+                        <span class="caption-subject bold">Total Bill Amount: {{ $total_billing_amount }}</span>
+                    </div>&nbsp;
 
             </div>
             <div class="portlet-body">

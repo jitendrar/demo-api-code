@@ -35,7 +35,14 @@
                 @endif
 
                 @if($summary)
-                    <a href="{{ $summary }}" class="btn btn-default pull-right btn-sm mTop5" style="margin-top: 5px;margin-right: 5px;"><i class="fa fa-plus"></i> {{ $summaryBtnName }}</a>
+                <form method="get" id="GetSummaryDataForm" action="{{ $summary }}">
+                  <input type="hidden" name="hdaction" id="hdaction">
+                  <input type="hidden" name="search_start_date_a" id="search_start_date_a">
+                  <input type="hidden" name="search_end_date_a" id="search_end_date_a">
+                  <input type="button" id="summaryBtnName" class="btn btn-default pull-right btn-sm mTop5" value="{{ $summaryBtnName }} " style="margin-top: 5px;margin-right: 5px;">
+                  <input type="button" id="todaysummaryBtnName" class="btn btn-default pull-right btn-sm mTop5" value="{{ $todaysummaryBtnName }} " style="margin-top: 5px;margin-right: 5px;">
+                </form>
+                   
                 @endif
             </div>
             <div class="portlet-body">
@@ -66,6 +73,23 @@
 @section('scripts')
 
 <script type="text/javascript">
+
+$(document).ready(function(){
+    $("#todaysummaryBtnName").click(function(){
+        $("#hdaction").val('TodayData');
+        $('#GetSummaryDataForm').submit();
+    });
+
+    $("#summaryBtnName").click(function(){
+        // $("#search-frm").serialize();
+        search_start_date_a   = $("#search-frm input[name='search_start_date']").val();
+        search_end_date_a     = $("#search-frm input[name='search_end_date']").val();
+        $("#search_start_date_a").val(search_start_date_a);
+        $("#search_end_date_a").val(search_end_date_a);
+        $('#GetSummaryDataForm').submit();
+    });
+});
+
     var oTableCustom = oTableCustom;
     var orderDetailURL = "{{ url('admin/orders/detail') }}";
     var changeQtyURL = "{{ url('admin/changeQty') }}"
@@ -132,7 +156,9 @@
                         data.search_fnm = $("#search-frm select[name='search_fnm']").val();
                         data.search_delivery_user = $("#search-frm select[name='search_delivery_user']").val();
                         data.search_oid = $("#search-frm input[name='search_oid']").val();
-                        data.search_status = $("#search-frm select[name='search_status']").val();  
+                        data.search_status = $("#search-frm select[name='search_status[]']").val();  
+                        data.search_start_date = $("#search-frm input[name='search_start_date']").val();
+                        data.search_end_date = $("#search-frm input[name='search_end_date']").val();
                     }
                 },
                 "fnCreatedRow": function( nRow, aData, iDataIndex ) {
@@ -155,6 +181,6 @@
         });
     });
 </script>
-<script type="text/javascript" src="{{ asset('js/order.js?5215') }}" ></script>
+<script type="text/javascript" src="{{ asset('js/order.js?123') }}" ></script>
 @endsection
 
