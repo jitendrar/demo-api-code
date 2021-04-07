@@ -808,9 +808,16 @@ class OrdersController extends Controller
                     $query = $query->where('orders.delivery_master_id','LIKE','%'.$search_delivery_user.'%');
                     $searchData['search_delivery_user'] = $search_delivery_user;
                 }
-                if(!in_array('all', $search_status) && !empty($search_status)){
-                    $query = $query->whereIn("orders.order_status",$search_status);
-                    $searchData['search_status'] = $search_status;
+                if(is_array($search_status)){
+                    if(!in_array('all', $search_status) && !empty($search_status)){
+                        $query = $query->whereIn("orders.order_status",$search_status);
+                        $searchData['search_status'] = $search_status;
+                    }
+                } else {
+                    if(!empty($search_status)) {
+                        $query = $query->where("orders.order_status",$search_status);
+                        $searchData['search_status'] = $search_status;
+                    }
                 }
                 if(!empty($search_start_date)) {
                     $query = $query->where('orders.delivery_date', '>=', $search_start_date);
