@@ -33,15 +33,27 @@
                 </div>
                 <div class="col-md-4">
                     <label class="control-label">Status</label>
-                    <select name="search_status" class="form-control search-select">
+                    <select multiple="multiple" name="search_status[]" class="input-large form-control search-select">
                         <option value="" >Search Status</option>
                         <option value="all" {!! \Request::get("search_status") == "all" ? 'selected="selected"':'' !!}>All</option>
-                        <option value="P" {!! \Request::get("search_status") == "P" ? 'selected="selected"':'' !!}>Pending</option> 
-                        <option value="D" {!! \Request::get("search_status") == "D" ? 'selected="selected"':'' !!}>Delivered</option>  
+                        <option selected="" value="P" {!! \Request::get("search_status") == "P" ? 'selected="selected"':'' !!}>Pending</option> 
+                        <option selected="" value="D" {!! \Request::get("search_status") == "D" ? 'selected="selected"':'' !!}>Delivered</option>  
                         <option value="C" {!! \Request::get("search_status") == "C" ? 'selected="selected"':'' !!}>Cancel</option> 
                     </select>
                 </div>
+                 
             </div> 
+            <div class="clearfix">&nbsp;</div>
+            <div class="row">
+                <div class="col-md-8">
+                    <label class="control-label">Pending Order Date Range</label>
+                    <div class="input-group  date-picker input-daterange" data-date="10/11/2012" data-date-format="mm/dd/yyyy">
+                        {!! Form::text('search_start_date',null,['class'=>'form-control search_date_picker ','placeholder'=>'Order Date','id'=>'search_start_date']) !!}
+                        <span class="input-group-addon"> To </span>
+                        {!! Form::text('search_end_date',null,['class'=>'form-control search_date_picker input-large','placeholder'=>'Order Date','id'=>'search_end_date']) !!}
+                    </div>
+                </div>
+            </div>
             &nbsp;
                 <div class="row" align="center">                     
                     <input type="submit" class="btn blue mTop25" value="Search"/>

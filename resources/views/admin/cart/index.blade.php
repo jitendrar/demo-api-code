@@ -41,6 +41,7 @@
                             <th width="1%">Action</th>
                             <th align="left" width="22%">Name</th>
                             <th align="left" width="15%">Total + Delivery Charge</th>
+                            <th align="left" width="22%">Date</th>
                             
                         </tr>
                     </thead>
@@ -94,6 +95,7 @@
                     { data: 'action', orderable: false, searchable: false,className:'detail-td'},
                     { data: 'userName', name: 'userName'},
                     { data: 'totalPrice' , name: 'totalPrice',className:'totalprice_td',orderable: false},
+                    { data: 'created_at', name: 'created_at'},
                 ]
         });
     });
