@@ -90,7 +90,16 @@
                         <i class="fa fa-bookmark"></i>
                         <span class="caption-subject bold">Orders</span>
                     </div>
+                  
+                    <div class="caption pull-right  text-right" >
+                        <i class="fa fa-bookmark"></i>
+                        <span class="caption-subject bold">Pending Order Amount + Delivery Charge: {{ $tota_pending_amount }}</span>
+                    </div>    
+                 
+                    
+
                 </div>
+                
             <div class="portlet-body">
                 <table class="table table-bordered table-striped table-condensed flip-content" id="server-side-datatables" width="100%">
                     <thead>

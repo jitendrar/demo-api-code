@@ -67,7 +67,7 @@
 	                                            <label class="col-md-3 control-label">Bill Image : <span class="required">*</span>
 	                                            </label>
 	                                            <div class="col-md-9">
-	                                                <input type="file" class="dropify" name="picture" accept="image/*" data-max-file-size="4M">
+	                                                <input type="file" class="dropify" name="picture" accept="image/*" data-max-file-size="10M">
 	                                            </div>
 	                                        </div>
 	                                    </div>

@@ -35,7 +35,14 @@
                 @endif
 
                 @if($summary)
-                    <a href="{{ $summary }}" class="btn btn-default pull-right btn-sm mTop5" style="margin-top: 5px;margin-right: 5px;"><i class="fa fa-plus"></i> {{ $summaryBtnName }}</a>
+                <form method="get" action="{{ $summary }}">
+
+                  <input type="submit" class="btn btn-default pull-right btn-sm mTop5" value="{{ $summaryBtnName }} " style="margin-top: 5px;margin-right: 5px;">
+                    <div class="caption pull-right input-group input-large date-picker input-daterange" data-date="10/11/2012" data-date-format="mm/dd/yyyy">
+                        <input class="form-control search_date_picker" autocomplete="off" placeholder="Select Date For Pending Order" id="orderdate" name="orderdate" type="text">
+                    </div>
+                </form>
+                   
                 @endif
             </div>
             <div class="portlet-body">

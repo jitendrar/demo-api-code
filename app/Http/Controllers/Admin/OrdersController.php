@@ -813,6 +813,13 @@ class OrdersController extends Controller
                     $goto = \URL::route($this->moduleRouteText.'.index', $searchData);
                     \session()->put($this->moduleRouteText.'_goto',$goto);
             })
+        ->setRowClass(function ($row) {
+            $row->delivery_date = \Carbon\Carbon::parse($row->delivery_date);
+            if($row->order_status == 'P' && $row->delivery_date->format('Y-m-d') != date('Y-m-d')){
+                return 'todayspendingorder';
+            }
+            
+        })
         ->make(true);
     }
 
@@ -850,14 +857,17 @@ class OrdersController extends Controller
                     FROM orders
                     LEFT JOIN order_details ON order_details.`order_id` = orders.`id`
                     INNER JOIN product_translations ON product_translations.`locale` = 'guj' AND product_translations.`product_id` = order_details.`product_id`
-                    WHERE orders.`order_status` = 'P'
-                ) AS orderdetails
+                    WHERE orders.`order_status` = 'P'";
+                    if(!empty($_GET['orderdate'])){
+                    $SQR .= "AND orders.`delivery_date` = '".$_GET['orderdate']."'";
+                    }
+                $SQR .= ") AS orderdetails
                 GROUP BY orderdetails.`product_id`
             ) AS F
             GROUP BY product_name
         ) AS FF";
-        $orders = \DB::select($SQR);
 
+        $orders = \DB::select($SQR);
         $date = date('Y-m-d');
         $fileName = 'Orders_Summary_'.$date.'.csv';
         $headers = array(

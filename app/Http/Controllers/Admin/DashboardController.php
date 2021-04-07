@@ -16,6 +16,7 @@ use App\Category;
 use App\Order;
 use App\OrderDetail;
 use App\DeliveryMaster;
+use DB;
 
 class DashboardController extends Controller
 {
@@ -34,6 +35,10 @@ class DashboardController extends Controller
         $data['deliveryUsers'] = DeliveryMaster::getActiveDeliveryUsers();
         $data['categories'] = Category::categoryList();
         $data['products'] = Product::productList();
+        $total_pending_order = DB::table('orders')
+                             ->where('orders.order_status','=','P')
+                             ->sum(\DB::raw('orders.total_price'));
+        $data['tota_pending_amount'] = $total_pending_order;
         return view('admin.dashboard',$data);
     }
     public function myProfile()
