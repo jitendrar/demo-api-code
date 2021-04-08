@@ -236,8 +236,11 @@ class OrderController extends Controller
                             $OtpMsg.="\r\nUser Name :: ".$ArrUser->first_name.' '.$ArrUser->last_name;
                             $OtpMsg.="\r\nOrder ID :: ".$order_id;
                             $OtpMsg.="\r\nOrder Price :: ".$totalOrderPrice;
+                            $OtpMsg.="\r\n";
+                            $OtpMsg.="\r\nBopalDaily ";
                             $OtpMsg = urlencode($OtpMsg);
-                            SendSMSForAdmin($OtpMsg);
+                            $TemplateIDBopalDailyNewOrder = env('TemplateIDBopalDailyNewOrder');
+                            SendSMSForAdmin($OtpMsg, $TemplateIDBopalDailyNewOrder);
                             // $EmailData['order_id']  = $order_id;
                             // $EmailData['user_id']   = $user_id;
                             // $EmailData['phone']     = $ArrUser->phone;

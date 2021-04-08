@@ -52,14 +52,14 @@ class User extends Authenticatable
                 $PRODUCT_NAME        = env('PRODUCT_NAME');
                 // $OtpMsg = "Hi ".$first_name.",\r\nYour OTP is ".$phone_otp.".\r\n\r\nSee you soon,\r\nTeam Phpdots";
                 $OtpMsg = $phone_otp." is your OTP for account verification with ".$PRODUCT_NAME." App";
+                $OtpMsg = $phone_otp." is your OTP for account verification with BopalDaily App.\r\n\r\nBopalDaily ";
                 $OtpMsg = urlencode($OtpMsg);
-
                 // $users_phone = 9067121123;
 
                 $SMS_URL        = env('SMS_URL');
                 $SMS_MOBILE     = env('SMS_MOBILE');
                 $SMS_PASSWORD   = env('SMS_PASSWORD');
-                $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGLEEO&to=".$users_phone."&msg=".$OtpMsg;
+                $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGROLE&templateid=1207161726316740698&to=".$users_phone."&msg=".$OtpMsg;
                 $CURLREsponce = _CURLGeneralForAll($sURLL);
                 if(isset($CURLREsponce['info']['http_code']) && $CURLREsponce['info']['http_code'] ==200)
                 {

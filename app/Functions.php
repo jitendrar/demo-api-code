@@ -39,43 +39,43 @@ function _GetOrderStatus($statusid='') {
 
 function _CURLGeneralForAll($strRequestURL = null, $Method=null, $HeaderKey = array(), $arrpost=array())
 {
-  $ArrReturn = array();
-  $ArrReturn['info']['http_code']    = 200;
-  return $ArrReturn;
-    // if(!empty($strRequestURL))
-    // {
-    //     $conn = curl_init( $strRequestURL );
+  // $ArrReturn = array();
+  // $ArrReturn['info']['http_code']    = 200;
+  // return $ArrReturn;
+    if(!empty($strRequestURL))
+    {
+        $conn = curl_init( $strRequestURL );
 
-    //     curl_setopt( $conn, CURLOPT_CONNECTTIMEOUT, 30 );
-    //     curl_setopt( $conn, CURLOPT_SSL_VERIFYPEER, false );
-    //     curl_setopt( $conn, CURLOPT_SSL_VERIFYHOST, 2 );
-    //     curl_setopt( $conn, CURLOPT_RETURNTRANSFER, true );
-    //     curl_setopt( $conn, CURLOPT_URL, $strRequestURL);
-    //     curl_setopt( $conn, CURLOPT_SSLVERSION, 1 );
-    //     curl_setopt( $conn, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        curl_setopt( $conn, CURLOPT_CONNECTTIMEOUT, 30 );
+        curl_setopt( $conn, CURLOPT_SSL_VERIFYPEER, false );
+        curl_setopt( $conn, CURLOPT_SSL_VERIFYHOST, 2 );
+        curl_setopt( $conn, CURLOPT_RETURNTRANSFER, true );
+        curl_setopt( $conn, CURLOPT_URL, $strRequestURL);
+        curl_setopt( $conn, CURLOPT_SSLVERSION, 1 );
+        curl_setopt( $conn, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
         
-    //     if(!empty($HeaderKey)) {
-    //       curl_setopt($conn, CURLOPT_HTTPHEADER, $HeaderKey);
-    //     }
+        if(!empty($HeaderKey)) {
+          curl_setopt($conn, CURLOPT_HTTPHEADER, $HeaderKey);
+        }
 
-    //     if(strtoupper($Method) == 'POST') {
-    //       curl_setopt($conn, CURLOPT_POSTFIELDS, json_encode($arrpost));
-    //     }
+        if(strtoupper($Method) == 'POST') {
+          curl_setopt($conn, CURLOPT_POSTFIELDS, json_encode($arrpost));
+        }
 
-    //     $output = curl_exec($conn);
-    //     $result = json_decode($output);
-    //     if(!empty($result)) {
-    //         $result = object_to_array($result);
-    //     }
-    //     $info   = curl_getinfo($conn);
-    //     $ArrReturn = array();
-    //     $ArrReturn['info']    = $info;
-    //     $ArrReturn['result']  = $result;
-    //     $ArrReturn['error']   = curl_error($conn);
-    //     // Close handle
-    //     curl_close($conn);
-    //     return $ArrReturn;
-    // }
+        $output = curl_exec($conn);
+        $result = json_decode($output);
+        if(!empty($result)) {
+            $result = object_to_array($result);
+        }
+        $info   = curl_getinfo($conn);
+        $ArrReturn = array();
+        $ArrReturn['info']    = $info;
+        $ArrReturn['result']  = $result;
+        $ArrReturn['error']   = curl_error($conn);
+        // Close handle
+        curl_close($conn);
+        return $ArrReturn;
+    }
 }
 
 
@@ -133,37 +133,41 @@ function EmailSendForAdmin($emailTemplate='', $EmailSubject = '', $EmailContent=
 }
 
 
-function SendSMSForAdmin($OtpMsg='')
+function SendSMSForAdmin($OtpMsg='', $templateid='')
 {
-  $IS_LOCAL = env('IS_LOCAL',0);
-  if($IS_LOCAL == 0) {
-    $users_phone    = 9978141560;
-    $SMS_URL        = env('SMS_URL');
-    $SMS_MOBILE     = env('SMS_MOBILE');
-    $SMS_PASSWORD   = env('SMS_PASSWORD');
-    $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGLEEO&to=".$users_phone."&msg=".$OtpMsg;
-    _CURLGeneralForAll($sURLL);
+  if(!empty($templateid)) {
+    $IS_LOCAL = env('IS_LOCAL',0);
+    if($IS_LOCAL == 0) {
+      $users_phone    = 9978141560;
+      $users_phone    = 9067121123;
+      $SMS_URL        = env('SMS_URL');
+      $SMS_MOBILE     = env('SMS_MOBILE');
+      $SMS_PASSWORD   = env('SMS_PASSWORD');
+      $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGROLE&templateid=".$templateid."&to=".$users_phone."&msg=".$OtpMsg;
+      _CURLGeneralForAll($sURLL);
 
-    $users_phone    = 9601282614;
-    $SMS_URL        = env('SMS_URL');
-    $SMS_MOBILE     = env('SMS_MOBILE');
-    $SMS_PASSWORD   = env('SMS_PASSWORD');
-    $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGLEEO&to=".$users_phone."&msg=".$OtpMsg;
-    _CURLGeneralForAll($sURLL);
+      $users_phone    = 9601282614;
+      $SMS_URL        = env('SMS_URL');
+      $SMS_MOBILE     = env('SMS_MOBILE');
+      $SMS_PASSWORD   = env('SMS_PASSWORD');
+      $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGROLE&templateid=".$templateid."&to=".$users_phone."&msg=".$OtpMsg;
+      _CURLGeneralForAll($sURLL);
 
-    $users_phone    =  9825096687;
-    $SMS_URL        = env('SMS_URL');
-    $SMS_MOBILE     = env('SMS_MOBILE');
-    $SMS_PASSWORD   = env('SMS_PASSWORD');
-    $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGLEEO&to=".$users_phone."&msg=".$OtpMsg;
-    _CURLGeneralForAll($sURLL);
+      $users_phone    =  9825096687;
+      $SMS_URL        = env('SMS_URL');
+      $SMS_MOBILE     = env('SMS_MOBILE');
+      $SMS_PASSWORD   = env('SMS_PASSWORD');
+      $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGROLE&templateid=".$templateid."&to=".$users_phone."&msg=".$OtpMsg;
+      _CURLGeneralForAll($sURLL);
 
-    $users_phone    =  9979313992;
-    $SMS_URL        = env('SMS_URL');
-    $SMS_MOBILE     = env('SMS_MOBILE');
-    $SMS_PASSWORD   = env('SMS_PASSWORD');
-    $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGLEEO&to=".$users_phone."&msg=".$OtpMsg;
-    _CURLGeneralForAll($sURLL);
+      $users_phone    =  9979313992;
+      $SMS_URL        = env('SMS_URL');
+      $SMS_MOBILE     = env('SMS_MOBILE');
+      $SMS_PASSWORD   = env('SMS_PASSWORD');
+      $sURLL          = $SMS_URL."?mobile=".$SMS_MOBILE."&pass=".$SMS_PASSWORD."&senderid=AGROLE&templateid=".$templateid."&to=".$users_phone."&msg=".$OtpMsg;
+      _CURLGeneralForAll($sURLL);
+    }
+
   }
   
 }

@@ -88,9 +88,10 @@ class AuthController extends Controller
                     $data = new UserResource($user);
                     $OtpMsg = "New User Onboarded On BopalDaily,";
                     $OtpMsg.="\r\nUser ID :: ".$userID;
-                    $OtpMsg.="\r\nUser Name :: ".$user->first_name.' '.$user->last_name;
+                    $OtpMsg.="\r\nUser Name :: ".$user->first_name.' '.trim($user->last_name).' ';
                     $OtpMsg = urlencode($OtpMsg);
-                    SendSMSForAdmin($OtpMsg);
+                    $TemplateIDBopalDailyNewUser = env('TemplateIDBopalDailyNewUser');
+                    SendSMSForAdmin($OtpMsg, $TemplateIDBopalDailyNewUser);
                     // $content = ['content' => $user->toArray()];
                     // EmailSendForAdmin('admin.emails.new_user_created', 'New User Onboarded On BopalDaily', $content);
                 } else {
@@ -390,9 +391,10 @@ class AuthController extends Controller
                             $data = new UserResource($user);
                             $OtpMsg = "New User Onboarded On BopalDaily,";
                             $OtpMsg.="\r\nUser ID :: ".$userID;
-                            $OtpMsg.="\r\nUser Name :: ".$user->first_name.' '.$user->last_name;
+                            $OtpMsg.="\r\nUser Name :: ".$user->first_name.' '.trim($user->last_name).' ';
                             $OtpMsg = urlencode($OtpMsg);
-                            SendSMSForAdmin($OtpMsg);
+                            $TemplateIDBopalDailyNewUser = env('TemplateIDBopalDailyNewUser');
+                            SendSMSForAdmin($OtpMsg, $TemplateIDBopalDailyNewUser);
                         } else {
                             $msg = $arrOtp['msg'];
                         }
