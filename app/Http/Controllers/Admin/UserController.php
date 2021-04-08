@@ -111,7 +111,7 @@ class UserController extends Controller
             $prim_address = trim($request->get('prim_address'));
             $phone = $request->get('phone');
             $balance = $request->get('balance');
-            $password = $request->get('password');
+            $password = bcrypt($request->get('password'));
             $status_val = $request->get('status');
             $note = $request->get('note');
             $model = $this->modelObj;
@@ -228,7 +228,7 @@ class UserController extends Controller
             $phone = $request->get('phone');
             $balance = $request->get('balance');
             $addBalance = $request->get('add_balance');
-            $password = $request->get('password');
+            $password = bcrypt($request->get('password'));
             $status_val = $request->get('status');
             $note = $request->get('note');
             $model->first_name = $first_name;
