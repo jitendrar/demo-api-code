@@ -139,7 +139,7 @@ function SendSMSForAdmin($OtpMsg='', $templateid='')
     $IS_LOCAL = env('IS_LOCAL',0);
     if($IS_LOCAL == 0) {
       $users_phone    = 9978141560;
-      $users_phone    = 9067121123;
+      // $users_phone    = 9067121123;
       $SMS_URL        = env('SMS_URL');
       $SMS_MOBILE     = env('SMS_MOBILE');
       $SMS_PASSWORD   = env('SMS_PASSWORD');
