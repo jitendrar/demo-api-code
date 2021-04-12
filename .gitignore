@@ -11,5 +11,10 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 public/error.log
-public/uploads
 myloginfo.log
+public/uploads/bills
+public/uploads/categories
+public/uploads/delivery_users
+public/uploads/offers
+public/uploads/products
+public/uploads/users
