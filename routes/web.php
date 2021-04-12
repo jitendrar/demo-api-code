@@ -4,9 +4,16 @@ use Illuminate\Support\Facades\Route;
 $ADMIN_PREFIX = "admin";
 
 //Auth Route before login
-Route::get('/','Admin\Auth\LoginController@getLogin')->name('admin_login');
 Route::get('login','Admin\Auth\LoginController@getLogin')->name('admin_login');
 Route::post('login', 'Admin\Auth\LoginController@postLogin')->name("check_admin_login");
+
+// check url for admin and front for login 
+if(substr($_SERVER['SERVER_NAME'], 0, 6)=='admin.'){
+	Route::get('/','Admin\Auth\LoginController@getLogin')->name('admin_login');
+}else{
+	Route::get('/','HomeController@index')->name('home_page');
+}
+
 
 //logout
 Route::get('logout', 'Admin\Auth\LoginController@getLogout')->name("logout");
@@ -87,4 +94,3 @@ Route::group(['middleware' => 'admin_auth','prefix' => $ADMIN_PREFIX], function(
 
 
 });
-
