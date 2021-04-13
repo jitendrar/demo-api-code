@@ -40,8 +40,8 @@
 	                                <div class="row">
 					                    <div class="col-md-12">
 					                        <div class="form-group">
-					                        	<label class="col-md-3 control-label">Bill Date : <span class="required">*</span> </label>
-					                            <div class="col-md-9">
+					                        	<label class="col-md-4 control-label">Bill Date : <span class="required">*</span> </label>
+					                            <div class="col-md-8">
 					                            	<?php $CurrentDate = date('Y-m-d'); ?>
 					                            	{!! Form::text('bill_date',$CurrentDate,['class'=>'form-control','placeholder'=>'Delivery Date','id'=>'BillDate']) !!}
 						                        </div>
@@ -52,10 +52,22 @@
 	                                <div class="row">
 	                                    <div class="col-md-12">
 	                                        <div class="form-group">
-	                                            <label class="col-md-3 control-label">Total Bill Price : <span class="required">*</span>
+	                                            <label class="col-md-4 control-label">Total Bill Price : <span class="required">*</span>
 	                                            </label>
-	                                            <div class="col-md-9">
+	                                            <div class="col-md-8">
 	                                                {!! Form::number('total',null,['class'=>'form-control','placeholder' => 'Bill Price','id'=>'total','min' =>0,'step' =>0.01]) !!}
+	                                            </div>
+	                                        </div>
+	                                    </div>
+	                                </div>
+
+	                                 <div class="row">
+	                                    <div class="col-md-12">
+	                                        <div class="form-group">
+	                                            <label class="col-md-4 control-label">Total Collection Amount :
+	                                            </label>
+	                                            <div class="col-md-8">
+	                                                {!! Form::number('collection_amount',null,['class'=>'form-control','placeholder' => 'Collection Amount','id'=>'collection_amount','min' =>0,'step' =>0.01]) !!}
 	                                            </div>
 	                                        </div>
 	                                    </div>
@@ -64,9 +76,9 @@
 	                                <div class="row">
 	                                    <div class="col-md-12">
 	                                        <div class="form-group " >
-	                                            <label class="col-md-3 control-label">Bill Image : <span class="required">*</span>
+	                                            <label class="col-md-4 control-label">Bill Image : <span class="required">*</span>
 	                                            </label>
-	                                            <div class="col-md-9">
+	                                            <div class="col-md-8">
 	                                                <input type="file" class="dropify" name="picture" accept="image/*" data-max-file-size="10M">
 	                                            </div>
 	                                        </div>
@@ -76,9 +88,9 @@
 	                                <div class="row">
 	                                    <div class="col-md-12">
 	                                        <div class="form-group">
-	                                        <label for="" class="col-md-3 control-label"> Description :<span class="required">*</span>
+	                                        <label for="" class="col-md-4 control-label"> Description :<span class="required">*</span>
 	                                        </label>
-	                                        <div class="col-md-9">
+	                                        <div class="col-md-8">
 	                                            {!! Form::textarea('description',null,['class' => 'form-control', 'rows' => 5, 'cols' => 40]) !!}
 	                                        </div>
 	                                        </div>

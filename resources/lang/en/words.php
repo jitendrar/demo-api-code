@@ -31,5 +31,7 @@ return [
 	'profile_image_changed' => 'Your profile photo has been successfully changed.',
 	'referral_text' => 'Share Your Referral Code with friends you will get Rs. [MONEYTEXT]/ - when your friend place first order of minimum Rs.100/-',
 	'referral_msg_text' => "https://play.google.com/store/apps/details?id=com.phpdots.bopaldaily \r\n \r\n Register into Bopal Daily App using this Referral code : [USER_REFERRAL_CODE] and you will get reward on your first order.",
+	'no_address_available' => 'There is no address available',
+	'user_not_available' => 'There is no user available',
 ];
 ?>

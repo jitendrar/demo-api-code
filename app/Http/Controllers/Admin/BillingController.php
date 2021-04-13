@@ -48,7 +48,16 @@ class BillingController extends Controller
         $data['addBtnName'] 	= $this->module;
         $data['btnAdd'] 		= 1;
         $total_billing_amount = Billing::sum('total');
+        $total_collection_amount = Billing::sum('collection_amount');
+        $total_pl_amount = $total_collection_amount -  $total_billing_amount;
+        if($total_pl_amount>0){
+            $total_profit_loss_amount = 'Profit :: '.$total_pl_amount;
+        }else if($total_pl_amount<0){
+             $total_profit_loss_amount = 'Loss :: '.abs($total_pl_amount);
+        }
         $data['total_billing_amount'] = $total_billing_amount;
+        $data['total_collection_amount'] = $total_collection_amount;
+        $data['total_profit_loss_amount'] = $total_profit_loss_amount ;
 
         return view($this->moduleViewName.'.index', $data);
     }
@@ -89,6 +98,7 @@ class BillingController extends Controller
             $picture 	= '';
             $model = $this->modelObj;
             $model->total 		= $request_data['total'];
+            $model->collection_amount       = $request_data['collection_amount'];
             $model->bill_date 	= $request_data['bill_date'];
             $model->description = $request_data['description'];
             $model->picture 	= $picture;
@@ -187,6 +197,9 @@ class BillingController extends Controller
         })
         ->editColumn('total',function($row){
             return number_format($row->total,2);
+        })
+        ->editColumn('collection_amount',function($row){
+            return number_format($row->collection_amount,2);
         })
         ->editColumn('created_at', function($row) {
             if(!empty($row->created_at))

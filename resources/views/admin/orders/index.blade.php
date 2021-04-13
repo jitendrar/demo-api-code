@@ -181,6 +181,6 @@ $(document).ready(function(){
         });
     });
 </script>
-<script type="text/javascript" src="{{ asset('js/order.js?123') }}" ></script>
+<script type="text/javascript" src="{{ asset('js/order.js?124') }}" ></script>
 @endsection
 

@@ -10,6 +10,13 @@
 </a>@endif
 @endif
 
+@if(isset($isAssignOrder) && $isAssignOrder)
+<a data-id="{{ $row->id }}" data-userid="{{$row->user_id}}" href="{{ route($currentRoute.'.placeorder',$row->id) }}" class="btn btn-xs btn-danger btn-cart-to-order" title="Place Order">
+    <i class="fa fa-check"></i>
+</a>
+@endif
+
+
 @if(isset($isProductDetail) && $isProductDetail)
 <a data-id="{{ $row->user_id }}" class="btn btn-xs btn-primary show-order-detail" title="Order Detail">
     <i class="fa fa-eye"></i>

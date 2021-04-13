@@ -132,7 +132,7 @@
     var removeProductURL = "{{ url('admin/deleteProduct') }}";
     var assignDeliveryBoyURL = "{{ url('admin/orders/assign-delivery-boy') }}";
     var addNewProductURL = "{{ url('admin/orders/add-new-product') }}";
-
+    var addmoneyfromorder = "{{ url('admin/orders/add-money-from-order') }}";
 
 $(document).ready(function(){
     $('body').on('click', '.change-status', function(event){
