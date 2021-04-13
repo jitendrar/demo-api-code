@@ -464,7 +464,7 @@ class OrdersController extends Controller
         {
             $req_qtn = $request->qty;
             $req_date_type = $request->data_type;
-             $req_qtn = ($req_date_type == 'dec')?$req_qtn-1:$req_qtn+1;
+            $req_qtn = ($req_date_type == 'dec')?$req_qtn-1:$req_qtn+1;
 
             if($req_qtn <= 0){
                 $oldPrice = $orderDetail->price;
@@ -501,10 +501,12 @@ class OrdersController extends Controller
                 $message ="Product has been deleted successfully";
                 $status = 2;
             }else{
-                
+
                 if($orderDetail->is_offer == CartDetail::$IS_OFFER_YES) {
                     $unitprice      = $orderDetail->discount / $orderDetail->quantity;
                     $new_price      = ($unitprice * $req_qtn);
+                    $ProductLatestPrice = $orderDetail->product->unity_price;
+                    $new_price          = ($req_qtn*$ProductLatestPrice);
                     $orderDetail->quantity = $req_qtn;
                     $orderDetail->discount = $new_price;
                     $orderDetail->save();
@@ -512,12 +514,16 @@ class OrdersController extends Controller
                     $total_price          = $order->total_price;
                     $totalDelPrice = OrderDetail::getOrderTotalPrice($request->order_id);
                 } else {
+
                     $oldPrice       = $orderDetail->price;
                     $oldQuantity    = $orderDetail->quantity;
                     $unitprice      = $orderDetail->price / $orderDetail->quantity;
+
                     $totalPrice     = OrderDetail::getProductTotalPrice($request->order_id);
                     $totalPrice     = $totalPrice - $orderDetail->price;
                     $new_price      = ($unitprice * $req_qtn);
+                    $ProductLatestPrice = $orderDetail->product->unity_price;
+                    $new_price          = ($req_qtn*$ProductLatestPrice);
                     $orderDetail->quantity = $req_qtn;
                     $orderDetail->price = $new_price;
                     $orderDetail->save();
