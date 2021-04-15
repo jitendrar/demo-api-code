@@ -7,8 +7,8 @@
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
         <!-- Styles -->
-            <!-- Facebook Pixel Code -->
-            <script>
+        <!-- Facebook Pixel Code -->
+        <script>
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
                 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -19,12 +19,10 @@
                     'https://connect.facebook.net/en_US/fbevents.js');
                 fbq('init', '475070556970577');
                 fbq('track', 'PageView');
-            </script>
-            <noscript>
-                <img height="1" width="1" style="display:none"
-                src="https://www.facebook.com/tr?id=475070556970577&ev=PageView&noscript=1"
-                />
-            </noscript>
+        </script>
+        <noscript>
+            <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=475070556970577&ev=PageView&noscript=1" />
+        </noscript>
             <!-- End Facebook Pixel Code -->
     </head>
     <body>
