@@ -33,8 +33,16 @@
                 @if($btnAdd)
                     <a href="{{ $add_url }}" class="btn btn-default pull-right btn-sm mTop5" style="margin-top: 5px;"><i class="fa fa-plus"></i> {{ $addBtnName }}</a>
                 @endif
-                &nbsp;
-                 <div class="caption pull-right " >
+                &nbsp;                     
+                     <div class="caption pull-right " >
+                        <i class="fa fa-bookmark"></i>
+                        <span class="caption-subject bold">Total {{ $total_profit_loss_amount }}</span>
+                    </div>&nbsp;
+                    <div class="caption pull-right " >
+                        <i class="fa fa-bookmark"></i>
+                        <span class="caption-subject bold">Total Collection Amount: {{ $total_collection_amount }}</span>
+                    </div>&nbsp;
+                     <div class="caption pull-right " >
                         <i class="fa fa-bookmark"></i>
                         <span class="caption-subject bold">Total Bill Amount: {{ $total_billing_amount }}</span>
                     </div>&nbsp;
@@ -47,6 +55,7 @@
                         <tr>
                             <th width="10%">Bill Date</th>
                             <th width="10%">Bill Price</th>
+                            <th width="10%">Collection Amount</th>
                             <th width="30%">Bill Image</th>
                             <th align="left" width="50%">Description</th>
                             <th align="left" width="20%">Action</th>
@@ -124,6 +133,7 @@
                 columns: [
                         {data: 'bill_date', name: 'bill_date'},
                         { data: 'total', className:'detail-td'},
+                        { data: 'collection_amount', className:'detail-td'},
                         { data: 'picture', name: 'picture'},
                         { data: 'description' , name: 'description',orderable: false},
                         { data: 'action', orderable: false, searchable: false},

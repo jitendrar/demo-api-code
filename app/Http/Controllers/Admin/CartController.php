@@ -20,6 +20,7 @@ use App\Address;
 use App\OrderDetail;
 use App\Config;
 use App\CartDetail;
+use App\Order;
 
 class CartController extends Controller
 {
@@ -38,7 +39,7 @@ class CartController extends Controller
         $this->module = $module;
 
         $this->modelObj = new CartDetail();
-
+        $this->addMsg = "order has been placed successfully!";
         view()->share("list_url", $this->list_url);
         view()->share("moduleRouteText", $this->moduleRouteText);
         view()->share("moduleViewName", $this->moduleViewName);
@@ -136,6 +137,7 @@ class CartController extends Controller
                     'currentRoute' => $this->moduleRouteText,
                     'row' => $row, 
                     'isDelete' =>0,
+                    'isAssignOrder'=>1,
                     'isView' =>1,
                     'isProductDetail' => 1,
                 ]
@@ -168,6 +170,121 @@ class CartController extends Controller
                     \session()->put($this->moduleRouteText.'_goto',$goto);
             })
         ->make(true);
+    }
+    public function placeOrder(Request $request, $id='')
+    {
+      
+        $status         = 1;
+        $msg            = "";
+        $data           = array();
+        $RegisterData = Validator::make($request->all(), [
+            'user_id' => 'required|numeric',
+            'id' => 'required|numeric',
+        ]);
+        if ($RegisterData->fails()) {
+            $messages = $RegisterData->messages();
+            $status = 0;
+            $msg = "";
+            foreach ($messages->all() as $message) {
+                $msg = $message;
+                 $status = 0;
+                break;
+            }
+        } else {
+            $delivery_date          = date("Y-m-d",strtotime("1 days"));
+            $user_id                = $request->get('user_id');
+            $address_id             = Address::select('id')->where('user_id',$user_id)->orderBy('primary_address','DESC')->first();
+            if($address_id){
+
+            $delivery_time          = '07:00 AM - 09:00 AM';
+            $delivery_charge        = 0;
+            $delivery_charge        = Config::GetConfigurationList(Config::$DELIVERY_CHARGE);
+            $delivery_tax           = 0;
+            if(!empty($user_id)) {
+                $ArrUser = User::find($user_id);
+                if($ArrUser) {
+                    $cartdata       = CartDetail::where('user_id',$user_id)->get();
+                    if($cartdata->count()) {
+                        $totalOrderPrice = 0;
+                        foreach ($cartdata as $key => $value) {
+                            $totalOrderPrice = $totalOrderPrice+$value->price;
+                        }
+                        $totalOrderPrice = $totalOrderPrice+$delivery_charge;
+                        $AvailableBalance = $ArrUser->balance-$totalOrderPrice;
+                        $ArrOrder = array();
+                        $ArrOrder['user_id']                = $user_id;
+                        $ArrOrder['address_id']             = $address_id->id;
+                        $ArrOrder['delivery_charge']        = $delivery_charge;
+                        $ArrOrder['delivery_date']          = $delivery_date;
+                        $ArrOrder['delivery_time']          = $delivery_time;
+                        $ArrOrder['order_status']           = Order::$ORDER_STATUS_PENDING;
+                        $ArrOrder['total_price']            = $totalOrderPrice;
+                        $OrderCreate = Order::create($ArrOrder);
+                        if($OrderCreate) {
+                            $EmailData = array();
+                            $order_id       = $OrderCreate->id;
+                            $order_number   = "ORD".$order_id;
+                            Order::where('id',$order_id)->update(['order_number' => $order_number]);
+                            $status         = 1;
+                            $StatusCode     = 200;
+                            $msg            = __('words.order_placed');
+                            foreach ($cartdata as $key => $value) {
+                                $arrOrderDetails = array();
+                                $arrOrderDetails['order_id']    = $order_id;
+                                $arrOrderDetails['product_id']  = $value->product_id;
+                                $arrOrderDetails['quantity']    = $value->quantity;
+                                $arrOrderDetails['price']       = $value->price;
+                                $arrOrderDetails['discount']    = $value->discount;
+                                $arrOrderDetails['is_offer']    = $value->is_offer;
+                                if(OrderDetail::create($arrOrderDetails)){
+                                    CartDetail::destroy($value->id);
+                                }
+                            }
+                            $ArrWallete = array();
+                            $ArrWallete['user_id']              = $user_id;
+                            $ArrWallete['order_id']             = $order_id;
+                            $ArrWallete['user_balance']         = $AvailableBalance;
+                            $ArrWallete['transaction_amount']   = $totalOrderPrice;
+                            $ArrWallete['transaction_type']= WalletHistory::$TRANSACTION_TYPE_DEBIT;
+                            $ArrWallete['remark'] = "Deduct money for your order #".$order_number;
+                            WalletHistory::create($ArrWallete);
+                            User::where('id',$ArrUser->id)->update(['balance' => $AvailableBalance]);
+                            $Orderdata  = Order::with('orderDetail')->where('id',$order_id)->get();
+                            $data       = $Orderdata;
+                            Address::where('user_id',"=",$user_id)->update(['is_select' => 0]);
+                            $OtpMsg = "New Order Created On BopalDaily From Admin,";
+                            $OtpMsg.="\r\nUser ID :: ".$user_id;
+                            $OtpMsg.="\r\nUser Name :: ".$ArrUser->first_name.' '.$ArrUser->last_name;
+                            $OtpMsg.="\r\nOrder ID :: ".$order_id;
+                            $OtpMsg.="\r\nOrder Price :: ".$totalOrderPrice;
+                            $OtpMsg.="\r\n";
+                            $OtpMsg.="\r\nBopalDaily ";
+                            $OtpMsg = urlencode($OtpMsg);
+                            $TemplateIDBopalDailyNewOrder = env('TemplateIDBopalDailyNewOrder');
+                            SendSMSForAdmin($OtpMsg, $TemplateIDBopalDailyNewOrder);
+                           
+                        }
+                    } else {
+                        $status         = 0;
+                        $msg            = __('words.no_cart_in_order_placed');
+                    }
+                }else{
+            $status         = 0;
+            $msg            = __('words.user_not_available');
+            }
+            }else{
+            $status         = 0;
+            $msg            = __('words.user_not_available');
+            }
+        }else{
+            $status         = 0;
+            $msg            = __('words.no_address_available');
+            }
+        }
+        $arrReturn = array("status" => $status,'message' => $msg, "data" => $data);
+        $StatusCode = 200;
+        return response($arrReturn,$StatusCode);
+
     }
 
     
