@@ -40,7 +40,10 @@
                   <input type="hidden" name="search_start_date_a" id="search_start_date_a">
                   <input type="hidden" name="search_end_date_a" id="search_end_date_a">
                   <input type="button" id="summaryBtnName" class="btn btn-default pull-right btn-sm mTop5" value="{{ $summaryBtnName }} " style="margin-top: 5px;margin-right: 5px;">
+                  
                   <input type="button" id="todaysummaryBtnName" class="btn btn-default pull-right btn-sm mTop5" value="{{ $todaysummaryBtnName }} " style="margin-top: 5px;margin-right: 5px;">
+                  
+                  <input type="button" id="TodayOrderSummaryDetails" class="btn btn-default pull-right btn-sm mTop5" value="Today Order Summary Details" style="margin-top: 5px;margin-right: 5px;">
                 </form>
                    
                 @endif
@@ -80,8 +83,15 @@ $(document).ready(function(){
         $('#GetSummaryDataForm').submit();
     });
 
+    $("#TodayOrderSummaryDetails").click(function(){
+        $("#hdaction").val('DetailsOfPOS');
+        $('#GetSummaryDataForm').submit();
+    });
+
+
     $("#summaryBtnName").click(function(){
         // $("#search-frm").serialize();
+        $("#hdaction").val('PendingOrderAllSumary');
         search_start_date_a   = $("#search-frm input[name='search_start_date']").val();
         search_end_date_a     = $("#search-frm input[name='search_end_date']").val();
         $("#search_start_date_a").val(search_start_date_a);

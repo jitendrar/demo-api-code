@@ -845,82 +845,148 @@ class OrdersController extends Controller
         ->make(true);
     }
 
-    public function summary(Request $request) {
-        $RequestData = $request->all();
-        // $orders = \DB::select("SELECT product_name AS ProductName,
-        //             CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN CONCAT(ROUND(TotalStock/1000,3), '') ELSE CONCAT(TotalStock, '') END AS Quantity,
-        //             CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN 'KG' ELSE StokType END AS StokType
-        //         FROM (
-        //             SELECT  product_translations.`product_name`, 
-        //                 SUM(product_translations.`units_in_stock`*order_details.`quantity`) AS TotalStock,
-        //                 IF(product_translations.`units_stock_type` = 'ગ્રામ', 'G', IF(product_translations.`units_stock_type` = 'G', 'G', product_translations.`units_stock_type`)) AS StokType,
-        //                 product_translations.`units_stock_type`
-        //             FROM orders
-        //             LEFT JOIN order_details ON order_details.`order_id` = orders.`id`
-        //             INNER JOIN product_translations ON product_translations.`locale` = 'guj' AND product_translations.`product_id` = order_details.`product_id`
-        //             WHERE orders.`order_status` = 'P'
-        //             GROUP BY product_translations.`product_id`
-        //         ) AS tt
-        //         ;");
-        $SQR = "SELECT product_name AS ProductName,
-            CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN CONCAT(ROUND(TotalStock/1000,3), '') ELSE CONCAT(TotalStock, '') END AS Quantity,
-            CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN 'KG' ELSE StokType END AS StokType
-        FROM (
-            SELECT product_id, product_name, units_in_stock, units_stock_type, SUM(TotalStock) AS TotalStock, units_stock_type AS StokType
-            FROM (
-                SELECT product_id, product_name, units_in_stock, units_stock_type, SUM(units_in_stock*quantity) AS TotalStock, units_stock_type AS StokType
+    public function DownloadOrderSummayData($RequestData=array()) {
+
+        $SQR = "SELECT product_name AS ProductName, CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN CONCAT(ROUND(TotalStock/1000,3), '') ELSE CONCAT(TotalStock, '') END AS Quantity, CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN 'KG' ELSE StokType END AS StokType
                 FROM (
-                    SELECT  product_translations.`product_id`, product_translations.`product_name`, 
-                        product_translations.`units_in_stock` AS unitsinstock,
-                        IF(product_translations.`units_stock_type`= 'KG', product_translations.`units_in_stock`*1000, product_translations.`units_in_stock`) AS units_in_stock,
-                        product_translations.`units_stock_type` AS unitsstocktype, 
-                        IF(product_translations.`units_stock_type`= 'KG', 'G', product_translations.`units_stock_type`) AS units_stock_type,
-                        order_details.`quantity`
+                    SELECT product_id, product_name, units_in_stock, units_stock_type, SUM(TotalStock) AS TotalStock, units_stock_type AS StokType
+                    FROM (
+                        SELECT product_id, product_name, units_in_stock, units_stock_type, SUM(units_in_stock*quantity) AS TotalStock, units_stock_type AS StokType
+                        FROM (
+                            SELECT  product_translations.`product_id`, product_translations.`product_name`, product_translations.`units_in_stock` AS unitsinstock, IF(product_translations.`units_stock_type`= 'KG', product_translations.`units_in_stock`*1000, product_translations.`units_in_stock`) AS units_in_stock, product_translations.`units_stock_type` AS unitsstocktype, IF(product_translations.`units_stock_type`= 'KG', 'G', product_translations.`units_stock_type`) AS units_stock_type, order_details.`quantity`
+                            FROM orders
+                            LEFT JOIN order_details ON order_details.`order_id` = orders.`id`
+                            INNER JOIN product_translations ON product_translations.`locale` = 'guj' AND product_translations.`product_id` = order_details.`product_id`
+                            WHERE orders.`order_status` = 'P'";
+
+                            if(isset($RequestData['hdaction']) && $RequestData['hdaction'] == 'TodayData') {
+                                $SQR .= "AND DATE(orders.`delivery_date`) = '".date('Y-m-d')."'";
+                            } else {
+                                if(isset($RequestData['search_start_date_a']) && !empty($RequestData['search_start_date_a'])) {
+                                    $SQR .= "AND DATE(orders.`delivery_date`) >= '".$RequestData['search_start_date_a']."'";
+                                }
+                                if(isset($RequestData['search_end_date_a']) && !empty($RequestData['search_end_date_a'])) {
+                                    $SQR .= "AND DATE(orders.`delivery_date`) <= '".$RequestData['search_end_date_a']."'";
+                                }
+                            }
+        $SQR .= ") AS orderdetails 
+            GROUP BY orderdetails.`product_id` ) AS F
+            GROUP BY product_name ) AS FF";
+        $orders = \DB::select($SQR);
+        return $orders;
+    }
+
+    public function DownloadOrderSummayWithDetails() {
+        $SQR = "
+                SELECT  ProductID, ProductName,
+                CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN CONCAT(ROUND(TotalStock/1000,3), '') ELSE CONCAT(TotalStock, '') END AS Quantity,
+                CASE WHEN StokType = 'G' AND  TotalStock > 1000 THEN 'KG' ELSE StokType END AS StokType,
+                UserID, UserPhone, UserName
+                FROM (
+                    SELECT product_translations.`product_id` AS ProductID,
+                           product_translations.`product_name` AS ProductName,
+                           (product_translations.`units_in_stock`*order_details.`quantity`) AS TotalStock,
+                           product_translations.`units_stock_type` AS StokType,
+                           users.`id` AS UserID, users.`phone` AS UserPhone,
+                           CONCAT(users.`first_name`, ' ', users.`last_name`) AS UserName
                     FROM orders
                     LEFT JOIN order_details ON order_details.`order_id` = orders.`id`
                     INNER JOIN product_translations ON product_translations.`locale` = 'guj' AND product_translations.`product_id` = order_details.`product_id`
-                    WHERE orders.`order_status` = 'P'";
-                    if(isset($RequestData['hdaction']) && $RequestData['hdaction'] == 'TodayData') {
-                        $SQR .= "AND DATE(orders.`delivery_date`) = '".date('Y-m-d')."'";
-                    } else {
-                        if(isset($RequestData['search_start_date_a']) && !empty($RequestData['search_start_date_a'])) {
-                            $SQR .= "AND DATE(orders.`delivery_date`) >= '".$RequestData['search_start_date_a']."'";
-                        }
-                        if(isset($RequestData['search_end_date_a']) && !empty($RequestData['search_end_date_a'])) {
-                            $SQR .= "AND DATE(orders.`delivery_date`) <= '".$RequestData['search_end_date_a']."'";
-                        }
-                    }
-        $SQR .= ") AS orderdetails
-                GROUP BY orderdetails.`product_id`
-            ) AS F
-            GROUP BY product_name
-        ) AS FF";
-
+                    INNER JOIN users ON users.`id` = orders.`user_id`
+                    WHERE orders.`order_status` = 'P' ";
+        $SQR .= " AND DATE(orders.`delivery_date`) = '".date('Y-m-d')."'";
+        $SQR .= " ORDER BY order_details.`product_id`
+                ) AS FF ORDER BY ProductID";
         $orders = \DB::select($SQR);
+        return $orders;
+    }
+    public function summary(Request $request) {
+        $RequestData = $request->all();
         $date = date('Y-m-d');
-        $fileName = 'Orders_Summary_'.$date.'.csv';
-        $headers = array(
-            "Content-type"        => "text/csv; charset=utf-8",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
-        );
-
-        $columns = array('Product Name', 'Quantity', 'Type');
-        $callback = function() use($orders, $columns) {
-            $file = fopen('php://output', 'w');
-            fputs($file, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
-            fputcsv($file, $columns);
-            foreach ($orders as $task) {
-                $row['ProductName'] = $task->ProductName;
-                $row['Quantity']    = ' '.(string)$task->Quantity." \r\n";
-                $row['StokType']    = $task->StokType;
-                fputcsv($file, array($row['ProductName'], $row['Quantity'], $row['StokType']));
+        if(isset($RequestData['hdaction']) && $RequestData['hdaction'] == 'PendingOrderAllSumary') {
+            $ReportData = $this->DownloadOrderSummayData($RequestData);
+            $fileName = 'Orders_Summary_'.$date.'.csv';
+            $headers = array(
+                "Content-type"        => "text/csv; charset=utf-8",
+                "Content-Disposition" => "attachment; filename=$fileName",
+                "Pragma"              => "no-cache",
+                "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+                "Expires"             => "0"
+            );
+            $columns = array('Product Name', 'Quantity', 'Type');
+            $callback = function() use($ReportData, $columns) {
+                $file = fopen('php://output', 'w');
+                fputs($file, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
+                fputcsv($file, $columns);
+                foreach ($ReportData as $task) {
+                    $row['ProductName'] = $task->ProductName;
+                    $row['Quantity']    = ' '.(string)$task->Quantity." \r\n";
+                    $row['StokType']    = $task->StokType;
+                    fputcsv($file, array($row['ProductName'], $row['Quantity'], $row['StokType']));
+                }
+                fclose($file);
+            };
+            return response()->stream($callback, 200, $headers);
+        } else if(isset($RequestData['hdaction']) && $RequestData['hdaction'] == 'TodayData'){
+            $ReportData = $this->DownloadOrderSummayData($RequestData);
+            $fileName = 'Today_Orders_Summary_'.$date.'.csv';
+            $headers = array(
+                "Content-type"        => "text/csv; charset=utf-8",
+                "Content-Disposition" => "attachment; filename=$fileName",
+                "Pragma"              => "no-cache",
+                "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+                "Expires"             => "0"
+            );
+            $columns = array('Product Name', 'Quantity', 'Type');
+            $callback = function() use($ReportData, $columns) {
+                $file = fopen('php://output', 'w');
+                fputs($file, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
+                fputcsv($file, $columns);
+                foreach ($ReportData as $task) {
+                    $row['ProductName'] = $task->ProductName;
+                    $row['Quantity']    = ' '.(string)$task->Quantity." \r\n";
+                    $row['StokType']    = $task->StokType;
+                    fputcsv($file, array($row['ProductName'], $row['Quantity'], $row['StokType']));
+                }
+                fclose($file);
+            };
+            return response()->stream($callback, 200, $headers);
+        } else if(isset($RequestData['hdaction']) && $RequestData['hdaction'] == 'DetailsOfPOS') {
+            $fileName = 'Today_Orders_Summary_Details_'.$date.'.csv';
+            $ReportData = $this->DownloadOrderSummayWithDetails();
+            $columns = array();
+            if(!empty($ReportData)) {
+                foreach ($ReportData as $key => $value) {
+                    $value = (array)$value;
+                    $columns = array_keys($value);
+                }
             }
-            fclose($file);
-        };
-        return response()->stream($callback, 200, $headers);
+            $headers = array(
+                "Content-type"        => "text/csv; charset=utf-8",
+                "Content-Disposition" => "attachment; filename=$fileName",
+                "Pragma"              => "no-cache",
+                "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+                "Expires"             => "0"
+            );
+
+            $callback = function() use($ReportData, $columns) {
+                $file = fopen('php://output', 'w');
+                fputs($file, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
+                fputcsv($file, $columns);
+                foreach ($ReportData as $key => $task) {
+                    $row['ProductID']   =  $task->ProductID;
+                    $row['ProductName'] =  $task->ProductName;
+                    $row['Quantity']    =  ' '.(string)$task->Quantity." \r\n";
+                    $row['StokType']    =  $task->StokType;
+                    $row['UserID']      =  $task->UserID;
+                    $row['UserPhone']   =  $task->UserPhone;
+                    $row['UserName']    =  $task->UserName;
+                    fputcsv($file, $row);
+                }
+                fclose($file);
+            };
+            return response()->stream($callback, 200, $headers);
+        }
     }
 
     public function addmoneyfromorder(Request $request,$id){
