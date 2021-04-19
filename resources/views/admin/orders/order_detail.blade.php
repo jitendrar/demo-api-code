@@ -12,6 +12,12 @@
                 <th>Address</th>
                 <td>{{ $address->address_line_1??'' }} ,{{ $address->address_line_2??'' }}, {{ $address->city??'' }} , {{ $address->zipcode??'' }}</td>
             </tr>
+             <tr>
+                <th>Order Item Count:</th>
+                <td colspan="2">
+                     {{count($orderDetail)}}
+                </td>
+            </tr>
             <tr>
                 <th>Delivery Charge:</th>
                 <td>{{ $order->delivery_charge }}</td>
