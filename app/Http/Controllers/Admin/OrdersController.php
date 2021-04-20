@@ -896,7 +896,7 @@ class OrdersController extends Controller
                     WHERE orders.`order_status` = 'P' ";
         $SQR .= " AND DATE(orders.`delivery_date`) = '".date('Y-m-d')."'";
         $SQR .= " ORDER BY order_details.`product_id`
-                ) AS FF ORDER BY ProductID";
+                ) AS FF ORDER BY ProductName,ProductID";
         $orders = \DB::select($SQR);
         return $orders;
     }
