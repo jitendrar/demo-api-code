@@ -111,13 +111,13 @@ class CartController extends Controller
     {
 
         $authUser = Auth::guard('admins')->user();
-        $modal = CartDetail::select('cart_details.*','users.phone', 'users.balance','addresses.address_line_1',\DB::raw('CONCAT(users.first_name," ",users.last_name) as userName'))
+        $modal = CartDetail::select('cart_details.*','users.phone', 'users.balance','addresses.address_line_1',\DB::raw('MAX(cart_details.updated_at) as updatedat', 'CONCAT(users.first_name," ",users.last_name) as userName'))
             ->leftJoin('users','cart_details.user_id','=','users.id')
             ->leftJoin('addresses','users.id','=','addresses.user_id')
             ->where('cart_details.user_id','>',0)
             ->groupBy('cart_details.user_id');
 
-        $modal = $modal->orderBy('cart_details.updated_at','desc');
+        $modal = $modal->orderBy('updatedat','desc');
         return \DataTables::eloquent($modal)
         ->editColumn('userName',function($row){
            return $row->userName.' ('.$row->balance.') '.'<br/>'.$row->phone;
@@ -125,9 +125,9 @@ class CartController extends Controller
         ->editColumn('totalPrice',function($row){
             return number_format((CartDetail::getCartTotalPrice($row->user_id)),2);
         })
-        ->editColumn('updated_at', function($row) {
-            if(!empty($row->updated_at))
-                return date('Y-m-d h:i',strtotime($row->updated_at));
+        ->editColumn('updatedat', function($row) {
+            if(!empty($row->updatedat))
+                return date('Y-m-d h:i',strtotime($row->updatedat));
             else
                 return '';
         })
@@ -142,7 +142,7 @@ class CartController extends Controller
                     'isProductDetail' => 1,
                 ]
             )->render();
-        })->rawcolumns(['updated_at','totalPrice','action','userName'])
+        })->rawcolumns(['updatedat','totalPrice','action','userName'])
         ->filter(function ($query) 
             {
                 $search_id = request()->get("search_id");
