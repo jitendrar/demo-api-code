@@ -109,9 +109,8 @@ class CartController extends Controller
 
     public function Data(Request $request)
     {
-
         $authUser = Auth::guard('admins')->user();
-        $modal = CartDetail::select('cart_details.*','users.phone', 'users.balance','addresses.address_line_1',\DB::raw('MAX(cart_details.updated_at) as updatedat', 'CONCAT(users.first_name," ",users.last_name) as userName'))
+        $modal = CartDetail::select('cart_details.*','users.phone', 'users.balance','addresses.address_line_1',\DB::raw('MAX(cart_details.updated_at) as updatedat, CONCAT(users.first_name," ",users.last_name) as userName'))
             ->leftJoin('users','cart_details.user_id','=','users.id')
             ->leftJoin('addresses','users.id','=','addresses.user_id')
             ->where('cart_details.user_id','>',0)
