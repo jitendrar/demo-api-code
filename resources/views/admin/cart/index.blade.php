@@ -97,7 +97,7 @@
                     { data: 'action', orderable: false, searchable: false,className:'detail-td'},
                     { data: 'userName', name: 'userName'},
                     { data: 'totalPrice' , name: 'totalPrice',className:'totalprice_td',orderable: false},
-                    { data: 'updated_at', name: 'updated_at'},
+                    { data: 'updatedat', name: 'updatedat'},
                 ]
         });
              $(document).on("click",".btn-cart-to-order",function(){
