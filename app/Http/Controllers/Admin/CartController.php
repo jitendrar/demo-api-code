@@ -117,7 +117,7 @@ class CartController extends Controller
             ->where('cart_details.user_id','>',0)
             ->groupBy('cart_details.user_id');
 
-        $modal = $modal->orderBy('cart_details.created_at','desc');
+        $modal = $modal->orderBy('cart_details.updated_at','desc');
         return \DataTables::eloquent($modal)
         ->editColumn('userName',function($row){
            return $row->userName.' ('.$row->balance.') '.'<br/>'.$row->phone;
@@ -125,9 +125,9 @@ class CartController extends Controller
         ->editColumn('totalPrice',function($row){
             return number_format((CartDetail::getCartTotalPrice($row->user_id)),2);
         })
-        ->editColumn('created_at', function($row) {
-            if(!empty($row->created_at))
-                return date('Y-m-d h:i',strtotime($row->created_at));
+        ->editColumn('updated_at', function($row) {
+            if(!empty($row->updated_at))
+                return date('Y-m-d h:i',strtotime($row->updated_at));
             else
                 return '';
         })
@@ -142,7 +142,7 @@ class CartController extends Controller
                     'isProductDetail' => 1,
                 ]
             )->render();
-        })->rawcolumns(['created_at','totalPrice','action','userName'])
+        })->rawcolumns(['updated_at','totalPrice','action','userName'])
         ->filter(function ($query) 
             {
                 $search_id = request()->get("search_id");
