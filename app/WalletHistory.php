@@ -17,6 +17,14 @@ class WalletHistory extends Model
 	
 	public static $TRANSACTION_TYPE_DEBIT = "DR";
 
+	/**
+	* TRANSACTION METHOD = 1
+	* value 1 that mean money credited by referral 
+	*
+	*/
+	public static $TRANSACTION_METHOD_REFERRAL = 1;
+
+
 	public static function AddReferaalMoney($newuser=array())
 	{
 		if(isset($newuser['referralfrom']) && !empty($newuser['referralfrom']))
@@ -35,8 +43,9 @@ class WalletHistory extends Model
 				$obj->order_id = -1; 
 				$obj->user_id = $user->id;
 				$obj->user_balance = $user->balance;
-				$obj->transaction_amount = $REFERRAL_MONEY;
-				$obj->transaction_type = WalletHistory::$TRANSACTION_TYPE_CREDIT;;
+				$obj->transaction_amount 	= $REFERRAL_MONEY;
+				$obj->transaction_type 		= WalletHistory::$TRANSACTION_TYPE_CREDIT;
+				$obj->transaction_method 	= WalletHistory::$TRANSACTION_METHOD_REFERRAL;
 				$obj->remark = $desc;
 				$obj->save();
 			}
