@@ -53,6 +53,17 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">
+                        <label>Transaction Method<span class="required">*</span></label>
+                        <div class="input-group">
+                            {{ Form::select('transaction_method',[0=>"Collection",2=>"Refund"],0,['class'=>'form-control', 'id' =>'transaction_method']) }} 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
                         <label>Add Money<span class="required">*</span></label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="amount" id="amount" placeholder="Enter Amount" data-required="true"/>
@@ -116,7 +127,8 @@
                             if (result.status == 1)
                             {
                                 $.bootstrapGrowl(result.msg, {type: 'success', delay: 4000});
-                                window.location = $('#add-money-form').attr('redirect-url');
+                                  $("#add-money-model").modal('hide');
+                                oTableCustom.draw();
                             }
                             else
                             {

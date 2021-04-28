@@ -20,6 +20,19 @@ jQuery(document).ready(function(){
         $("#assign-delivery-boy").modal();
     });
 
+    $(document).on("click",".assign-delivery-users",function(){
+
+        var id = $.map($('input[name="assigndeliveryuser[]"]:checked'), function(c){return c.value; })
+        if(id==''){
+             $.bootstrapGrowl('Please Select Order', {type: 'danger', delay: 4000});
+            return false;
+        }
+        var row = '';
+        $("#assign-delivery-boy #load_delivery_user_id").val(id);
+        $(".select_user").val(row).trigger("change");
+        $("#assign-delivery-boy").modal();
+    });
+
     $(document).on("click",".add-money-from-order",function(){
         var id = $(this).data("id");
         var row = $(this).data("row");
@@ -167,46 +180,6 @@ jQuery(document).ready(function(){
         }
         return false;
     });
-
-
-    $(document).on("click",".btn-submit-add-money",function(){
-
-        $amount         = $("#add-money-from-order #amount").val();
-        $description    = $("#add-money-from-order #description").val();
-        var id          = $("#add-money-from-order #order_id").val();
-        var url         = addmoneyfromorder + '/'+id;
-        $('#AjaxLoaderDiv').fadeIn(100);
-        var currentOBJ = $(this);
-        currentOBJ.attr("disabled", true);
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: {action:url, id: id, amount: $amount, description: $description, _token: $("input[name='_token']").val()},
-            success: function (result)
-            {
-                currentOBJ.attr("disabled", false);
-                $('#AjaxLoaderDiv').fadeOut(100);
-                if (result.status == 1)
-                {
-                    $.bootstrapGrowl(result.msg, {type: 'success', delay: 4000});
-                    window.location = result.redirect_url;
-                }
-                else
-                {
-                    $.bootstrapGrowl(result.msg, {type: 'danger', delay: 4000});
-                }
-            },
-            error: function (error)
-            {
-                currentOBJ.attr("disabled", false);
-                $('#AjaxLoaderDiv').fadeOut(100);
-                $.bootstrapGrowl("Internal server error !", {type: 'danger', delay: 4000});
-            }
-        });
-
-        return false;
-    });
-
 
     /*
     add product 

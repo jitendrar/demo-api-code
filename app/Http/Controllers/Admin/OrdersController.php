@@ -412,8 +412,8 @@ class OrdersController extends Controller
         $status = 1;
         $msg = "Delivery Boy has been assigned succussfully.";
         $redirectUrl = $this->list_url;
-
-        $id = $request->get("id");
+        $ids = explode(',', $request->get("id"));
+        foreach ($ids as $id) {
         $model = Order::find($id);
         if ($model) {
             $rules = [
@@ -445,6 +445,8 @@ class OrdersController extends Controller
                 $status = 0;
                 $msg = "Order not found!";
             }
+        }
+        
         return ['status' => $status, 'msg' => $msg,'redirect_url' => $redirectUrl];
     }
     public function changeQtyData(Request $request){
@@ -745,6 +747,10 @@ class OrdersController extends Controller
         ->editColumn('totalPrice',function($row){
             return number_format((OrderDetail::getOrderTotalPrice($row->id)),2);
         })
+        ->addColumn('checkbox',function($row){
+            return '<input class="form-control" type="checkbox" id="assigndeliveryuser'.$row->id.'" name="assigndeliveryuser[]" value="'.$row->id.'"
+        >';
+        })
         ->editColumn('created_at', function($row) {
             if(!empty($row->created_at))
                 return date('Y-m-d h:i',strtotime($row->created_at));
@@ -775,7 +781,7 @@ class OrdersController extends Controller
                     'isStatus' =>  $isStatus,
                 ]
             )->render();
-        })->rawcolumns(['created_at','delivery_date','totalPrice','order_status','action','userName','deliveryUser'])
+        })->rawcolumns(['created_at','delivery_date','totalPrice','order_status','action','userName','deliveryUser','checkbox'])
         ->filter(function ($query) 
             {
                 $search_id = request()->get("search_id");
@@ -1008,11 +1014,12 @@ class OrdersController extends Controller
             $model  = Order::find($id);
             if ($model) {
                     $balance        = $request->get("amount");
+                    $transaction_method        = $request->get("transaction_method");
                     $description    = trim($request->get('description'));
                     if(!empty($description)){
                         $description = $description.', ';
                     }
-                    $description    = $description.' Add Money from Order Listing, for Order No. #'.$model->order_number;
+                    $description    = $description;
                     $user_id        = $model->user_id;
                     $Clientuser = User::where('id',$user_id)->first();
                     if($Clientuser){
@@ -1025,6 +1032,7 @@ class OrdersController extends Controller
                         $obj->transaction_amount = $balance;
                         $obj->transaction_type = WalletHistory::$TRANSACTION_TYPE_CREDIT;;
                         $obj->remark = $description;
+                        $obj->transaction_method = $transaction_method;
                         $obj->save();
                          /* store log */
                         $params=array();

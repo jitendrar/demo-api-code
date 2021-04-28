@@ -31,6 +31,7 @@
       
     </div>
 </div>
+
 <div class="modal fade bs-modal-lg" id="add-product" role="dialog" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
     
@@ -134,6 +135,16 @@
           <h4 class="modal-title">Add Money In User</h4>
         </div>
         <div class="modal-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label>Transaction Method<span class="required">*</span></label>
+                        <div class="input-group">
+                            {{ Form::select('transaction_method',[0=>"Collection",2=>"Refund"],0,['class'=>'form-control', 'id' =>'transaction_method']) }} 
+                    </div>
+                </div>
+            </div>
+        </div>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">

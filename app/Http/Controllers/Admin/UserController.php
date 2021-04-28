@@ -398,6 +398,7 @@ class UserController extends Controller
         {
             $amount = $request->get('amount');
             $description = trim($request->get('description'));
+            $transaction_method        = $request->get("transaction_method");
             $model->balance +=$amount;
             $model->save();
             $obj = new WalletHistory();
@@ -407,6 +408,7 @@ class UserController extends Controller
             $obj->transaction_amount = $amount;
             $obj->transaction_type = WalletHistory::$TRANSACTION_TYPE_CREDIT;;
             $obj->remark = $description;
+            $obj->transaction_method = $transaction_method;
             $obj->save();
         }
         return ['status' => $status, 'msg' => $msg, 'data' => $data];

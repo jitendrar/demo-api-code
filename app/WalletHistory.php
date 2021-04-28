@@ -31,7 +31,7 @@ class WalletHistory extends Model
 		{
 			$user = User::where('referralcode','=',$newuser['referralfrom'])->first();
 			if($user) {
-				$desc = $newuser['first_name'].' '.$newuser['last_name']." is registered successfully and you get referral";
+				$desc = $newuser['first_name'].' '.$newuser['last_name']."'s first order delivered and you got referral.";
 				$REFERRAL_MONEY         = Config::GetConfigurationList(Config::$REFERRAL_MONEY);
 				$user->balance +=$REFERRAL_MONEY;
 				$user->save();
