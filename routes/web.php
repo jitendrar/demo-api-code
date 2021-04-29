@@ -92,5 +92,8 @@ Route::domain('admin.'.env('SITE_URL'))->group(function () {
 		Route::any('cart/detail/{id}','Admin\CartController@cartDetail')->name('cart.detail');
 		Route::any('cart/placeorder/{id}','Admin\CartController@placeOrder')->name('cart.placeorder');
 
+		Route::any('dailyreports/data','Admin\ReportController@data')->name('dailyreports.data');
+		Route::resource('dailyreports','Admin\ReportController');
+
 	});
 });

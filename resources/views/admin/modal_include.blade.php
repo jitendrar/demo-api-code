@@ -171,7 +171,7 @@
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             {!! csrf_field() !!}
             <input type="hidden" name="order_id" id="order_id" />
-            <button data-href="" type="button" class="btn btn-primary btn-submit-add-money">Assign</button>
+            <button data-href="" type="button" class="btn btn-primary btn-submit-add-money">Add Money</button>
         </div>
       </div>
       

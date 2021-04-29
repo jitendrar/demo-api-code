@@ -83,8 +83,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" id="addmoneyBtn">Add</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="addmoneyBtn">Add Money</button>
+                
             </div>
         </form>
     </div>

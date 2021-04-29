@@ -138,7 +138,7 @@ if($authUser)
                                 </a>
                                 <ul class="dropdown-menu pull-left">
                                     <li aria-haspopup="true" class=" ">
-                                        <a href="#" class="nav-link  ">
+                                        <a href="{{ route('dailyreports.index')}}" class="nav-link  ">
                                             Daily Profit & Loss
                                         </a>
                                     </li>

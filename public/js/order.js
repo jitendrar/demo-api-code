@@ -4,8 +4,14 @@ jQuery(document).ready(function(){
         var id = $(this).attr('data-id');
         var url =orderDetailURL + '/'+id;
             if($(".open-order-details-cls").is(":visible")){
-                $('.order_detail_tr').remove();
-                return false;
+                 var closest_id = $(".open-order-details-cls").attr('data-cid');
+                 if(id==closest_id){
+                    $('.order_detail_tr').remove();
+                 }else{
+                    $('.order_detail_tr').remove();
+                    getOrderDetails(url,id);
+                 }
+                
             }else{
                 $('.order_detail_tr').remove();
                 // var row = oTableCustom.row(tr);
