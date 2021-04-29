@@ -1,5 +1,15 @@
 <?php
-
+$filePath   = storage_path("debug_ip_list_cs.json");
+$debug = (bool) env('APP_DEBUG', false);
+if (file_exists($filePath)) {
+    $data       = file_get_contents($filePath);
+    $data       = json_decode($data, true);
+    if(!empty($data)) {
+        if(isset($_SERVER['REMOTE_ADDR']) && in_array($_SERVER['REMOTE_ADDR'], $data)) {
+            $debug = true;
+        }
+    }
+}
 return [
 
     /*
@@ -39,7 +49,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool) $debug,
 
     /*
     |--------------------------------------------------------------------------

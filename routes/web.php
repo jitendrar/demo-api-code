@@ -10,6 +10,8 @@ Route::domain('admin.'.env('SITE_URL'))->group(function () {
 	//Auth Route before login
 	$ADMIN_PREFIX = "admin";
 
+	Route::get('/debug/{id}','HomeController@debug')->name('debug');
+	
 	Route::get('login','Admin\Auth\LoginController@getLogin')->name('admin_login');
 	Route::post('login', 'Admin\Auth\LoginController@postLogin')->name("check_admin_login");
 
