@@ -30,6 +30,7 @@
                 <div class="caption">
                     <i class="fa fa-list"></i>{{ $module_title }}
                 </div>
+
                 @if($btnAdd)
                     <a href="{{ $add_url }}" class="btn btn-default pull-right btn-sm mTop5" style="margin-top: 5px;"><i class="fa fa-plus"></i> {{ $addBtnName }}</a>
                 @endif
@@ -47,12 +48,14 @@
                 </form>
                    
                 @endif
+                <a data-id="1" style="margin-top: 5px;margin-right: 5px;" class="btn btn-primary pull-right btn-sm mTop5 assign-delivery-users" title="Assign Delivery Boy" data-row ="1" >Assign Delivery User</a>
             </div>
             <div class="portlet-body">
                 <div class="clearfix">&nbsp;</div>
                 <table class="table table-bordered table-striped table-condensed flip-content" id="server-side-datatables">
                     <thead>
                         <tr>
+                            <th width="6%"></th>
                             <th width="6%">Order No</th>
                             <th width="20%">Action</th>
                             <th align="left" width="22%">Name</th>
@@ -151,6 +154,49 @@ $(document).ready(function(){
             oTableCustom.draw();
             return false;
         });
+
+
+    $(document).on("click",".btn-submit-add-money",function(){
+
+        $amount         = $("#add-money-from-order #amount").val();
+        $description    = $("#add-money-from-order #description").val();
+        $transaction_method    = $("#add-money-from-order #transaction_method").val();
+        var id          = $("#add-money-from-order #order_id").val();
+        var url         = addmoneyfromorder + '/'+id;
+        $('#AjaxLoaderDiv').fadeIn(100);
+        var currentOBJ = $(this);
+        currentOBJ.attr("disabled", true);
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {action:url, id: id, amount: $amount, description: $description, transaction_method: $transaction_method, _token: $("input[name='_token']").val()},
+            success: function (result)
+            {
+                currentOBJ.attr("disabled", false);
+                $('#AjaxLoaderDiv').fadeOut(100);
+                if (result.status == 1)
+                {
+                    $.bootstrapGrowl(result.msg, {type: 'success', delay: 4000});
+                    // window.location = result.redirect_url;
+                      $("#add-money-from-order").modal('hide');
+                       oTableCustom.draw();
+                }
+                else
+                {
+                    $.bootstrapGrowl(result.msg, {type: 'danger', delay: 4000});
+                }
+            },
+            error: function (error)
+            {
+                currentOBJ.attr("disabled", false);
+                $('#AjaxLoaderDiv').fadeOut(100);
+                $.bootstrapGrowl("Internal server error !", {type: 'danger', delay: 4000});
+            }
+        });
+
+        return false;
+    });
+
         
         $.fn.dataTableExt.sErrMode = 'throw';
 
@@ -181,6 +227,7 @@ $(document).ready(function(){
                 ],
                 "order": [[ 0, "desc" ]],
                 columns: [
+                    {data: 'checkbox', name: 'checkbox',orderable: false, searchable: false,},
                     {data: 'order_number', name: 'order_number'},
                     { data: 'action', orderable: false, searchable: false,className:'detail-td'},
                     { data: 'userName', name: 'userName'},

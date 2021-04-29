@@ -203,6 +203,48 @@ $(document).ready(function(){
                 { data: 'order_status', name: 'order_status',className:'order_status_td'},
             ]
     });
+
+    $(document).on("click",".btn-submit-add-money",function(){
+
+        $amount         = $("#add-money-from-order #amount").val();
+        $description    = $("#add-money-from-order #description").val();
+        $transaction_method    = $("#add-money-from-order #transaction_method").val();
+        var id          = $("#add-money-from-order #order_id").val();
+        var url         = addmoneyfromorder + '/'+id;
+        $('#AjaxLoaderDiv').fadeIn(100);
+        var currentOBJ = $(this);
+        currentOBJ.attr("disabled", true);
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {action:url, id: id, amount: $amount, description: $description, transaction_method: $transaction_method, _token: $("input[name='_token']").val()},
+            success: function (result)
+            {
+                currentOBJ.attr("disabled", false);
+                $('#AjaxLoaderDiv').fadeOut(100);
+                if (result.status == 1)
+                {
+                    $.bootstrapGrowl(result.msg, {type: 'success', delay: 4000});
+                    // window.location = result.redirect_url;
+                      $("#add-money-from-order").modal('hide');
+                       oTableCustom.draw();
+                }
+                else
+                {
+                    $.bootstrapGrowl(result.msg, {type: 'danger', delay: 4000});
+                }
+            },
+            error: function (error)
+            {
+                currentOBJ.attr("disabled", false);
+                $('#AjaxLoaderDiv').fadeOut(100);
+                $.bootstrapGrowl("Internal server error !", {type: 'danger', delay: 4000});
+            }
+        });
+
+        return false;
+    });
+    
 });
 </script>
 <script type="text/javascript" src="{{ asset('js/order.js?48212125') }}" ></script>

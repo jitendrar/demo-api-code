@@ -1,4 +1,4 @@
-<div class="portlet box green form-fit open-order-details-cls open-order-details-cls-{{$order->id}}" id="order-detail">
+<div data-cid = "{{$order->id}}" class="portlet box green form-fit open-order-details-cls open-order-details-cls-{{$order->id}}" id="order-detail">
     <div class="portlet-title">
         <div class="caption">
             <i class="fa fa$order"></i>Order Detail

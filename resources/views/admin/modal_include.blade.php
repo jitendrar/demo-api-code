@@ -31,6 +31,7 @@
       
     </div>
 </div>
+
 <div class="modal fade bs-modal-lg" id="add-product" role="dialog" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
     
@@ -137,6 +138,16 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">
+                        <label>Transaction Method<span class="required">*</span></label>
+                        <div class="input-group">
+                            {{ Form::select('transaction_method',[0=>"Collection",2=>"Refund"],0,['class'=>'form-control', 'id' =>'transaction_method']) }} 
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
                         <label>Add Money<span class="required">*</span></label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="amount" id="amount" placeholder="Enter Amount" data-required="true"/>
@@ -160,7 +171,7 @@
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             {!! csrf_field() !!}
             <input type="hidden" name="order_id" id="order_id" />
-            <button data-href="" type="button" class="btn btn-primary btn-submit-add-money">Assign</button>
+            <button data-href="" type="button" class="btn btn-primary btn-submit-add-money">Add Money</button>
         </div>
       </div>
       

@@ -132,6 +132,19 @@ if($authUser)
                                     <span class="arrow"></span>
                                 </a>
                             </li>
+                            <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
+                                <a href="javascript:;"> Reports
+                                    <span class="arrow"></span>
+                                </a>
+                                <ul class="dropdown-menu pull-left">
+                                    <li aria-haspopup="true" class=" ">
+                                        <a href="{{ route('dailyreports.index')}}" class="nav-link  ">
+                                            Daily Profit & Loss
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
                         </ul>
                     </div>
                     <!-- END MEGA MENU -->
