@@ -23,7 +23,7 @@
 @section('content')
 <div class="container">
     <div class="page-content-inner">
-       
+          @include($moduleViewName.".search") 
         <div class="clearfix"></div>    
         <div class="portlet box green">
             <div class="portlet-title">
@@ -41,7 +41,9 @@
                             <th>Date</th>
                             <th>Collection Amount</th>
                             <th>Refund Amount</th>
-                            <th width="30%">Final Amount</th>
+                            <th>Final Collection Amount</th>
+                            <th>Purchase Bill Price</th>
+                            <th>Profit & Loss</th>
                             
                         </tr>
                     </thead>
@@ -96,6 +98,8 @@
                         { data: 'collection_amount', className:'detail-td'},
                         { data: 'refund_amount', className:'detail-td'},
                         { data: 'total_amount', name: 'picture'},
+                        { data: 'purchase_bill_amount', name: 'dpurchase_bill_amount'},
+                        { data: 'profit_loss', name: 'profit_loss'},
                 ]
         });
         $(document).on('click','.zoomimage',function(e){
