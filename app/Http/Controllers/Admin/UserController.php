@@ -372,6 +372,8 @@ class UserController extends Controller
         ->make(true);
     }
     public function addMoney(Request $request,$id){
+         $user = Auth::guard('admins')->user();
+        $authUser = Auth::guard('admins')->user();
         $model = $this->modelObj->find($id);
         $status = 1;
         $msg ='Add Money successfully';
@@ -410,6 +412,11 @@ class UserController extends Controller
             $obj->remark = $description;
             $obj->transaction_method = $transaction_method;
             $obj->save();
+            $params['user_id']      = $user->id;
+            $params['action_id']    = $this->activityAction->ADD_AMOUNT;
+            $params['remark']       = "Added Money Rs. ".$amount." from Users listing, User ID :: ".$model->id.' '.$description;
+            ActivityLogs::storeActivityLog($params);
+
         }
         return ['status' => $status, 'msg' => $msg, 'data' => $data];
     }

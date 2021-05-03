@@ -376,9 +376,11 @@ class OrdersController extends Controller
                                 $Clientuser->balance = $Clientuser->balance+$balance;
                             } else {
                                 if($balance >= abs($Clientuser->balance)) {
+                                    $balance = $Clientuser->balance;
                                     $Clientuser->balance = ($Clientuser->balance)+(abs($Clientuser->balance));
                                 } else {
                                     $Clientuser->balance = $Clientuser->balance+$balance;
+
                                 }
                             }
                             $Clientuser->save();
@@ -394,7 +396,7 @@ class OrdersController extends Controller
                             $params=array();
                             $params['user_id']      = $user->id;
                             $params['action_id']    = $this->activityAction->ADD_AMOUNT;
-                            $params['remark']       = "Added Money from Order listing, User ID :: ".$Clientuser->id.' '.$description;
+                            $params['remark']       = "Added Money Rs. ".$balance." from Order listing, User ID :: ".$Clientuser->id.' '.$description;
                             ActivityLogs::storeActivityLog($params);
                         }
                         return response()->json(['status' => true, 'message' => "Order status updated successfully.", 'html' => $button_html,'data' => $data]);
@@ -1038,7 +1040,7 @@ class OrdersController extends Controller
                         $params=array();
                         $params['user_id']      = $authUser->id;
                         $params['action_id']    = $this->activityAction->ADD_AMOUNT;
-                        $params['remark']       = "Added Money from Order listing, User ID :: ".$Clientuser->id.' '.$description;
+                        $params['remark']       = "Added Money Rs. ".$balance." from Order listing, User ID :: ".$Clientuser->id.' '.$description;
                         ActivityLogs::storeActivityLog($params);
                     }
             }else {
