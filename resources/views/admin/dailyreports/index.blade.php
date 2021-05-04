@@ -30,7 +30,20 @@
                 <div class="caption">
                     <i class="fa fa-list"></i>{{ $module_title }}
                 </div>
-            
+                  &nbsp;                     
+                    <div class="caption pull-right " >
+                        <i class="fa fa-bookmark"></i>
+                        <span class="caption-subject bold">Total {{ $total_profit_loss_amount }}</span>
+                    </div>&nbsp;
+                     <div class="caption pull-right " >
+                        <i class="fa fa-bookmark"></i>
+                        <span class="caption-subject bold">Total Bill Amount: {{ $total_billing_amount }}</span>
+                    </div>&nbsp;
+                     <div class="caption pull-right " >
+                        <i class="fa fa-bookmark"></i>
+                        <span class="caption-subject bold">Total Collection Amount: {{ $total_collection_amount }}</span>
+                    </div>&nbsp;
+
 
             </div>
             <div class="portlet-body">
@@ -89,8 +102,8 @@
                 },
                 lengthMenu:
                 [
-                [25,50,100,150,200],
-                [25,50,100,150,200]
+                [50,100,150,200],
+                [50,100,150,200]
                 ],
                 "order": [[ 0, "DESC" ]],
                 columns: [

@@ -47,6 +47,23 @@ class ReportController extends Controller
         $data['add_url'] 		= route($this->moduleRouteText.'.create');
         $data['addBtnName'] 	= $this->module;
         $data['btnAdd'] 		= 1;
+
+    
+
+        $total_billing_amount = Billing::sum('total');
+
+        $total_collection_amount = WalletHistory::where('transaction_type','CR')->where('transaction_method','0')->sum(\DB::raw('IFNULL((transaction_amount),0)'));
+        $total_pl_amount = $total_collection_amount -  $total_billing_amount;
+        if($total_pl_amount>0){
+            $total_profit_loss_amount = 'Profit :: '.$total_pl_amount;
+        }else if($total_pl_amount<0){
+             $total_profit_loss_amount = 'Loss :: '.abs($total_pl_amount);
+        }
+        $data['total_billing_amount'] = $total_billing_amount;
+        $data['total_collection_amount'] = $total_collection_amount;
+        $data['total_profit_loss_amount'] = $total_profit_loss_amount ;
+
+
         return view($this->moduleViewName.'.index', $data);
     }
 
