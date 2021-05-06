@@ -66,7 +66,7 @@
                     <div class="form-group">
                         <label>Add Money<span class="required">*</span></label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="amount" id="amount" placeholder="Enter Amount" data-required="true"/>
+                            <input min="0" type="number" class="form-control" name="amount" id="amount" placeholder="Enter Amount" data-required="true"/>
                             <span class="input-group-addon"><span class="fa fa-money"></span></span>
                         </div>
                     </div>

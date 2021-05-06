@@ -388,7 +388,7 @@ class OrdersController extends Controller
                             $obj->order_id  = $model->id; 
                             $obj->user_id   = $Clientuser->id;
                             $obj->user_balance = $Clientuser->balance;
-                            $obj->transaction_amount = $balance;
+                            $obj->transaction_amount = abs($balance);
                             $obj->transaction_type = WalletHistory::$TRANSACTION_TYPE_CREDIT;;
                             $obj->remark = $description;
                             $obj->save();
@@ -1002,7 +1002,7 @@ class OrdersController extends Controller
         $status = 1;
         $msg = "Add Money successfully";
         $redirectUrl = $this->list_url;
-        $rules = [ 'amount' => 'required|numeric',];
+        $rules = [ 'amount' => 'required|numeric|min:0',];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             $messages = $validator->messages();
@@ -1037,10 +1037,12 @@ class OrdersController extends Controller
                         $obj->transaction_method = $transaction_method;
                         $obj->save();
                          /* store log */
+                        $remark = "Added Money Rs. ".$balance." from Order listing, User ID :: ".$Clientuser->id.' '.$description;
+                        $remark = $remark." transaction_method = ".$transaction_method;
                         $params=array();
                         $params['user_id']      = $authUser->id;
                         $params['action_id']    = $this->activityAction->ADD_AMOUNT;
-                        $params['remark']       = "Added Money Rs. ".$balance." from Order listing, User ID :: ".$Clientuser->id.' '.$description;
+                        $params['remark']       = $remark;
                         ActivityLogs::storeActivityLog($params);
                     }
             }else {

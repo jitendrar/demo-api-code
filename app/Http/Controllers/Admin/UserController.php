@@ -384,7 +384,7 @@ class UserController extends Controller
             $msg = 'Record not found!';
         }
         $validator = Validator::make($request->all(), [
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|min:0',
         ]);
         if ($validator->fails()) 
         {
@@ -412,11 +412,12 @@ class UserController extends Controller
             $obj->remark = $description;
             $obj->transaction_method = $transaction_method;
             $obj->save();
+            $remark = "Added Money Rs. ".$amount." from Users listing, User ID :: ".$model->id.' '.$description;
+            $remark = $remark." transaction_method = ".$transaction_method;
             $params['user_id']      = $user->id;
             $params['action_id']    = $this->activityAction->ADD_AMOUNT;
-            $params['remark']       = "Added Money Rs. ".$amount." from Users listing, User ID :: ".$model->id.' '.$description;
+            $params['remark']       = $remark;
             ActivityLogs::storeActivityLog($params);
-
         }
         return ['status' => $status, 'msg' => $msg, 'data' => $data];
     }
