@@ -107,11 +107,11 @@
                 ],
                 "order": [[ 0, "DESC" ]],
                 columns: [
-                        {data: 'bill_date', name: 'bill_date'},
-                        { data: 'collection_amount', className:'detail-td'},
-                        { data: 'refund_amount', className:'detail-td'},
-                        { data: 'total_amount', name: 'picture'},
-                        { data: 'purchase_bill_amount', name: 'dpurchase_bill_amount'},
+                        {data: 'bill_date'},
+                        { data: 'collection_amount', name: 'collection_amount',className:'detail-td'},
+                        { data: 'refund_amount',  name: 'refund_amount', className:'detail-td'},
+                        { data: 'total_amount', name: 'total_amount'},
+                        { data: 'purchase_bill_amount', name: 'purchase_bill_amount'},
                         { data: 'profit_loss', name: 'profit_loss'},
                 ]
         });
