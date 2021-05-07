@@ -113,10 +113,22 @@ if($authUser)
                                 <span class="arrow"></span>
                             </a>
                             </li>
-                            <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
-                            <a href="{{ route('products.index')}}"> Products
-                                <span class="arrow"></span>
-                            </a>
+
+                             <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
+                                <a href="javascript:;"> Products
+                                    <span class="arrow"></span>
+                                </a>
+                                <ul class="dropdown-menu pull-left">
+                                    <li aria-haspopup="true" class=" ">
+                                        <a href="{{ route('products.index') }}" class="nav-link  ">
+                                            Products
+                                        </a>
+                                    </li>
+                                    <li aria-haspopup="true" class=" ">
+                                        <a href="{{ route('products.latestindex') }}" class="nav-link  ">
+                                           Latest Updated Products </a>
+                                    </li>
+                                </ul>
                             </li>
                             <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
                                 <a href="{{ route('products.sorting')}}"> Products Ordering <span class="arrow"></span> </a>

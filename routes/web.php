@@ -45,6 +45,9 @@ Route::domain('admin.'.env('SITE_URL'))->group(function () {
 		Route::resource('delivery-users','Admin\DeliveryUserController');
 
 		//products list
+		Route::any('products/latestindex','Admin\ProductsController@latestindex')->name('products.latestindex');
+		Route::any('products/latestdata','Admin\ProductsController@latestdata')->name('products.latestdata');
+
 		Route::any('products/data','Admin\ProductsController@data')->name('products.data');
 		Route::get('products/sorting','Admin\ProductsController@sorting')->name('products.sorting');
 		Route::any('products/getsortdata','Admin\ProductsController@getsortdata')->name('products.getsortdata');
@@ -53,6 +56,7 @@ Route::domain('admin.'.env('SITE_URL'))->group(function () {
 		Route::any('products/deleteImage/{id}','Admin\ProductsController@deleteImage')->name('products.deleteImage');
 		Route::post('products/getproductlist','Admin\ProductsController@getproductlist');
 		Route::post('products/getproductdetails','Admin\ProductsController@getproductdetails');
+
 
 		//Offers List
 		Route::get('change-offer-status/{id}/{status}','Admin\OffersController@changeOfferStatus')->name('changeOfferStatus');

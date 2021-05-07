@@ -14,9 +14,9 @@
                 <div class="col-md-4">
                     <label class="control-label">Bill Date Range</label>
                     <div class="input-group input-large date-picker input-daterange" data-date="10/11/2012" data-date-format="mm/dd/yyyy">
-                        {!! Form::text('search_start_date',null,['class'=>'form-control search_date_picker','placeholder'=>'Delivery Date','id'=>'search_start_date']) !!}
+                        {!! Form::text('search_start_date',null,['autocomplete'=>'off','class'=>'form-control search_date_picker','placeholder'=>'Delivery Date','id'=>'search_start_date']) !!}
                         <span class="input-group-addon"> To </span>
-                        {!! Form::text('search_end_date',null,['class'=>'form-control search_date_picker','placeholder'=>'Delivery Date','id'=>'search_end_date']) !!}
+                        {!! Form::text('search_end_date',null,['autocomplete'=>'off','class'=>'form-control search_date_picker','placeholder'=>'Delivery Date','id'=>'search_end_date']) !!}
                     </div>
                 </div>
             </div>

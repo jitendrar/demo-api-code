@@ -34,17 +34,17 @@
                     <a href="{{ $add_url }}" class="btn btn-default pull-right btn-sm mTop5" style="margin-top: 5px;"><i class="fa fa-plus"></i> {{ $addBtnName }}</a>
                 @endif
                 &nbsp;                     
-                     <div class="caption pull-right " >
-                        <i class="fa fa-bookmark"></i>
-                        <span class="caption-subject bold">Total {{ $total_profit_loss_amount }}</span>
-                    </div>&nbsp;
                     <div class="caption pull-right " >
                         <i class="fa fa-bookmark"></i>
-                        <span class="caption-subject bold">Total Collection Amount: {{ $total_collection_amount }}</span>
+                        <span class="caption-subject bold">Total <label id="total_profit_loss_amount"></label> </span>
                     </div>&nbsp;
                      <div class="caption pull-right " >
                         <i class="fa fa-bookmark"></i>
-                        <span class="caption-subject bold">Total Bill Amount: {{ $total_billing_amount }}</span>
+                        <span class="caption-subject bold">Total Bill Amount: <label id="total_billing_amount"></label> </span>
+                    </div>&nbsp;
+                     <div class="caption pull-right " >
+                        <i class="fa fa-bookmark"></i>
+                        <span class="caption-subject bold">Total Collection Amount: <label id="total_collection_amount"></label> </span>
                     </div>&nbsp;
 
             </div>
@@ -121,6 +121,13 @@
                         data.search_end_date = $("#search-frm input[name='search_end_date']").val();
                     }
                 },
+                drawCallback: function(){
+                      $("#total_collection_amount").text(this.api().ajax.json().total_collection_amount);
+                      $("#total_billing_amount").text(this.api().ajax.json().total_billing_amount);
+                      $("#total_profit_loss_amount").text(this.api().ajax.json().total_profit_loss_amount);
+
+                },
+
                 "fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('id', 'tr-'+aData['id']);
                 },
@@ -129,7 +136,7 @@
                 [25,50,100,150,200],
                 [25,50,100,150,200]
                 ],
-                "order": [[ 0, "ASC" ]],
+                "order": [[ 0, "DESC" ]],
                 columns: [
                         {data: 'bill_date', name: 'bill_date'},
                         { data: 'total', className:'detail-td'},

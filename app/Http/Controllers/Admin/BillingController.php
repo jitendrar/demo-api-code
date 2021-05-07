@@ -47,18 +47,6 @@ class BillingController extends Controller
         $data['add_url'] 		= route($this->moduleRouteText.'.create');
         $data['addBtnName'] 	= $this->module;
         $data['btnAdd'] 		= 1;
-        $total_billing_amount = Billing::sum('total');
-        $total_collection_amount = Billing::sum('collection_amount');
-        $total_pl_amount = $total_collection_amount -  $total_billing_amount;
-        if($total_pl_amount>0){
-            $total_profit_loss_amount = 'Profit :: '.$total_pl_amount;
-        }else if($total_pl_amount<0){
-             $total_profit_loss_amount = 'Loss :: '.abs($total_pl_amount);
-        }
-        $data['total_billing_amount'] = $total_billing_amount;
-        $data['total_collection_amount'] = $total_collection_amount;
-        $data['total_profit_loss_amount'] = $total_profit_loss_amount ;
-
         return view($this->moduleViewName.'.index', $data);
     }
 
@@ -187,6 +175,26 @@ class BillingController extends Controller
     
     public function Data(Request $request)
     {
+          $search_start_date  = request()->get("search_start_date");
+        $search_end_date    = request()->get("search_end_date"); 
+        $query = new Billing;
+        if(!empty($search_start_date)) {
+            $query = $query->where("bill_date", '>=', $search_start_date);
+        }
+        if(!empty($search_end_date)) {
+            $query = $query->where("bill_date", '<=', $search_end_date);
+        }
+        $total_billing_amount = $query->sum('total');
+        $total_collection_amount = $query->sum('collection_amount');
+        $total_pl_amount = $total_collection_amount -  $total_billing_amount;
+        $total_profit_loss_amount="No Profit/Loss";
+        if($total_pl_amount>0){
+            $total_profit_loss_amount = 'Profit :: '.$total_pl_amount;
+        }else if($total_pl_amount<0){
+             $total_profit_loss_amount = 'Loss :: '.abs($total_pl_amount);
+        }
+
+
         $authUser = Auth::guard('admins')->user();
         $modal = Billing::select('billings.*');
         // $modal = $modal->orderBy('billings.bill_date','ASC');
@@ -232,8 +240,16 @@ class BillingController extends Controller
                 }
 
                 $goto = \URL::route($this->moduleRouteText.'.index', $searchData);
-                \session()->put($this->moduleRouteText.'_goto',$goto);
-            })
+               
+          })->with('total_billing_amount',function () use ($total_billing_amount) {
+            return $total_billing_amount;
+    })
+        ->with('total_collection_amount',function () use ($total_collection_amount) {
+            return $total_collection_amount;
+    })
+        ->with('total_profit_loss_amount',function () use ($total_profit_loss_amount) {
+            return $total_profit_loss_amount;
+    })
         ->make(true);
     }
 }

@@ -237,6 +237,13 @@ $(document).ready(function(){
                 ]
         });
     });
+
+    $('#add-money-from-order').on('hidden.bs.modal', function () {
+      $("#transaction_method").val(0);
+      $("#amount").val("");
+      $("#description").val("");
+  });
+    
 </script>
 <script type="text/javascript" src="{{ asset('js/order.js?124') }}" ></script>
 @endsection
