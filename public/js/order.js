@@ -113,7 +113,9 @@ jQuery(document).ready(function(){
                 if (result.status == 1)
                 {
                     $.bootstrapGrowl(result.msg, {type: 'success', delay: 4000});
-                    window.location = result.redirect_url;
+                    // window.location = result.redirect_url;
+                     $("#assign-delivery-boy").modal('hide');
+                     oTableCustom.draw();
                 }
                 else
                 {
