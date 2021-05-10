@@ -48,24 +48,6 @@ class ReportController extends Controller
         $data['addBtnName'] 	= $this->module;
         $data['btnAdd'] 		= 1;
 
-    
-
-        $total_billing_amount = Billing::sum('total');
-
-        $total_collection_amount = WalletHistory::where('transaction_type','CR')->where('transaction_method','0')->sum(\DB::raw('IFNULL((transaction_amount),0)'));
-        $total_collection_amount_refund = WalletHistory::where('transaction_type','CR')->where('transaction_method','2')->sum(\DB::raw('IFNULL((transaction_amount),0)'));
-        $total_collection_amount_final = $total_collection_amount - $total_collection_amount_refund;
-        $total_pl_amount = $total_collection_amount_final -  $total_billing_amount;
-        if($total_pl_amount>0){
-            $total_profit_loss_amount = 'Profit :: '.$total_pl_amount;
-        }else if($total_pl_amount<0){
-             $total_profit_loss_amount = 'Loss :: '.abs($total_pl_amount);
-        }
-        $data['total_billing_amount'] = $total_billing_amount;
-        $data['total_collection_amount'] = $total_collection_amount_final;
-        $data['total_profit_loss_amount'] = $total_profit_loss_amount ;
-
-
         return view($this->moduleViewName.'.index', $data);
     }
 
@@ -97,6 +79,45 @@ class ReportController extends Controller
     public function Data(Request $request)
     {
             \DB::enableQueryLog();
+
+        $search_start_date  = request()->get("search_start_date");
+        $search_end_date    = request()->get("search_end_date"); 
+        $query = new Billing;
+        if(!empty($search_start_date)) {
+            $query = $query->where("bill_date", '>=', $search_start_date);
+        }
+        if(!empty($search_end_date)) {
+            $query = $query->where("bill_date", '<=', $search_end_date);
+        }
+        $total_billing_amount = $query->sum('total');
+
+         $query = WalletHistory::where('transaction_type','CR')->where('transaction_method','0');
+                                     if(!empty($search_start_date)) {
+                                        $query->where(\DB::raw('DATE(wallet_history.created_at)'), '>=', $search_start_date);
+                                    }
+                                    if(!empty($search_end_date)) {
+                                       $query->where(\DB::raw('DATE(wallet_history.created_at)'), '<=', $search_end_date);
+                                    }
+        $total_collection_amount = $query->sum(\DB::raw('IFNULL((transaction_amount),0)'));
+
+        $query = WalletHistory::where('transaction_type','CR')->where('transaction_method','2');
+                                        if(!empty($search_start_date)) {
+                                        $query->where(\DB::raw('DATE(wallet_history.created_at)'), '>=', $search_start_date);
+                                        }
+                                        if(!empty($search_end_date)) {
+                                           $query->where(\DB::raw('DATE(wallet_history.created_at)'), '<=', $search_end_date);
+                                        }
+        $total_collection_amount_refund = $query->sum(\DB::raw('IFNULL((transaction_amount),0)'));
+
+        $total_collection_amount_final = $total_collection_amount - $total_collection_amount_refund;
+        $total_pl_amount = $total_collection_amount_final -  $total_billing_amount;
+        if($total_pl_amount>0){
+            $total_profit_loss_amount = 'Profit :: '.$total_pl_amount;
+        }else if($total_pl_amount<0){
+             $total_profit_loss_amount = 'Loss :: '.abs($total_pl_amount);
+        }
+
+
        $modal = WalletHistory::from(function ($query) {
                 $query->select('MainWH.*',
                 \DB::raw('IFNULL(SUM(`wallet_history2`.`transaction_amount`),0) as refund_amount'),
@@ -120,7 +141,7 @@ class ReportController extends Controller
                 },'MainWHA')
             ->select('MainWHA.*',
                 \DB::raw('IFNULL(SUM(billings.total),0) as purchase_bill_amount'),
-                \DB::raw('((MainWHA.collection_amount - IFNULL(SUM(`MainWHA`.`transaction_amount`),0)) - IFNULL(SUM(billings.total),0)) as profit_loss')
+                \DB::raw('((MainWHA.total_amount) - IFNULL(SUM(billings.total),0)) as profit_loss')
             )
             ->leftJoin('billings as billings',\DB::raw('DATE(billings.bill_date)'),\DB::raw('DATE(MainWHA.bill_date)'))
             ->groupby(\DB::raw('DATE(MainWHA.bill_date)'),\DB::raw('DATE(billings.bill_date)'))
@@ -173,6 +194,15 @@ class ReportController extends Controller
                 $goto = \URL::route($this->moduleRouteText.'.index', $searchData);
                 \session()->put($this->moduleRouteText.'_goto',$goto);
             })
+        ->with('total_billing_amount',function () use ($total_billing_amount) {
+            return $total_billing_amount;
+    })
+        ->with('total_collection_amount',function () use ($total_collection_amount_final) {
+            return $total_collection_amount_final;
+    })
+        ->with('total_profit_loss_amount',function () use ($total_profit_loss_amount) {
+            return $total_profit_loss_amount;
+    })
         ->make(true);
     }
 }

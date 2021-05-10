@@ -33,15 +33,15 @@
                   &nbsp;                     
                     <div class="caption pull-right " >
                         <i class="fa fa-bookmark"></i>
-                        <span class="caption-subject bold">Total {{ $total_profit_loss_amount }}</span>
+                        <span class="caption-subject bold">Total <label id="total_profit_loss_amount"></label> </span>
                     </div>&nbsp;
                      <div class="caption pull-right " >
                         <i class="fa fa-bookmark"></i>
-                        <span class="caption-subject bold">Total Bill Amount: {{ $total_billing_amount }}</span>
+                        <span class="caption-subject bold">Total Bill Amount: <label id="total_billing_amount"></label> </span>
                     </div>&nbsp;
                      <div class="caption pull-right " >
                         <i class="fa fa-bookmark"></i>
-                        <span class="caption-subject bold">Total Collection Amount: {{ $total_collection_amount }}</span>
+                        <span class="caption-subject bold">Total Collection Amount: <label id="total_collection_amount"></label> </span>
                     </div>&nbsp;
 
 
@@ -97,6 +97,12 @@
                         data.search_end_date = $("#search-frm input[name='search_end_date']").val();
                     }
                 },
+                drawCallback: function(){
+                      $("#total_collection_amount").text(this.api().ajax.json().total_collection_amount);
+                      $("#total_billing_amount").text(this.api().ajax.json().total_billing_amount);
+                      $("#total_profit_loss_amount").text(this.api().ajax.json().total_profit_loss_amount);
+                },
+
                 "fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('id', 'tr-'+aData['id']);
                 },
@@ -105,6 +111,7 @@
                 [50,100,150,200],
                 [50,100,150,200]
                 ],
+               
                 "order": [[ 0, "DESC" ]],
                 columns: [
                         {data: 'bill_date'},
@@ -115,6 +122,7 @@
                         { data: 'profit_loss', name: 'profit_loss'},
                 ]
         });
+
         $(document).on('click','.zoomimage',function(e){
             var images = $(this).attr('src');
             var img='<img  src="'+images+'" class="img-rounded zoomimage" width="100%" height="100%" border="2" align="middle">';
@@ -123,6 +131,20 @@
         });
 
     });
+
+
+$.fn.dataTable.Api.register( 'sum()', function ( ) {
+    return this.flatten().reduce( function ( a, b ) {
+        if ( typeof a === 'string' ) {
+            a = a.replace(/[^\d.-]/g, '') * 1;
+        }
+        if ( typeof b === 'string' ) {
+            b = b.replace(/[^\d.-]/g, '') * 1;
+        }
+ 
+        return a + b;
+    }, 0 );
+} );
 </script>
 @endsection
 

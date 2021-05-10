@@ -204,6 +204,12 @@ $(document).ready(function(){
             ]
     });
 
+    $('#add-money-from-order').on('hidden.bs.modal', function () {
+      $("#transaction_method").val(0);
+      $("#amount").val("");
+      $("#description").val("");
+  });
+    
     $(document).on("click",".btn-submit-add-money",function(){
 
         $amount         = $("#add-money-from-order #amount").val();

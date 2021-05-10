@@ -217,5 +217,11 @@
                 ]
         });
     });
+
+    $('#add-money-model').on('hidden.bs.modal', function () {
+      $("#transaction_method").val(0);
+      $("#amount").val("");
+      $('textarea[name="description"]').val('');
+  });
 </script>
 @endsection
