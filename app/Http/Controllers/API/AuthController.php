@@ -592,7 +592,7 @@ class AuthController extends Controller
                 if($arrOtp['status'] == 1) {
                     $StatusCode     = 200;
                     $status         = 1;
-                    $msg            = __('words.user_created_successfully');
+                    $msg            = __('words.user_change_phone_msg');
                     $user           = User::where('id',$userID)->first();
                     $accessToken    = $user->createToken('authToken')->accessToken;
                     $data           = new UserResource($user);
