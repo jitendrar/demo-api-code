@@ -200,7 +200,7 @@ $(document).ready(function(){
         
         $.fn.dataTableExt.sErrMode = 'throw';
 
-        var oTableCustom = $('#server-side-datatables').DataTable({
+         oTableCustom = $('#server-side-datatables').DataTable({
                 processing: true,
                 serverSide: true,
                 searching: false,

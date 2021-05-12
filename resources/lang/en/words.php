@@ -33,5 +33,6 @@ return [
 	'referral_msg_text' => "https://play.google.com/store/apps/details?id=com.phpdots.bopaldaily \r\n \r\n Register into Bopal Daily App using this Referral code : [USER_REFERRAL_CODE] and you will get reward on your first order.",
 	'no_address_available' => 'There is no address available',
 	'user_not_available' => 'There is no user available',
+	'user_change_phone_msg' => 'OTP sent to new number',
 ];
 ?>

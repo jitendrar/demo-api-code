@@ -95,15 +95,14 @@
                         <i class="fa fa-bookmark"></i>
                         <span class="caption-subject bold">Pending Order Amount + Delivery Charge: {{ $tota_pending_amount }}</span>
                     </div>    
-                 
-                    
-
+                      <a data-id="1" style="margin-top: 5px;margin-right: 5px;" class="btn btn-primary pull-right btn-sm mTop5 assign-delivery-users" title="Assign Delivery Boy" data-row ="1" >Assign Delivery User</a>
                 </div>
-                
+    
             <div class="portlet-body">
                 <table class="table table-bordered table-striped table-condensed flip-content" id="server-side-datatables" width="100%">
                     <thead>
                         <tr>
+                            <th width="5%"></th>
                             <th width="5%">Order No</th>
                             <th width="25%">Action</th>
                             <th align="left" width="20%">Name</th>
@@ -195,6 +194,7 @@ $(document).ready(function(){
             ],
             "order": [[ 0, "desc" ]],
             columns: [
+                 {data: 'checkbox', name: 'checkbox',orderable: false, searchable: false},
                 {data: 'order_number', name: 'order_number'},
                 { data: 'action', orderable: false, searchable: false,className:'detail-td'},
                 { data: 'userName', name: 'userName'},
