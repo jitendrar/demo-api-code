@@ -113,7 +113,7 @@
                 <div class="box-dv ">
                     <img src="{{ asset('images/services-01.png') }}" class="img-fluid" alt="">
                     <h6>Choose Product</h6>
-                    <p>add items to your shopping basket</p>
+                    <p>Add items to your shopping basket</p>
                 </div>
             </div>
             <div class="col-lg-4 col-md-12 service-box-dv">
@@ -219,7 +219,7 @@
                     <h2>Download the App</h2>
                     <h5><i>Get Groceries at one store</i></h5>
                     <p>
-                      Discover new products and shop for all your food and grocery needs from the comfort of your home or office. No more getting stuck in traffic jams, paying for parking, standing in long queues and carrying heavy bags – get everything you need, when you need, right at your doorstep.
+                      Discover new products and shop for all your food and grocery needs from the comfort of your home or office. No more getting stuck in traffic jams, paying for parking, standing in long queues and carrying heavy bags – get everything you need, right at your doorstep.
                     </p>
                     <div class="services-main-dv">
                         <div class="col-lg-6 col-md-6 same-service-download">
@@ -277,8 +277,8 @@
                 </div>
                 <div class="col-lg-3 address-footer">
                     <div class="address-inner-dv">
-                            <p><span><img src="{{ asset('images/email.png') }}" class="img-fluid" alt=""></span> contact@bopaldaily.com</p>
-                            <p><span><img src="{{ asset('images/phone-call.png') }}" clas="img-fluid" alt=""></span>+91 98765 43210 </p>
+                            <p><span><img src="{{ asset('images/email.png') }}" class="img-fluid" alt=""></span> contact@phpdots.com</p>
+                            <p><span><img src="{{ asset('images/phone-call.png') }}" clas="img-fluid" alt=""></span>+91 98250 96687</p>
                     </div>
                 </div>
                 <div class="col-lg-4 form-blg-dv">
