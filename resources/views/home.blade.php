@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Homepage</title>
+    <title>Bopal Daily</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link href="{{ asset('css/front/bootstrap.min.css') }}" rel="stylesheet">
@@ -11,22 +11,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/front/style.css') }}">
     <!-- Facebook Pixel Code -->
-    <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-          n.queue=[];t=b.createElement(e);t.async=!0;
-          t.src=v;s=b.getElementsByTagName(e)[0];
-          s.parentNode.insertBefore(t,s)}(window, document,'script',
-              'https://connect.facebook.net/en_US/fbevents.js');
-          fbq('init', '448043992931917');
-          fbq('track', 'PageView');
+      <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '448043992931917');
+            fbq('track', 'PageView');
       </script>
-      <noscript><img height="1" width="1" style="display:none"
-          src="https://www.facebook.com/tr?id=448043992931917&ev=PageView&noscript=1"
-          /></noscript>
-          <!-- End Facebook Pixel Code -->
+      <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=448043992931917&ev=PageView&noscript=1" /></noscript>
+    <!-- End Facebook Pixel Code -->
+
 </head>
 <body>
 <div class="navigation-wrap start-header start-style">
@@ -77,12 +76,13 @@
         <div class="row mt20">
             <div class="col-lg-5 col-md-9 col-sm-10 left-banner-details">
                 <div class="banner-inner-detail">
-                    <h1>BEST WAY</h1>
-                    <h2>Make Your Life Easy With This App</h2>
-                    <p>It is a long established fact that a reader will be distracted by 
-                        the readable content of a page when looking at its layout.</p>
+                    <h1>BEST WAY To </h1>
+                    <h2>Make your shopping easy with this App</h2>
+                    <p>Bopal Daily is a Grocery Delivery App. Get Great Deals on Fresh Vegetables, fruits, Dairy Products and seasonal products with economical Price.</p>
                     <div class="btn-banner-dv">
-                    <a href="#"><img src="{{ asset('images/banner-link.jpg') }}" class="img-fluid" alt=""></a>
+                      <a href="https://play.google.com/store/apps/details?id=com.phpdots.bopaldaily">
+                        <img src="{{ asset('images/banner-link.jpg') }}" class="img-fluid" alt="">
+                      </a>
                     </div>
                     <div class="icon-banner-media-dv">
                     <p>Follow us on</p>
@@ -105,8 +105,7 @@
         <div class="row d-flex justify-content-center">
             <div class="col-lg-6 col-md-7 col-sm-8 title-secand-heading-dv">
                 <h2>How it Works</h2>
-                <p>It is a long established fact that a reader will be distracted
-                    by the readable content of a page when looking at its layout.</p>
+                <p>Bopal Daily App is user friendly and easy to use App, that will make your shopping easier</p>
             </div>
         </div>
         <div class="row services-row-dv">
@@ -114,27 +113,29 @@
                 <div class="box-dv ">
                     <img src="{{ asset('images/services-01.png') }}" class="img-fluid" alt="">
                     <h6>Choose Product</h6>
-                    <p>It is a long established fact that a reader will be distracted.</p>
+                    <p>add items to your shopping basket</p>
                 </div>
             </div>
             <div class="col-lg-4 col-md-12 service-box-dv">
                 <div class="secand-no">
                     <img src="{{ asset('images/service-02.png') }}" class="img-fluid" alt="">
-                    <h6>Choose Product</h6>
-                    <p>It is a long established fact that a reader will be distracted.</p>
+                    <h6>Choose time slot</h6>
+                    <p>Choose a convenient date and delivery time </p>
                 </div>
             </div>
             <div class="col-lg-4 col-md-12 service-box-dv ">
                 <div class=" thard-no">
                     <img src="{{ asset('images/services-03.png') }}" class="img-fluid" alt="">
-                    <h6>Choose Product</h6>
-                    <p>It is a long established fact that a reader will be distracted.</p>
+                    <h6>Get your order</h6>
+                    <p>Your products will be home-delivered as per your order.</p>
                 </div>
             </div>
         </div>
         <div class="row d-flex justify-content-center">
             <div class="col-lg-4 btn-services-dv">
-                <a href="#"><img src="{{ asset('images/banner-link.jpg') }}" class="img-fluid" alt=""></a>
+                <a href="https://play.google.com/store/apps/details?id=com.phpdots.bopaldaily">
+                  <img src="{{ asset('images/banner-link.jpg') }}" class="img-fluid" alt="">
+                </a>
             </div>
         </div>
     </div>
@@ -149,13 +150,11 @@
             <div class="col-lg-5 col-md-9 col-sm-9 right-details-dv d-flex align-items-center">
             <div class="about-inner-details-dv">
                 <h2>About us</h2>
-                <p>Contrary to popular belief, Lorem Ipsum is not simply
-                     random text. It has roots in a piece of classical.
+                <p>
+                  Bopal Daily is the best app to buy your daily necessities products online near you. We are delivering product in Bopal, Ghuma and Shela area of Ahmedabad.
                 </p>
-              
-                <p>Richard McClintock, a Latin professor at Hampden-Sydney 
-                    College in Virginia, looked up one of the more obscure Latin
-                    words, consectetur, from a Lorem Ipsum passage.
+                <p>
+                  Wide range of products, including fresh fruits and vegetables. Enjoy assured low prices with great offers including discounts, bundle pack offerings and promotions. We take pride in Assured quality and timely delivery. 
                 </p>
                 <a href="#" class="btn-nav-dv  ">Contact us
                    <i class="fas fa-arrow-right"></i><span class="circle"></span></a>
@@ -184,11 +183,8 @@
                     </div>
                     <div class="inner-product-details-dv">
                         <h2>Seasonal Products</h2>
-                        <p>We are selling 100% organic products as on season like wheat 
-                            (Tukdi / Lokwan), Mangoes (Gir Kesar / Alphonso).</p>
-                        <p>Richard McClintock, a Latin professor at Hampden-Sydney 
-                            College in Virginia, looked up one of the more obscure Latin
-                            words, consectetur, from a Lorem Ipsum passage.
+                        <p>
+                          We are selling all seasonal products like Whet (Lokwan, Tukdi, Bhalia etc.), Mangoes (Gir Kesar, Organic Kesar, Hafus etc.)
                         </p>
                     </div>
                     <div class="btn-product-blg">
@@ -201,7 +197,9 @@
                               </li>
                                <li><p>OR</p></li>
                                <li>
-                                   <a href="#"><img src="{{ asset('images/Google-pay.png') }}" class="img-fluid google-product" alt=""></a>
+                                   <a href="https://play.google.com/store/apps/details?id=com.phpdots.bopaldaily">
+                                    <img src="{{ asset('images/Google-pay.png') }}" class="img-fluid google-product" alt="">
+                                  </a>
                                 </li>
                            </ul>
                         </div>
@@ -219,10 +217,9 @@
                 <div class="inner-details-download">
                     <img src="{{ asset('images/download-shap-top.png') }}" class="top-left-shap" alt="">
                     <h2>Download the App</h2>
-                    <h5><i>Get groceries at one store!</i></h5>
-                    <p>Richard McClintock, a Latin professor at 
-                       Hampden-Sydney College in Virginia, looked 
-                       up one of the more obscure Latin words.
+                    <h5><i>Get Groceries at one store</i></h5>
+                    <p>
+                      Discover new products and shop for all your food and grocery needs from the comfort of your home or office. No more getting stuck in traffic jams, paying for parking, standing in long queues and carrying heavy bags – get everything you need, when you need, right at your doorstep.
                     </p>
                     <div class="services-main-dv">
                         <div class="col-lg-6 col-md-6 same-service-download">
@@ -243,7 +240,9 @@
                         </div>
                     </div>
                     <div class="download-section-btn">
-                        <a href="#"><img src="{{ asset('images/Google-pay.png') }}" class="img-fluid" alt=""></a>
+                        <a href="https://play.google.com/store/apps/details?id=com.phpdots.bopaldaily">
+                          <img src="{{ asset('images/Google-pay.png') }}" class="img-fluid" alt="">
+                        </a>
                     </div>
                 </div>
             </div>
