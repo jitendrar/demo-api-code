@@ -332,7 +332,7 @@ class ProductsController extends Controller
             ProductMapping::where(['product_id' => $model->id])->whereNotIn('category_id', $categories ?? [])->delete();
 
             $model->status = $status_val;
-            if($model->unity_price!=$unity_price){
+            if($model->unity_price!=$unity_price['en']){
                  $model->updated_at = NOW();
             }
             $model->save();
