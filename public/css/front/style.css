@@ -1132,8 +1132,8 @@ input:focus ~ .highlight {
     .product-inner-details-dv {
         position: absolute;
         z-index: 9;
-        width: 96%;
-        bottom:-385px;
+        width: 100%;
+        bottom:-320px;
     }
     .heading-product-title{
         margin:0 auto;
