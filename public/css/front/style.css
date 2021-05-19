@@ -217,7 +217,8 @@ body{
 }
 .btn-nav-dv  i{
     position: absolute;
-    right:7px;
+   /* right:7px;*/
+    right:15px;
     top:13px;
 }
 .btn-nav-dv:hover {

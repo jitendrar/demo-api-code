@@ -86,8 +86,8 @@
                     <div class="icon-banner-media-dv">
                     <p>Follow us on</p>
                     <ul class="icon-media-banner">
-                        <li>
-                            <a href="https://m.facebook.com/Bopal-Daily-106560664871241/">
+                        <li>   
+                            <a href=" https://www.facebook.com/Bopal-Daily-106560664871241/">
                                 <img src="{{ asset('images/facebook-banner-icon.png') }}" class="img-fluid" alt="icon">
                             </a>
                         </li>
