@@ -49,7 +49,7 @@
                                 <a class="nav-link" data-hash="#about" href="#How-it-work" >How it Works</a>
                             </li>
                             <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4" >
-                                <a class="nav-link" href="#about-us" >Abou us</a>
+                                <a class="nav-link" href="#about-us" >About Us</a>
                             </li>
                             <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4" >
                                 <a class="nav-link" href="#seasonal-products">Seasonal Products</a>
@@ -59,7 +59,7 @@
                                 <a class="nav-link" href="#download">Download</a>
                             </li>
                             <li class=" pl-4 pl-md-0 ml-0 ml-md-4 nav-btn-dv">
-                            <a href="#contact-us" class="btn-nav-dv  ">Contact us
+                            <a href="#contact-us" class="btn-nav-dv  ">Contact Us
                                  <i class="fas fa-arrow-right"></i>               
                             </a>
                             </li>
@@ -86,13 +86,11 @@
                     <div class="icon-banner-media-dv">
                     <p>Follow us on</p>
                     <ul class="icon-media-banner">
-                        <li>
-                            <a href="https://m.facebook.com/Bopal-Daily-106560664871241/">
+                        <li>   
+                            <a href=" https://www.facebook.com/Bopal-Daily-106560664871241/">
                                 <img src="{{ asset('images/facebook-banner-icon.png') }}" class="img-fluid" alt="icon">
                             </a>
                         </li>
-                        <li><a href="#"><img src="{{ asset('images/linkdin.png') }}" class="img-fluid" alt="icon"></a></li>
-                        <li><a href="#"><img src="{{ asset('images/instagram.png') }}" class="img-fluid" alt="icon"></a></li>
                     </ul>
                     </div>
                 </div>
