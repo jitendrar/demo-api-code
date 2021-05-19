@@ -1632,9 +1632,9 @@ input:focus ~ .highlight {
         padding:0px 12px;
     }
     .bottom-right-vector {
-    right: -5px;
-    bottom: 19px;
-    width: 45px;
+        right: -5px;
+        bottom: 19px;
+        width: 45px;
     }
 }
 @media (max-width: 320px) {
