@@ -337,6 +337,10 @@
          
 
             (function ($) {
+                  $('.navbar-toggler').click(function(){
+                
+                   $('body').toggleClass('menu-open');
+                });
                 // var $root = jQuery('html, body');
 
                 // jQuery('a[href^="#"]').click(function () {

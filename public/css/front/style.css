@@ -1056,6 +1056,9 @@ input:focus ~ .highlight {
     }
 }
 @media (max-width: 991px) {
+      .menu-open .navigation-wrap {
+        background-color:#fff!important;   
+    }
      .nav-btn-dv{
          width:100%;
          padding:18px 0px;
@@ -1663,6 +1666,7 @@ input:focus ~ .highlight {
     }
     .seasonal-products-dv {
         height: 845px;
+        border:1px solid red;
     }
     .seasonal-products-dv .main-dv::after {
         height: 556px;
