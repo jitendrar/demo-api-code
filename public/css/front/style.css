@@ -1118,7 +1118,7 @@ input:focus ~ .highlight {
     .seasonal-products-dv .main-dv::after {
         height: 900px;
         width:100%;
-       bottom: -457px;
+        bottom: -377px;
         left: 0px;
         position: absolute;
        
@@ -1331,7 +1331,7 @@ input:focus ~ .highlight {
         position: absolute;
         z-index: 9;
         width: 96%;
-        bottom: -445px;
+        bottom: -332px;
     }
     .heading-product-title{
         margin:0 auto;
@@ -1367,13 +1367,17 @@ input:focus ~ .highlight {
         left: 5px;
     }
     .bottom-right-vector {
-        right: -132px;
+        right: -17px;
     }
      .btn-services-dv{
       margin-left: 0px;
     }
     .down-right-img-dv{
-        margin:initial;
+        margin:0 auto;
+    }
+    .download-section-dv {
+        padding-bottom: 50px;
+        padding-top: 0px;
     }
 }
 @media only screen and (max-width: 540px) {
@@ -1503,8 +1507,8 @@ input:focus ~ .highlight {
         width:40%;
     }
     .seasonal-products-dv .main-dv::after {
-    	height: 718px;
-
+    	height:579px;
+        top: 163px;
     }
     .seasonal-products-dv {
 	    height: 900px;
@@ -1520,7 +1524,8 @@ input:focus ~ .highlight {
         width:60px;
     }
     .seasonal-products-dv {
-	    padding: 50px 0px;
+	    padding-top:50px;
+        padding-bottom:0px;
     }
     .same-service-download {
 	    width: 100%;
@@ -1528,6 +1533,9 @@ input:focus ~ .highlight {
     .footer-form-dv {
         width: 288px;
         top: 0px;
+    }
+    .product-inner-details-dv{
+        bottom: -288px;
     }
 }
 @media (max-width: 414px) {
