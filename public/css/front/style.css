@@ -1616,7 +1616,7 @@ input:focus ~ .highlight {
      max-width:100%!important;
     }
     .seasonal-products-dv {
-	   height: 817px;
+	height: 817px;
     }
     .inner-details-download h2 {
     	font-size: 24px;
@@ -1642,9 +1642,9 @@ input:focus ~ .highlight {
         margin-top: 206px;
     }
     .bottom-right-vector {
-    right: -2px;
-    bottom: 17px;
-    width: 37px;
+        right: -2px;
+        bottom: 17px;
+        width: 37px;
     }
     .shap-top-dv {
         left: 182px;
@@ -1659,5 +1659,12 @@ input:focus ~ .highlight {
     .frist-blg-dv:after {
         left: 8px;
         top: 225px;
+    }
+    .seasonal-products-dv {
+        height: 845px;
+    }
+    .seasonal-products-dv .main-dv::after {
+        height: 556px;
+        top: 193px;
     }
 }
