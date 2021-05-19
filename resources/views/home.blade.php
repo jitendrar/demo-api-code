@@ -1,8 +1,3 @@
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -54,7 +49,7 @@
                                 <a class="nav-link" data-hash="#about" href="#How-it-work" >How it Works</a>
                             </li>
                             <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4" >
-                                <a class="nav-link" href="#about-us" >Abou us</a>
+                                <a class="nav-link" href="#about-us" >About Us</a>
                             </li>
                             <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4" >
                                 <a class="nav-link" href="#seasonal-products">Seasonal Products</a>
@@ -64,7 +59,7 @@
                                 <a class="nav-link" href="#download">Download</a>
                             </li>
                             <li class=" pl-4 pl-md-0 ml-0 ml-md-4 nav-btn-dv">
-                            <a href="#contact-us" class="btn-nav-dv  ">Contact us
+                            <a href="#contact-us" class="btn-nav-dv  ">Contact Us
                                  <i class="fas fa-arrow-right"></i>               
                             </a>
                             </li>
