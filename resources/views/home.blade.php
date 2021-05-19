@@ -91,8 +91,6 @@
                                 <img src="{{ asset('images/facebook-banner-icon.png') }}" class="img-fluid" alt="icon">
                             </a>
                         </li>
-                        <li><a href="#"><img src="{{ asset('images/linkdin.png') }}" class="img-fluid" alt="icon"></a></li>
-                        <li><a href="#"><img src="{{ asset('images/instagram.png') }}" class="img-fluid" alt="icon"></a></li>
                     </ul>
                     </div>
                 </div>
