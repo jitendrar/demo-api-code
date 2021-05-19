@@ -898,14 +898,13 @@ input:focus ~ .highlight {
 .footer-down-heading-dv{
     border-top:1px solid #707070;
     display:flex;
+    justify-content: space-between;
 }
 .footer-down-heading-dv p{
     color:#fff;
     padding-top:30px;
     padding-bottom:15px;
 }
-
-
 @media (max-width: 1900px) {
 
 }
@@ -947,8 +946,6 @@ input:focus ~ .highlight {
         left: 283px;
     }
 }
-
-
 @media (min-width: 992px) and (max-width: 1199px) {
     .nav-item{
         margin-left: 0.5rem !important;
@@ -1201,15 +1198,26 @@ input:focus ~ .highlight {
     .orange-bg-dv {
         padding: 6px 34px;
     }
+
+
+    /* new-changes-css-17-05-21 */
+
+
     .footer-down-heading-dv{
         display:flex;
         padding:20px 0px;
         padding-bottom:0px;
         flex-wrap: wrap;
         margin-top:36px;
+        justify-content: space-between;
     }
+
+    /* and-remove-footer-span-css */
+    
+     /* new-changes-css-17-05-21 */
+
+
     .footer-down-heading-dv span{
-        width:100%;
         text-align: center;
     }
     .footer-down-heading-dv p {
@@ -1220,7 +1228,6 @@ input:focus ~ .highlight {
     .bottom-right-vector {
         right: 15px;
     }
-   
     .frist-blg-dv::before{
         width:83%;
         right:0;
@@ -1232,10 +1239,11 @@ input:focus ~ .highlight {
     .thard-section-dv{
         padding:50px 0px;
     }
-    
     .veg-img-dv{
         bottom:0px;
     }
+    /* new chnages-17-5-21 */
+
 }
 
 @media only screen and (max-width: 768px) {

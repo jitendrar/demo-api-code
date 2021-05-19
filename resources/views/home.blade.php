@@ -43,11 +43,10 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ml-auto py-4 py-md-0 header-ul-dv">
                             <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4 active" >
-                                <a class="nav-link dropdown-toggle"  data-toggle="dropdown" href="#" role="button"
-                                    aria-haspopup="true" aria-expanded="false" id="home">Home</a>
+                                   <a class="nav-link" data-hash="#home" href="#home">Home</a>
                             </li>
                             <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4" >
-                                <a class="nav-link" data-hash="#about" href="#How-it-work" >How it Work</a>
+                                <a class="nav-link" data-hash="#about" href="#How-it-work" >How it Works</a>
                             </li>
                             <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4" >
                                 <a class="nav-link" href="#about-us" >Abou us</a>
@@ -76,9 +75,9 @@
         <div class="row mt20">
             <div class="col-lg-5 col-md-9 col-sm-10 left-banner-details">
                 <div class="banner-inner-detail">
-                    <h1>BEST WAY To </h1>
+                    <h1>BEST WAY TO </h1>
                     <h2>Make your shopping easy with this App</h2>
-                    <p>Bopal Daily is a Grocery Delivery App. Get Great Deals on Fresh Vegetables, fruits, Dairy Products and seasonal products with economical Price.</p>
+                    <p>Bopal Daily is a grocery delivery app. Get great deals on fresh vegetables, fruits, dairy products and seasonal products with economical Price.</p>
                     <div class="btn-banner-dv">
                       <a href="https://play.google.com/store/apps/details?id=com.phpdots.bopaldaily">
                         <img src="{{ asset('images/banner-link.jpg') }}" class="img-fluid" alt="">
@@ -87,7 +86,11 @@
                     <div class="icon-banner-media-dv">
                     <p>Follow us on</p>
                     <ul class="icon-media-banner">
-                        <li><a href="#"><img src="{{ asset('images/facebook-banner-icon.png') }}" class="img-fluid" alt="icon"></a></li>
+                        <li>
+                            <a href="https://m.facebook.com/Bopal-Daily-106560664871241/">
+                                <img src="{{ asset('images/facebook-banner-icon.png') }}" class="img-fluid" alt="icon">
+                            </a>
+                        </li>
                         <li><a href="#"><img src="{{ asset('images/linkdin.png') }}" class="img-fluid" alt="icon"></a></li>
                         <li><a href="#"><img src="{{ asset('images/instagram.png') }}" class="img-fluid" alt="icon"></a></li>
                     </ul>
@@ -105,14 +108,14 @@
         <div class="row d-flex justify-content-center">
             <div class="col-lg-6 col-md-7 col-sm-8 title-secand-heading-dv">
                 <h2>How it Works</h2>
-                <p>Bopal Daily App is user friendly and easy to use App, that will make your shopping easier</p>
+                <p>Bopal Daily App is user friendly and easy to use app, that will make your shopping easier</p>
             </div>
         </div>
         <div class="row services-row-dv">
             <div class="col-lg-4 col-md-12 service-box-dv">
                 <div class="box-dv ">
                     <img src="{{ asset('images/services-01.png') }}" class="img-fluid" alt="">
-                    <h6>Choose Product</h6>
+                    <h6>Choose products</h6>
                     <p>Add items to your shopping basket</p>
                 </div>
             </div>
@@ -149,12 +152,12 @@
             </div>
             <div class="col-lg-5 col-md-9 col-sm-9 right-details-dv d-flex align-items-center">
             <div class="about-inner-details-dv">
-                <h2>About us</h2>
+                <h2>About Us</h2>
                 <p>
                   Bopal Daily is the best app to buy your daily necessities products online near you. We are delivering product in Bopal, Ghuma and Shela area of Ahmedabad.
                 </p>
                 <p>
-                  Wide range of products, including fresh fruits and vegetables. Enjoy assured low prices with great offers including discounts, bundle pack offerings and promotions. We take pride in Assured quality and timely delivery. 
+                  Wide range of products, including fresh fruits and vegetables. Enjoy assured low prices with great offers including discounts, bundle pack offerings and promotions. We take pride in assured quality and timely delivery.
                 </p>
                 <a href="#" class="btn-nav-dv  ">Contact us
                    <i class="fas fa-arrow-right"></i><span class="circle"></span></a>
@@ -184,7 +187,7 @@
                     <div class="inner-product-details-dv">
                         <h2>Seasonal Products</h2>
                         <p>
-                          We are selling all seasonal products like Whet (Lokwan, Tukdi, Bhalia etc.), Mangoes (Gir Kesar, Organic Kesar, Hafus etc.)
+                          We are selling all seasonal products like whet (Lokwan, Tukdi, Bhalia etc.), mangoes (Gir Kesar, Organic Kesar, Hafus etc.)
                         </p>
                     </div>
                     <div class="btn-product-blg">
@@ -217,9 +220,9 @@
                 <div class="inner-details-download">
                     <img src="{{ asset('images/download-shap-top.png') }}" class="top-left-shap" alt="">
                     <h2>Download the App</h2>
-                    <h5><i>Get Groceries at one store</i></h5>
+                    <h5><i>Get groceries at one store</i></h5>
                     <p>
-                      Discover new products and shop for all your food and grocery needs from the comfort of your home or office. No more getting stuck in traffic jams, paying for parking, standing in long queues and carrying heavy bags – get everything you need, right at your doorstep.
+                      Discover new products and shop for all your food and grocery needs from the comfort of your home or office. No more getting stuck in traffic jams, paying for parking, standing in long queues and carrying heavy bags – get everything you need, when you need, right at your doorstep.
                     </p>
                     <div class="services-main-dv">
                         <div class="col-lg-6 col-md-6 same-service-download">
