@@ -1511,7 +1511,7 @@ input:focus ~ .highlight {
         top: 163px;
     }
     .seasonal-products-dv {
-	    height: 900px;
+	    height:855px;
     }
     .shap-top-dv {
         left: 289px;
@@ -1567,6 +1567,9 @@ input:focus ~ .highlight {
     }
 }
 @media (max-width: 375px) {
+    .product-inner-details-dv {
+    bottom: -256px;
+    }
     .product-btn-ul img{
        max-width: 77%;
     }
@@ -1615,7 +1618,7 @@ input:focus ~ .highlight {
      max-width:100%!important;
     }
     .seasonal-products-dv {
-	height: 975px;
+	height: 846px;
     }
     .inner-details-download h2 {
 	font-size: 24px;
