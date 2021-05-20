@@ -26,6 +26,25 @@
       <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=448043992931917&ev=PageView&noscript=1" /></noscript>
     <!-- End Facebook Pixel Code -->
 
+      <!-- Start Google Recaptcha Code -->
+    <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.sitekey') }}"></script>
+    <script>
+             grecaptcha.ready(function() {
+                 grecaptcha.execute('{{ config('services.recaptcha.sitekey') }}', {action: 'contact'}).then(function(token) {
+                    if (token) {
+                      document.getElementById('recaptcha').value = token;
+                    }
+                 });
+             });
+    </script>
+<!-- End Google Recaptcha Code -->
+
+    <style type="text/css">
+        .text-danger{
+            color: #000000;
+        }
+    </style>
+    
 </head>
 <body>
 <div class="navigation-wrap start-header start-style">
@@ -283,39 +302,60 @@
                     </div>
                 </div>
                 <div class="col-lg-4 form-blg-dv">
-                <form action="" class="footer-form-dv">
-                    <h5>Contact Us</h5>
-                    <div class="group">
-                        <input type="text" required>
-                        <span class="highlight"></span>
-                        <span class="bar"></span>
-                        <label>First name*</label>
+                    {!! Form::open(array('method' => 'post', 'route' => 'front.storecontactus', 'class' => 'footer-form-dv form', 'files'=>true)) !!}
+                    <!-- <form action="" method="post" class="footer-form-dv"> -->
+                        <input type="hidden" name="recaptcha" id="recaptcha">
+                        @if (session('status'))
+                        <div class="alert alert-success">
+                            {{ session('status') }}
+                        </div>
+                        @endif
+                        {{ csrf_field() }}
+
+                        <h5>Contact Us</h5>
+                        <div class="group">
+                            <input type="text" name="first_name" id="first_name" required>
+                            <span class="highlight"></span>
+                            <span class="bar"></span>
+                            <label>First name*</label>
+                            <span class="text-danger">{{ $errors->first('first_name') }}</span>
+                        </div>
+                        <div class="group">
+                            <input type="text" name="last_name" id="last_name" required>
+                            <span class="highlight"></span>
+                            <span class="bar"></span>
+                            <label>Last name*</label>
+                            <span class="text-danger">{{ $errors->first('last_name') }}</span>
+
+                        </div>
+                        <div class="group">
+                            <input type="text" name="phone_number" id="phone_number" required>
+                            <span class="highlight"></span>
+                            <span class="bar"></span>
+                            <label>Phone number*</label>
+                            <span class="text-danger">{{ $errors->first('phone_number') }}</span>
+
+                        </div>
+                        <div class="group">
+                            <input type="email" name="email" id="email" required>
+                            <span class="highlight"></span>
+                            <span class="bar"></span>
+                            <label>Email*</label>
+                            <span class="text-danger">{{ $errors->first('email') }}</span>
+
+                        </div>
+                        <div class="btn-contact-form-dv">
+
+                           {!! Form::button('Contact Us   <i class="fas fa-arrow-right"></i>', array('class'=>'btn-nav-dv form-btn-dv', 'type'=>'submit')) !!}
+
+                           <!-- <a href="{{ route('front.storecontactus') }}" class="btn-nav-dv form-btn-dv">Contact us -->
+                            <!-- <i class="fas fa-arrow-right"></i> -->
+                            <!-- </a> -->
+                        </div>
+                        <!-- </form> -->
+                        {!! Form::close() !!}
                     </div>
-                    <div class="group">
-                        <input type="text" required>
-                        <span class="highlight"></span>
-                        <span class="bar"></span>
-                        <label>Last name*</label>
-                    </div>
-                    <div class="group">
-                        <input type="text" required>
-                        <span class="highlight"></span>
-                        <span class="bar"></span>
-                        <label>Phone number*</label>
-                    </div>
-                    <div class="group">
-                        <input type="text" required>
-                        <span class="highlight"></span>
-                        <span class="bar"></span>
-                        <label>Email*</label>
-                    </div>
-                    <div class="btn-contact-form-dv">
-                        <a href="#" class="btn-nav-dv form-btn-dv">Contact us
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </form>
-                </div>
+               
                
             </div>
             <div class="col-lg-12 footer-down-heading-dv">

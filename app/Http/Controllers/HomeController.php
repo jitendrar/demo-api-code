@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\AdminAction;
 use Validator;
 use DataTables;
+use Illuminate\Support\Facades\Mail;
+
 
 
 class HomeController extends Controller
@@ -101,5 +103,68 @@ class HomeController extends Controller
         fwrite($myfile, $json);
         fclose($myfile);
     }
+
+    public function storeContactUsForm(Request $request)
+    {
+        $msgresponse = Array();
+         $rules=array(
+            'first_name' => 'required|max:100',
+            'last_name' => 'required|max:100',
+            'email' => 'required|email|max:100',
+            'phone_number' => 'required|max:100'
+        );
+        $validator=Validator::make($request->all(),$rules);
+        if($validator->fails()) {
+            return redirect(url()->previous() .'#contact-us')->withErrors($validator->errors());
+            exit;
+        } 
+
+        $url = 'https://www.google.com/recaptcha/api/siteverify';
+        $remoteip = $_SERVER['REMOTE_ADDR'];
+        $data = [
+            'secret' => config('services.recaptcha.secret'),
+            'response' => $request->get('recaptcha'),
+            'remoteip' => $remoteip
+        ];
+        $options = [
+            'http' => [
+              'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+              'method' => 'POST',
+              'content' => http_build_query($data)
+          ]
+        ];
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        $resultJson = json_decode($result);
+        if ($resultJson->success != true) {
+        return redirect(url()->previous() .'#contact-us')->withErrors(['status' => 'ReCaptcha Error']);
+        }
+        if ($resultJson->score >= 0.3) {
+            //Validation was successful, add your form submission logic here
+            $emailTemplate = "admin.emails.contact_us";
+            $EmailData['first_name']  = $request->first_name;
+            $EmailData['last_name']   = $request->last_name;
+            $EmailData['phone_number']     = $request->phone_number;
+            $EmailData['email'] = $request->email;
+            $content = ['content' => $EmailData];
+            $EmailSubject = "Contact Us Email";
+            $DISABLE_EMAIL_FOR_STAGING = env('DISABLE_EMAIL_FOR_STAGING', 1);
+              if($DISABLE_EMAIL_FOR_STAGING) {
+                if(!empty($emailTemplate)) {
+                  Mail::send($emailTemplate, $content, function($message)   use ($EmailSubject) {
+                         $message->from('reports.phpdots@gmail.com','Bopal Daily');
+                         $message->to('sejal@phpdots.com', 'Sejal Gusai');
+                         $message->subject($EmailSubject);
+                  });
+                }
+              }
+
+
+        return redirect(url()->previous() .'#contact-us')->with('status', 'Thanks for your message!');
+        } else {
+        return redirect(url()->previous() .'#contact-us')->withErrors(['status' => 'ReCaptcha Error']);
+        }
+        }
+    
 
 }
