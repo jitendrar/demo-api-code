@@ -152,21 +152,27 @@ class HomeController extends Controller
             if($DISABLE_EMAIL_FOR_STAGING) {
                 if(!empty($emailTemplate)) {
                   Mail::send($emailTemplate, $content, function($message)   use ($EmailSubject) {
-                        $MAIL_FROM_ADDRESS  = env("MAIL_FROM_ADDRESS");
-                        $MAIL_FROM_NAME     = env("MAIL_FROM_NAME");
-                        $CONTACT_US_EMAIL_TO     = env("CONTACT_US_EMAIL_TO");
-                        $CONTACT_US_EMAIL_TO_NAME     = env("CONTACT_US_EMAIL_TO_NAME");
+                        $MAIL_FROM_ADDRESS          = env("MAIL_FROM_ADDRESS");
+                        $MAIL_FROM_NAME             = env("MAIL_FROM_NAME");
+                        $CONTACT_US_EMAIL_TO        = env("CONTACT_US_EMAIL_TO");
+                        $CONTACT_US_EMAIL_TO_NAME   = env("CONTACT_US_EMAIL_TO_NAME");
+                        $CONTACT_US_EMAIL_CC        = env("CONTACT_US_EMAIL_CC", '');
+                        $CONTACT_US_EMAIL_CC_NAME   = env("CONTACT_US_EMAIL_CC_NAME", '');
+
                         $message->from($MAIL_FROM_ADDRESS, $MAIL_FROM_NAME);
                         $message->to($CONTACT_US_EMAIL_TO, $CONTACT_US_EMAIL_TO_NAME);
+                        if(!empty($CONTACT_US_EMAIL_CC)) {
+                            $message->cc($CONTACT_US_EMAIL_CC, $CONTACT_US_EMAIL_CC_NAME);
+                        }
                         $message->subject($EmailSubject);
                   });
                 }
             }
-
+            
             return redirect(url()->previous() .'#contact-us')->with('status', 'Thanks for your message!');
         // } else {
         // return redirect(url()->previous() .'#contact-us')->withErrors(['status' => 'ReCaptcha Error']);
         // }
         }
-        
+
 }
