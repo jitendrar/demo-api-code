@@ -908,7 +908,53 @@ input:focus ~ .highlight {
     padding-bottom:15px;
 }
 
+/* privacy-policy-css-page-start */
+.privacy-policy-main-blog-dv{
+  position:relative;
+  margin-top:120px;
+  padding:100px 0px;
+  font-family: "Montserrat", sans-serif;
+}
+.privacy-policy-main-blog-dv .container{
+  max-width: 1366px;
+}
 
+.policy-heading{
+  font-size:38px;
+  font-weight:700;
+  color:#000;
+}
+.entry-header{
+  margin-bottom:20px;
+}
+.down-details-policy{
+  margin-top:40px;
+  margin-bottom: 50px;
+}
+.entry-content{
+  width:100%;
+  margin-top:50px;
+}
+.entry-content p{
+  color:gray;
+}
+.entry-content p span a{
+  color:#4CAF50;
+}
+.email-color-dv{
+  color:#4CAF50;
+}
+.entry-content h5{
+  font-size:25px;
+  margin-top:40px;
+  font-weight:700;
+  color:#5c5c5c;
+  margin-bottom:20px;
+}
+.right-details-footer-dv a{
+  color:#fff;
+  text-decoration: none;
+}
 /* privacy-policy-css-page-end */
 /* animation-css-start */
 
