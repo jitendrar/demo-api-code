@@ -351,7 +351,7 @@
                         </div>
                         <div class="btn-contact-form-dv">
 
-                           {!! Form::button('Contact Us   <i class="fas fa-arrow-right"></i>', array('class'=>'btn-nav-dv form-btn-dv', 'type'=>'submit')) !!}
+                           {!! Form::button('Contact Us   <i class="sake-effact fas fa-arrow-right"></i>', array('class'=>'btn-nav-dv form-btn-dv', 'type'=>'submit')) !!}
 
                            <!-- <a href="{{ route('front.storecontactus') }}" class="btn-nav-dv form-btn-dv">Contact us -->
                             <!-- <i class="fas fa-arrow-right"></i> -->
