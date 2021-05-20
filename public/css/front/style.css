@@ -1666,7 +1666,6 @@ input:focus ~ .highlight {
     }
     .seasonal-products-dv {
         height: 845px;
-        border:1px solid red;
     }
     .seasonal-products-dv .main-dv::after {
         height: 556px;
