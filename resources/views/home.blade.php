@@ -332,6 +332,7 @@
     <script src="{{ asset('js/front/jquery.min.js') }}"></script>
     <script src="{{ asset('js/front/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/front/popper.min.js') }}"></script>
+    
     <script>
          /* Please ❤ this if you like it! */
          
