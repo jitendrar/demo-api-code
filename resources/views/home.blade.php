@@ -38,13 +38,13 @@
              // });
     </script>
 <!-- End Google Recaptcha Code -->
-
+    
     <style type="text/css">
         .text-danger{
             color: #000000;
         }
     </style>
-    
+
 </head>
 <body>
 <div class="navigation-wrap start-header start-style">
@@ -306,8 +306,13 @@
                     <!-- <form action="" method="post" class="footer-form-dv"> -->
                         <input type="hidden" name="recaptcha" id="recaptcha">
                         @if (session('status'))
-                        <div class="alert alert-success">
+                        <div class="alert alert-success statusclass">
                             {{ session('status') }}
+                        </div>
+                        @endif
+                         @if (session('error'))
+                        <div class="alert alert-danger statusclass">
+                            {{ session('error') }}
                         </div>
                         @endif
                         {{ csrf_field() }}
@@ -375,7 +380,7 @@
     
     <script>
          /* Please ❤ this if you like it! */
-         
+            
 
             (function ($) {
                   $('.navbar-toggler').click(function(){
@@ -431,6 +436,14 @@
                
 
             })(jQuery);
+
+    </script>
+    <script>
+    $(function(){
+        setTimeout(function() {
+            $('.statusclass').slideUp();
+        }, 5000);
+    });
     </script>
 </body>
 

@@ -4,8 +4,8 @@
 			<tbody>
 				<tr>
 					<td style="font-size:14px;color:#8a8a8a;padding-top:14px;font-family:'PT Sans',Arial,sans-serif;min-width:auto!important;line-height:19px;text-align:left;display:block">
-						Dear Admin, 
-						Please find Users Contact Details.
+						Dear Admin,<br> 
+						Please find users contact details.
 						<br><br>
 						<table border="1" style="width: 100%">
 							<tr>

@@ -151,25 +151,33 @@ class HomeController extends Controller
             $DISABLE_EMAIL_FOR_STAGING = env('DISABLE_EMAIL_FOR_STAGING', 1);
             if($DISABLE_EMAIL_FOR_STAGING) {
                 if(!empty($emailTemplate)) {
-                  Mail::send($emailTemplate, $content, function($message)   use ($EmailSubject) {
-                        $MAIL_FROM_ADDRESS          = env("MAIL_FROM_ADDRESS");
-                        $MAIL_FROM_NAME             = env("MAIL_FROM_NAME");
-                        $CONTACT_US_EMAIL_TO        = env("CONTACT_US_EMAIL_TO");
-                        $CONTACT_US_EMAIL_TO_NAME   = env("CONTACT_US_EMAIL_TO_NAME");
-                        $CONTACT_US_EMAIL_CC        = env("CONTACT_US_EMAIL_CC", '');
-                        $CONTACT_US_EMAIL_CC_NAME   = env("CONTACT_US_EMAIL_CC_NAME", '');
+                    try{
 
-                        $message->from($MAIL_FROM_ADDRESS, $MAIL_FROM_NAME);
-                        $message->to($CONTACT_US_EMAIL_TO, $CONTACT_US_EMAIL_TO_NAME);
-                        if(!empty($CONTACT_US_EMAIL_CC)) {
-                            $message->cc($CONTACT_US_EMAIL_CC, $CONTACT_US_EMAIL_CC_NAME);
-                        }
-                        $message->subject($EmailSubject);
-                  });
+                        Mail::send($emailTemplate, $content, function($message)   use ($EmailSubject) {
+                            $MAIL_FROM_ADDRESS          = env("MAIL_FROM_ADDRESS");
+                            $MAIL_FROM_NAME             = env("MAIL_FROM_NAME");
+                            $CONTACT_US_EMAIL_TO        = env("CONTACT_US_EMAIL_TO");
+                            $CONTACT_US_EMAIL_TO_NAME   = env("CONTACT_US_EMAIL_TO_NAME");
+                            $CONTACT_US_EMAIL_CC        = env("CONTACT_US_EMAIL_CC", '');
+                            $CONTACT_US_EMAIL_CC_NAME   = env("CONTACT_US_EMAIL_CC_NAME", '');
+
+                            $message->from($MAIL_FROM_ADDRESS, $MAIL_FROM_NAME);
+                            $message->to($CONTACT_US_EMAIL_TO, $CONTACT_US_EMAIL_TO_NAME);
+                            if(!empty($CONTACT_US_EMAIL_CC)) {
+                                $message->cc($CONTACT_US_EMAIL_CC, $CONTACT_US_EMAIL_CC_NAME);
+                            }
+                            $message->subject($EmailSubject);
+                        });
+
+                    }catch (\Exception $e) {
+                        return redirect(url()->previous() .'#contact-us')->with('error', 'Something Went Wrong');
+                        echo $e->getMessage();
+                    }
+                  
                 }
             }
             
-            return redirect(url()->previous() .'#contact-us')->with('status', 'Thanks for your message!');
+            return redirect(url()->previous() .'#contact-us')->with('status', 'Thanks for contacting us !');
         // } else {
         // return redirect(url()->previous() .'#contact-us')->withErrors(['status' => 'ReCaptcha Error']);
         // }
