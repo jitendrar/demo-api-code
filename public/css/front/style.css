@@ -792,6 +792,7 @@ input 				{
   background-color:transparent;
   border:none;
   border-bottom:1px solid #fff;
+  color:#fff;
 }
 input:focus 		{ outline:none; }
 
@@ -954,8 +955,6 @@ input:focus ~ .highlight {
 }
 .sake-effact { animation-name: sakeEffact;display:inline-block;animation-iteration-count: infinite;animation-duration:2s;transition:all 5s;animation-timing-function: linear;}
 @keyframes sakeEffact {
-  /* form {transform: translateX(-10px)}
-  to {transform: translateX(10px)} */
   0% {transform: translateX(0px)}
   25% {transform: translateX(5px)}
   50% {transform: translateX(0px)}
