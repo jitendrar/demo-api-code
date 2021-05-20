@@ -119,27 +119,27 @@ class HomeController extends Controller
             exit;
         } 
 
-        $url = 'https://www.google.com/recaptcha/api/siteverify';
-        $remoteip = $_SERVER['REMOTE_ADDR'];
-        $data = [
-            'secret' => config('services.recaptcha.secret'),
-            'response' => $request->get('recaptcha'),
-            'remoteip' => $remoteip
-        ];
-        $options = [
-            'http' => [
-              'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-              'method' => 'POST',
-              'content' => http_build_query($data)
-          ]
-        ];
-        $context = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
-        $resultJson = json_decode($result);
-        if ($resultJson->success != true) {
-        return redirect(url()->previous() .'#contact-us')->withErrors(['status' => 'ReCaptcha Error']);
-        }
-        if ($resultJson->score >= 0.3) {
+        // $url = 'https://www.google.com/recaptcha/api/siteverify';
+        // $remoteip = $_SERVER['REMOTE_ADDR'];
+        // $data = [
+        //     'secret' => config('services.recaptcha.secret'),
+        //     'response' => $request->get('recaptcha'),
+        //     'remoteip' => $remoteip
+        // ];
+        // $options = [
+        //     'http' => [
+        //       'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+        //       'method' => 'POST',
+        //       'content' => http_build_query($data)
+        //   ]
+        // ];
+        // $context = stream_context_create($options);
+        // $result = file_get_contents($url, false, $context);
+        // $resultJson = json_decode($result);
+        // if ($resultJson->success != true) {
+        // return redirect(url()->previous() .'#contact-us')->withErrors(['status' => 'ReCaptcha Error']);
+        // }
+        // if ($resultJson->score >= 0.3) {
             //Validation was successful, add your form submission logic here
             $emailTemplate = "admin.emails.contact_us";
             $EmailData['first_name']  = $request->first_name;
@@ -161,9 +161,9 @@ class HomeController extends Controller
 
 
         return redirect(url()->previous() .'#contact-us')->with('status', 'Thanks for your message!');
-        } else {
-        return redirect(url()->previous() .'#contact-us')->withErrors(['status' => 'ReCaptcha Error']);
-        }
+        // } else {
+        // return redirect(url()->previous() .'#contact-us')->withErrors(['status' => 'ReCaptcha Error']);
+        // }
         }
     
 
