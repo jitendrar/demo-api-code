@@ -368,7 +368,7 @@
                     <p>Copyright @2021, Bopal Daily - All Rights Reserved</p>
                 </span>
                 <span>
-                    <p class="right-details-footer-dv"><a href="privacy-policy-terms-of-use.html">Privacy Policy | Terms of Use</a></p>
+                <p class="right-details-footer-dv"><a href="privacy-policy.html">Privacy Policy</a> | <a href="terms-of-use.html">Terms of Use</a></p>
                 </span>
             </div>
         </div>
