@@ -5,6 +5,7 @@
       <div class="inner-detapolicy-dv">
         <header class="entry-header">
 			    <h2 class="policy-heading">Terms of Use</h2>
+          <hr>
 		    </header>
         <div class="entry-content">
           <p>

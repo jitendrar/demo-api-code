@@ -5,6 +5,7 @@
       <div class="inner-detapolicy-dv">
         <header class="entry-header">
 			    <h2 class="policy-heading">Privacy Policy</h2>
+          <hr>
 		    </header>
         <div class="entry-content">
           <h5>What information is, or maybe, collected from you?</h5>
