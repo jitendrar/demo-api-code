@@ -936,7 +936,7 @@ input:focus ~ .highlight {
   margin-top:50px;
 }
 .entry-content p{
-  color:gray;
+  color:#212121;
 }
 .entry-content p span a{
   color:#4CAF50;
