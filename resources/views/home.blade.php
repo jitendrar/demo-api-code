@@ -360,8 +360,6 @@
                         <!-- </form> -->
                         {!! Form::close() !!}
                     </div>
-               
-               
             </div>
             <div class="col-lg-12 footer-down-heading-dv">
                 <span>
