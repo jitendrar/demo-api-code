@@ -181,6 +181,12 @@ class HomeController extends Controller
         // } else {
         // return redirect(url()->previous() .'#contact-us')->withErrors(['status' => 'ReCaptcha Error']);
         // }
-        }
+    }
 
+    public function privacypolicy() {
+        return view('privacy_policy');
+    }
+    public function termsofuse() {
+        return view('terms_of_use');
+    }
 }

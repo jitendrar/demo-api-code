@@ -366,7 +366,11 @@
                     <p>Copyright @2021, Bopal Daily - All Rights Reserved</p>
                 </span>
                 <span>
-                <p class="right-details-footer-dv"><a href="privacy-policy.html">Privacy Policy</a> | <a href="terms-of-use.html">Terms of Use</a></p>
+                <p class="right-details-footer-dv">
+                    <a href="/privacy-policy">Privacy Policy</a> 
+                    |
+                    <a href="/terms-of-use">Terms of Use</a></p>
+                    </p>
                 </span>
             </div>
         </div>

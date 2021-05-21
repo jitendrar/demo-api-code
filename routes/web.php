@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 Route::domain(''.env('SITE_URL'))->group(function () {
 	Route::get('/','HomeController@index')->name('home_page');
 	Route::any('storecontactus','HomeController@storeContactUsForm')->name('front.storecontactus');
+	Route::get('/privacy-policy','HomeController@privacypolicy');
+	Route::get('/terms-of-use','HomeController@termsofuse');
 });
 
 Route::domain('admin.'.env('SITE_URL'))->group(function () {
