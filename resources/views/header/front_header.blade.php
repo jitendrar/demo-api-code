@@ -3,9 +3,10 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Bopal Daily</title>
+    <title>Bopal Daily is online vegetable store for Bopal, Ghuma & Shela</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Bopal Daily is online shopping app for fresh vegetables, fruits, dairy products and seasonal products. We are delivering products in Bopal, Ghuma and Shela area of Ahmedabad." />
     <link href="{{ asset('css/front/bootstrap.min.css') }}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
