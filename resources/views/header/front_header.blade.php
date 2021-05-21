@@ -62,7 +62,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ml-auto py-4 py-md-0 header-ul-dv">
                             <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4 active" >
-                                <a class="nav-link" data-hash="{{ URL('/') }}#home" href="#home">Home</a>
+                                <a class="nav-link" data-hash="#home" href="{{ URL('/') }}#home">Home</a>
 
                             </li>
                             <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4" >
