@@ -948,7 +948,7 @@ input:focus ~ .highlight {
   font-size:25px;
   margin-top:40px;
   font-weight:700;
-  color:#5c5c5c;
+  color:#000;
   margin-bottom:20px;
 }
 .right-details-footer-dv a{
