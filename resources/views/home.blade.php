@@ -1,4 +1,4 @@
-@include('header.front_header');
+@include('header.front_header')
 
 <section class="frist-blg-dv " id="home">
     <div class="container">
