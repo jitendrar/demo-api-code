@@ -1161,6 +1161,10 @@ input:focus ~ .highlight {
     }
 }
 @media (max-width: 991px) {
+    .form-btn-dv {
+        padding: 13px 20px;
+        width:100%;
+    }
       .privacy-policy-main-blog-dv{
         padding:50px 0px;
         }
