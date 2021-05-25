@@ -792,6 +792,7 @@ input 				{
   background-color:transparent;
   border:none;
   border-bottom:1px solid #fff;
+  color:#fff;
 }
 input:focus 		{ outline:none; }
 
@@ -879,14 +880,14 @@ input:focus ~ .highlight {
     color:#fff;
 }
 .form-btn-dv{
-    padding:15px 148px;
+    padding:15px 219px;
     color:#4CAF50;
     font-weight: bold;
     background-color:#fff;
     display:flex;
     align-items: center;
     font-size:20px;
-    padding-left:35px;
+    padding-left:34px;
 }
 .form-btn-dv i{
     right: 30px;
@@ -906,6 +907,110 @@ input:focus ~ .highlight {
     padding-top:30px;
     padding-bottom:15px;
 }
+
+/* privacy-policy-css-page-start */
+.privacy-policy-main-blog-dv{
+  position:relative;
+  margin-top:120px;
+  padding:100px 0px;
+  font-family: "Montserrat", sans-serif;
+}
+.privacy-policy-main-blog-dv .container{
+  max-width: 1366px;
+}
+
+.policy-heading{
+  font-size:38px;
+  font-weight:700;
+  color:#000;
+}
+.entry-header{
+  margin-bottom:20px;
+}
+.down-details-policy{
+  margin-top:40px;
+  margin-bottom: 50px;
+}
+.entry-content{
+  width:100%;
+  margin-top:50px;
+}
+.entry-content p{
+  color:#212121;
+}
+.entry-content p span a{
+  color:#4CAF50;
+}
+.email-color-dv{
+  color:#4CAF50;
+}
+.entry-content h5{
+  font-size:25px;
+  margin-top:40px;
+  font-weight:700;
+  color:#000;
+  margin-bottom:20px;
+}
+.right-details-footer-dv a{
+  color:#fff;
+  text-decoration: none;
+}
+/* privacy-policy-css-page-end */
+/* animation-css-start */
+
+.shap-bottom-dv { animation: hu__hu__ infinite 8s ease-in-out }
+  @keyframes hu__hu__ {
+      50% { transform: translateY(30px) }
+}
+.shap-top-dv { animation: hu__hu__ infinite 6s ease-in-out }
+  @keyframes hu__hu__ {
+      50% { transform: translateY(30px) }
+}
+
+.vector-box-dv { animation: hu__hu__ infinite 5s ease-in-out }
+  @keyframes hu__hu__ {
+      50% { transform: translateY(30px) }
+}
+.top-left-shap  { animation: hu__hu__ infinite 5s ease }
+  @keyframes hu__hu__ {
+      50% { transform: translateY(30px) }
+}
+.frist-blg-dv::after { animation: hu__hu__ infinite 5s ease-in-out }
+  @keyframes hu__hu__ {
+      50% { transform: translateY(30px) }
+}
+.right-banner-img::before { animation: hu__hu__ infinite 6s ease-in-out }
+  @keyframes hu__hu__ {
+      50% { transform: translateY(30px) }
+}
+.left-banner-details::after { animation: hu__hu__ infinite 6s ease-in-out }
+  @keyframes hu__hu__ {
+      50% { transform: translateY(30px) }
+}
+.top-vector-one { animation: hu__hu__ infinite 8s ease-in }
+  @keyframes hu__hu__ {
+      50% { transform: translateY(30px) }
+}
+.bottom-left-vector { animation: hu__hu__ infinite 8s ease-in }
+  @keyframes hu__hu__ {
+      50% { transform: translateY(30px) }
+}
+.bottom-right-vector { animation: hu__hu__ infinite 5s ease-in }
+  @keyframes hu__hu__ {
+      50% { transform: translateY(30px) }
+}
+.sake-effact { animation-name: sakeEffact;display:inline-block;animation-iteration-count: infinite;animation-duration:2s;transition:all 5s;animation-timing-function: linear;}
+@keyframes sakeEffact {
+  0% {transform: translateX(0px)}
+  25% {transform: translateX(5px)}
+  50% {transform: translateX(0px)}
+  75% {transform: translateX(-5px)}
+  100% {transform: translateX(0px)}
+}
+
+/* animtion-css-end */
+
+
 @media (max-width: 1900px) {
 
 }
@@ -1056,6 +1161,12 @@ input:focus ~ .highlight {
     }
 }
 @media (max-width: 991px) {
+      .privacy-policy-main-blog-dv{
+        padding:50px 0px;
+        }
+      .menu-open .navigation-wrap {
+        background-color:#fff!important;   
+    }
      .nav-btn-dv{
          width:100%;
          padding:18px 0px;

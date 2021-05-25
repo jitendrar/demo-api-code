@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\AdminAction;
 use Validator;
 use DataTables;
+use Illuminate\Support\Facades\Mail;
+
 
 
 class HomeController extends Controller
@@ -102,4 +104,89 @@ class HomeController extends Controller
         fclose($myfile);
     }
 
+    public function storeContactUsForm(Request $request)
+    {
+        $msgresponse = Array();
+         $rules=array(
+            'first_name' => 'required|max:100',
+            'last_name' => 'required|max:100',
+            'email' => 'required|email|max:100',
+            'phone_number' => 'required|max:100'
+        );
+        $validator=Validator::make($request->all(),$rules);
+        if($validator->fails()) {
+            return redirect(url()->previous() .'#contact-us')->withErrors($validator->errors());
+            exit;
+        } 
+
+        // $url = 'https://www.google.com/recaptcha/api/siteverify';
+        // $remoteip = $_SERVER['REMOTE_ADDR'];
+        // $data = [
+        //     'secret' => config('services.recaptcha.secret'),
+        //     'response' => $request->get('recaptcha'),
+        //     'remoteip' => $remoteip
+        // ];
+        // $options = [
+        //     'http' => [
+        //       'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+        //       'method' => 'POST',
+        //       'content' => http_build_query($data)
+        //   ]
+        // ];
+        // $context = stream_context_create($options);
+        // $result = file_get_contents($url, false, $context);
+        // $resultJson = json_decode($result);
+        // if ($resultJson->success != true) {
+        // return redirect(url()->previous() .'#contact-us')->withErrors(['status' => 'ReCaptcha Error']);
+        // }
+        // if ($resultJson->score >= 0.3) {
+            //Validation was successful, add your form submission logic here
+            $emailTemplate = "admin.emails.contact_us";
+            $EmailData['first_name']  = $request->first_name;
+            $EmailData['last_name']   = $request->last_name;
+            $EmailData['phone_number']     = $request->phone_number;
+            $EmailData['email'] = $request->email;
+            $content = ['content' => $EmailData];
+            $EmailSubject = "Contact Us Email";
+            $DISABLE_EMAIL_FOR_STAGING = env('DISABLE_EMAIL_FOR_STAGING', 1);
+            if($DISABLE_EMAIL_FOR_STAGING) {
+                if(!empty($emailTemplate)) {
+                    try{
+
+                        Mail::send($emailTemplate, $content, function($message)   use ($EmailSubject) {
+                            $MAIL_FROM_ADDRESS          = env("MAIL_FROM_ADDRESS");
+                            $MAIL_FROM_NAME             = env("MAIL_FROM_NAME");
+                            $CONTACT_US_EMAIL_TO        = env("CONTACT_US_EMAIL_TO");
+                            $CONTACT_US_EMAIL_TO_NAME   = env("CONTACT_US_EMAIL_TO_NAME");
+                            $CONTACT_US_EMAIL_CC        = env("CONTACT_US_EMAIL_CC", '');
+                            $CONTACT_US_EMAIL_CC_NAME   = env("CONTACT_US_EMAIL_CC_NAME", '');
+
+                            $message->from($MAIL_FROM_ADDRESS, $MAIL_FROM_NAME);
+                            $message->to($CONTACT_US_EMAIL_TO, $CONTACT_US_EMAIL_TO_NAME);
+                            if(!empty($CONTACT_US_EMAIL_CC)) {
+                                $message->cc($CONTACT_US_EMAIL_CC, $CONTACT_US_EMAIL_CC_NAME);
+                            }
+                            $message->subject($EmailSubject);
+                        });
+
+                    }catch (\Exception $e) {
+                        return redirect(url()->previous() .'#contact-us')->with('error', 'Something Went Wrong');
+                        echo $e->getMessage();
+                    }
+                  
+                }
+            }
+            
+            return redirect(url()->previous() .'#contact-us')->with('status', 'Thanks for contacting us !');
+        // } else {
+        // return redirect(url()->previous() .'#contact-us')->withErrors(['status' => 'ReCaptcha Error']);
+        // }
+    }
+
+    public function privacypolicy() {
+        return view('privacy_policy');
+    }
+    public function termsofuse() {
+        return view('terms_of_use');
+    }
 }
