@@ -91,7 +91,12 @@ class ReportController extends Controller
         }
         $total_billing_amount = $query->sum('total');
 
-         $query = WalletHistory::where('transaction_type','CR')->where('transaction_method','0');
+         $query = WalletHistory::where('transaction_type','CR')->where('transaction_method','0')
+                                ->where(\DB::raw('users.is_tester'),'no')
+                                ->join('users', function($join)
+                                {
+                                    $join->on('wallet_history.user_id','users.id');
+                                });
                                      if(!empty($search_start_date)) {
                                         $query->where(\DB::raw('DATE(wallet_history.created_at)'), '>=', $search_start_date);
                                     }
@@ -100,7 +105,12 @@ class ReportController extends Controller
                                     }
         $total_collection_amount = $query->sum(\DB::raw('IFNULL((transaction_amount),0)'));
 
-        $query = WalletHistory::where('transaction_type','CR')->where('transaction_method','2');
+        $query = WalletHistory::where('transaction_type','CR')->where('transaction_method','2')
+                                ->where(\DB::raw('users.is_tester'),'no')
+                                ->join('users', function($join)
+                                {
+                                    $join->on('wallet_history.user_id','users.id');
+                                });
                                         if(!empty($search_start_date)) {
                                         $query->where(\DB::raw('DATE(wallet_history.created_at)'), '>=', $search_start_date);
                                         }
@@ -111,6 +121,7 @@ class ReportController extends Controller
 
         $total_collection_amount_final = $total_collection_amount - $total_collection_amount_refund;
         $total_pl_amount = $total_collection_amount_final -  $total_billing_amount;
+        $total_profit_loss_amount="No Profit No Loss";
         if($total_pl_amount>0){
             $total_profit_loss_amount = 'Profit :: '.$total_pl_amount;
         }else if($total_pl_amount<0){
@@ -129,10 +140,18 @@ class ReportController extends Controller
                     ->from('wallet_history')
                     ->where(\DB::raw('wallet_history.transaction_type'), 'CR')
                     ->where(\DB::raw('wallet_history.transaction_method'),0)
-                    ->groupby(\DB::raw('DATE(wallet_history.created_at)'));
-                
+                    ->groupby(\DB::raw('DATE(wallet_history.created_at)'))
+                    ->where(\DB::raw('users.is_tester'),'no')
+                    ->join('users', function($join)
+                    {
+                        $join->on('wallet_history.user_id','users.id');
+                    });
+                    
                 },'MainWH')
-                ->leftJoin('wallet_history as wallet_history2', function($join)
+                ->leftJoin(\DB::raw("(SELECT 
+                  wallet_history.* FROM `wallet_history` JOIN `users` ON wallet_history.user_id = users.id 
+                  where users.is_tester = 'no'
+                  ) as wallet_history2"), function($join)
                 {
                     $join->on(\DB::raw('DATE(wallet_history2.created_at)'), '=', \DB::raw('DATE(MainWH.bill_date)'));
                     $join->where('wallet_history2.transaction_method','=','2');

@@ -113,6 +113,7 @@ class UserController extends Controller
             $balance = $request->get('balance');
             $password = bcrypt($request->get('password'));
             $status_val = $request->get('status');
+            $is_tester = $request->get('is_tester');
             $note = $request->get('note');
             $model = $this->modelObj;
             $model->first_name = $first_name;
@@ -121,6 +122,7 @@ class UserController extends Controller
             $model->balance = $balance;
             $model->password = $password;
             $model->status = $status_val;
+            $model->is_tester = $is_tester;
             $model->save();
             $obj = new Address();
             $obj->primary_address = 1;
@@ -230,6 +232,7 @@ class UserController extends Controller
             $addBalance = $request->get('add_balance');
             $password = bcrypt($request->get('password'));
             $status_val = $request->get('status');
+            $is_tester = $request->get('is_tester');
             $note = $request->get('note');
             $model->first_name = $first_name;
             $model->last_name   = $last_name;
@@ -242,6 +245,7 @@ class UserController extends Controller
                 $model->password = $password;
             }
             $model->status = $status_val;
+            $model->is_tester = $is_tester;
             $model->save();
             if (!empty(trim($address_line_1))) {
                 $obj = Address::where('user_id',$model->id)->first();
