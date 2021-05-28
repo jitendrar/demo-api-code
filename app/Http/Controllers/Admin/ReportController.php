@@ -89,7 +89,7 @@ class ReportController extends Controller
         if(!empty($search_end_date)) {
             $query = $query->where("bill_date", '<=', $search_end_date);
         }
-        $total_billing_amount = $query->sum('total');
+        $total_billing_amount = round($query->sum('total'),2);
 
          $query = WalletHistory::where('transaction_type','CR')->where('transaction_method','0')
                                 ->where(\DB::raw('users.is_tester'),'no')
@@ -103,7 +103,7 @@ class ReportController extends Controller
                                     if(!empty($search_end_date)) {
                                        $query->where(\DB::raw('DATE(wallet_history.created_at)'), '<=', $search_end_date);
                                     }
-        $total_collection_amount = $query->sum(\DB::raw('IFNULL((transaction_amount),0)'));
+        $total_collection_amount = round($query->sum(\DB::raw('IFNULL((transaction_amount),0)')),2);
 
         $query = WalletHistory::where('transaction_type','CR')->where('transaction_method','2')
                                 ->where(\DB::raw('users.is_tester'),'no')
@@ -117,7 +117,7 @@ class ReportController extends Controller
                                         if(!empty($search_end_date)) {
                                            $query->where(\DB::raw('DATE(wallet_history.created_at)'), '<=', $search_end_date);
                                         }
-        $total_collection_amount_refund = $query->sum(\DB::raw('IFNULL((transaction_amount),0)'));
+        $total_collection_amount_refund = round($query->sum(\DB::raw('IFNULL((transaction_amount),0)')),2);
 
         $total_collection_amount_final = $total_collection_amount - $total_collection_amount_refund;
         $total_pl_amount = $total_collection_amount_final -  $total_billing_amount;
